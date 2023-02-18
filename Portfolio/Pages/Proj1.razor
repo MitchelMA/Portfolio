@@ -1,9 +1,17 @@
 ﻿@page "/proj1"
+@using Portfolio.Services
 @layout ProjectLayout
+@inject AppState AppState;
+
 
 <h3>Proj1</h3>
 <p>Test pagina voor projecten</p>
 
 @code {
-
+    
+    protected override void OnInitialized()
+    {
+        AppState.ShowFooter = false;
+        AppState.HeaderImgPath = "Mooie tekst, niet?";
+    }
 }

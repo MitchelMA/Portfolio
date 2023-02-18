@@ -1,8 +1,12 @@
-﻿@inherits LayoutComponentBase
+﻿@using Portfolio.Services
+@inherits LayoutComponentBase
+
+@implements IDisposable
+@inject AppState AppState
 
 <div class="page">
     <div class="sidebar">
-        <NavMenu />
+        <NavMenu/>
     </div>
 
     <main>
@@ -14,4 +18,30 @@
             @Body
         </article>
     </main>
+    @if (AppState.ShowFooter)
+    {
+        <footer>
+            Dit is de footer
+        </footer>
+    }
 </div>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        AppState.StateChanged += StateChanged;
+        base.OnInitialized();
+    }
+
+    private void StateChanged()
+    {
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        AppState.StateChanged -= StateChanged;
+    }
+
+}

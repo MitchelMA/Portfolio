@@ -1,8 +1,41 @@
-﻿@inherits LayoutComponentBase
+﻿@using Portfolio.Client
+@using Portfolio.Services
 
-<h3>ProjectLayout</h3>
-@Body
+@inject AppState AppState;
+@inherits LayoutComponentBase
+@inject ILoggerFactory LoggerFactory
+@implements IDisposable;
+
+<header>
+    <img src="@AppState.HeaderImgPath" alt="Header Image"/>
+</header>
+<div class="page">
+    <h3>ProjectLayout</h3>
+    @if (AppState.ShowFooter)
+    {
+        <p>Show Text</p>
+    }
+    <p>@AppState.HeaderImgPath</p>
+    <main class="main-body">
+        @Body
+    </main>
+</div>
 
 @code {
 
+    protected override void OnInitialized()
+    {
+        AppState.StateChanged += StateChanged;
+        base.OnInitialized();
+    }
+
+    public void Dispose()
+    {
+        AppState.StateChanged -= StateChanged;
+    }
+
+    private void StateChanged()
+    {
+        StateHasChanged();
+    }
 }
