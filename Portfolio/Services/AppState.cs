@@ -4,6 +4,7 @@ public class AppState
 {
     private bool _showFooter = true;
     private string _headerImgPath = "icon-192.png";
+    private (string, string)[] _links;
 
     public event Action StateChanged;
     private void NotifyStateChanged() => StateChanged?.Invoke();
@@ -30,6 +31,16 @@ public class AppState
                 return;
 
             _headerImgPath = value;
+            NotifyStateChanged();
+        }
+    }
+
+    public (string, string)[] Links
+    {
+        get => _links;
+        set
+        {
+            _links = value;
             NotifyStateChanged();
         }
     }

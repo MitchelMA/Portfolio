@@ -2,16 +2,26 @@
 @using Portfolio.Services
 @layout ProjectLayout
 @inject AppState AppState;
+@inject NavigationManager NavigationManager
 
 
 <h3>Proj1</h3>
 <p>Test pagina voor projecten</p>
 
 @code {
+
+    private string RelativeUri => NavigationManager.Uri;
+
+    private (string, string)[] Links => new[]
+    {
+        (RelativeUri + "#test", "Test"),
+        (RelativeUri + "#test2", "Test 2")
+    };
     
     protected override void OnInitialized()
     {
         AppState.ShowFooter = false;
         AppState.HeaderImgPath = "Mooie tekst, niet?";
+        AppState.Links = Links;
     }
 }

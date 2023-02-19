@@ -1,0 +1,49 @@
+﻿@inject NavigationManager NavigationManager;
+
+<nav class="topnav @ShownClass">
+    <div class="topnav__inner-container">
+
+        <div class="topnav__nav-header">
+            <button class="nav-header__burger" @onclick="ToggleNav">
+                <span class="burger__bars"></span>
+            </button>
+
+            <a class="nav-header__brand" href="#">
+                <img src="icon-192.png" alt="nav-header" height="50"/>
+                <div class="brand__profile">
+                    <span class="profile__name">Mitchel Vonk</span>
+                    <span class="profile__pp">Professioneel C# programmeur</span>
+                </div>
+            </a>
+        </div>
+
+        <ul class="topnav__nav-links clearfix" style="height: @(NavHeight)px;">
+            @if (Links is not null)
+            {
+                @for (int i = 0; i < Links.Length; i++)
+                {
+                    <li class="nav-links__nav-item clearfix">
+                        <a class="nav-item__nav-link" href="@Links[i].Item1">@Links[i].Item2</a>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+</nav>
+
+@code {
+    [Parameter]
+    public (string, string)[]? Links { get; set; }
+
+    private bool _navCollapsed = false;
+    private int? ElementsHeight => 56 * Links?.Length;
+
+    private string? ShownClass => _navCollapsed ? null : "shown";
+    private int? NavHeight => _navCollapsed ? 0 : ElementsHeight;
+
+    private void ToggleNav()
+    {
+        _navCollapsed = !_navCollapsed;
+    }
+
+}

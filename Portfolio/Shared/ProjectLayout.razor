@@ -1,14 +1,12 @@
-﻿@using Portfolio.Client
-@using Portfolio.Services
-
-@inject AppState AppState;
+﻿@using Portfolio.Services
 @inherits LayoutComponentBase
-@inject ILoggerFactory LoggerFactory
+@inject AppState AppState;
 @implements IDisposable;
 
 <header>
     <img src="@AppState.HeaderImgPath" alt="Header Image"/>
 </header>
+<TopNav Links="@AppState.Links" />
 <div class="page">
     <h3>ProjectLayout</h3>
     @if (AppState.ShowFooter)
