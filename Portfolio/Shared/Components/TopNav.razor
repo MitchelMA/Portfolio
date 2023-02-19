@@ -8,7 +8,7 @@
                 <span class="burger__bars"></span>
             </button>
 
-            <a class="nav-header__brand" href="#">
+            <a class="nav-header__brand" href="">
                 <img src="icon-192.png" alt="nav-header" height="50"/>
                 <div class="brand__profile">
                     <span class="profile__name">Mitchel Vonk</span>
@@ -35,7 +35,7 @@
     [Parameter]
     public (string, string)[]? Links { get; set; }
 
-    private bool _navCollapsed = false;
+    private bool _navCollapsed = true;
     private int? ElementsHeight => 56 * Links?.Length;
 
     private string? ShownClass => _navCollapsed ? null : "shown";

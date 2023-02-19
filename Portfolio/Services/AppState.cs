@@ -94,4 +94,17 @@ public class AppState
             NotifyStateChanged();
         }
     }
+
+    public string? HeaderExtraStyles
+    {
+        get => _headerData.ExtraStyles;
+        set
+        {
+            if (value == _headerData.ExtraStyles)
+                return;
+
+            _headerData.ExtraStyles = value;
+            NotifyStateChanged();
+        }
+    }
 }

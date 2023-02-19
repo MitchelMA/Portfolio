@@ -1,21 +1,33 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 :root {
+    /* General */
+    --content-max-width-s: 750px;
+    --content-max-width-m: 950px;
+    --content-max-width-l: 1150px;
+    --content-max-width-xl: 1350px;
+
+    /* colour-palette */
+    --background-deep: rgb(7 7 39);
+    --foreground-deep: rgb(170 170 170);
+
     /* border radius */
     --border-radius-small: 5px;
     --border-radius-medium: 10px;
     --border-radius-big: 15px;
 
     /* navbar */
-    --navbar-back: rgb(34, 34, 34, 100%);
-    --navbar-fore: rgb(160, 160, 160, 100%);
-    --navbar-max-width-s: 750px;
-    --navbar-max-width-m: 950px;
-    --navbar-max-width-x: 1150px;
-    --navbar-max-width-xl: 1350px;
+    --navbar-back: rgb(34 34 34 / 100%);
+    --navbar-fore: rgb(160 160 160 / 100%);
+    --navbar-deep-boxshadow: 0 3px 8px rgb(6 6 29 / 80%);
+
+    /* Footer */
+    --footer-back: rgb(34 34 34);
+    --footer-fore: rgb(160 160 160);
 }
 
-html, body {
+html,
+body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
@@ -29,7 +41,8 @@ h1:focus {
     outline: none;
 }
 
-a, .btn-link {
+a,
+.btn-link {
     color: #0071c1;
 }
 
@@ -39,7 +52,11 @@ a, .btn-link {
     border-color: #1861ac;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 

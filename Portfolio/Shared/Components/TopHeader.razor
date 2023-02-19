@@ -1,13 +1,42 @@
-﻿<header class="top-header" style="background-image: url('@HeaderImg');">
-   <h2>@Title</h2>
-   <h3>@UnderTitle</h3>
+﻿@using Portfolio.Client
+<header class="top-header" style="background-image: url('@HeaderImg');@Style">
+    <div class="top-header__inner">
+        <section class="top-header__texts">
+            <h1 class="texts__title">@Title</h1>
+            <h2 class="texts__under-title">@UnderTitle</h2>
+        </section>
+
+        @if (ExtraText is not null)
+        {
+            <p class="texts__extra">@ExtraText</p>
+        }
+
+        <button class="header__scroll-down">
+            <a class="scroll-down__link" href="@ScrollToLink">
+                <img class="link__img" src="@StaticData.ScrollDownImage" alt="scroll-down image" height="200"/>
+            </a>
+        </button>
+    </div>
 </header>
 
 @code {
-   [Parameter]
-   public string? HeaderImg { get; set; }
-   [Parameter]
-   public string? Title { get; set; }
-   [Parameter]
-   public string? UnderTitle { get; set; }
+
+    [Parameter]
+    public string? HeaderImg { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? UnderTitle { get; set; }
+
+    [Parameter]
+    public string? ExtraText { get; set; }
+
+    [Parameter]
+    public string? ScrollToLink { get; set; }
+    
+    [Parameter]
+    public string? Style { get; set; }
+
 }

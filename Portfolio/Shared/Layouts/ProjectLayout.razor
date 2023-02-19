@@ -1,22 +1,35 @@
 ﻿@using Portfolio.Services
+@using Portfolio.Shared.Components
+
 @inherits LayoutComponentBase
 @inject AppState AppState;
 @implements IDisposable;
 
-<header>
-    <img src="@AppState.HeaderImgPath" alt="Header Image"/>
-</header>
-<TopNav Links="@AppState.Links" />
 <div class="page">
-    <h3>ProjectLayout</h3>
+    <TopHeader HeaderImg="@AppState.HeaderImgPath"
+               Title="@AppState.HeaderTitle"
+               UnderTitle="@AppState.HeaderUnderTitle"
+               ScrollToLink="@AppState.Links?[0].Item1"
+               Style="@AppState.HeaderExtraStyles"/>
+
+    <TopNav Links="@AppState.Links"/>
+
+    <main class="main-content">
+        <div class="main-content__inner">
+            @Body
+        </div>
+    </main>
+    
     @if (AppState.ShowFooter)
     {
-        <p>Show Text</p>
+        <Footer>
+            <MainSection>
+                <h3>Mitchel Vonk©</h3>
+            </MainSection>
+        </Footer>
     }
-    <p>@AppState.HeaderImgPath</p>
-    <main class="main-body">
-        @Body
-    </main>
+
+    <ToTopBtn/>
 </div>
 
 @code {
@@ -24,7 +37,7 @@
     protected override void OnInitialized()
     {
         AppState.StateChanged += StateChanged;
-        base.OnInitialized();
+        AppState.ShowFooter = false;
     }
 
     public void Dispose()
@@ -36,4 +49,5 @@
     {
         StateHasChanged();
     }
+
 }

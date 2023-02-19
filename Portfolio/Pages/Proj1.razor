@@ -1,6 +1,8 @@
 ﻿@page "/proj1"
 @using Portfolio.Services
 @using Portfolio.Shared.Layouts
+@using Portfolio.Model
+@using Portfolio.Client
 @layout ProjectLayout
 @inject AppState AppState;
 @inject NavigationManager NavigationManager
@@ -18,11 +20,17 @@
         (RelativeUri + "#test", "Test"),
         (RelativeUri + "#test2", "Test 2")
     };
+
+    private readonly HeaderData _headerData = new()
+    {
+        ImagePath = StaticData.MainHeaderImgPath,
+        Title = "Project 1",
+    };
+    
     
     protected override void OnInitialized()
     {
-        AppState.ShowFooter = false;
-        AppState.HeaderImgPath = "Mooie tekst, niet?";
         AppState.Links = Links;
+        AppState.HeaderData = _headerData;
     }
 }

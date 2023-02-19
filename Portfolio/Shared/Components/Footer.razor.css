@@ -1,0 +1,17 @@
+﻿.bottom-footer {
+    position: relative;
+    width: 100%;
+    padding: 2rem;
+    background-color: var(--footer-back);
+    color: var(--footer-fore);
+}
+
+.bottom-footer > .inner-footer
+{
+    width: 100%;
+    max-width: var(--content-max-width-l);
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

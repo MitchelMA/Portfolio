@@ -1,0 +1,14 @@
+﻿@inject IJSRuntime JsRuntime
+
+<button id="toTopBtn" class="to-top" @onclick="ToTop">
+    <span class="to-top__bars"></span>
+    <span class="to-top__bars"></span>
+</button>
+
+@code {
+
+    private async void ToTop()
+    {
+        await JsRuntime.InvokeVoidAsync("scrollToTop");
+    }
+}

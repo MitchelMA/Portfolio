@@ -1,0 +1,41 @@
+﻿.to-top {
+    position: fixed;
+    outline: none;
+    border: none;
+    width: 4rem;
+    height: 4rem;
+    right: 1rem;
+    bottom: 5rem;
+    background: var(--footer-back);
+    color: var(--footer-fore);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    scale: 0;
+    transition: scale 125ms ease 0s;
+}
+
+.to-top.shown {
+    scale: 1;
+}
+
+.to-top__bars {
+    position: relative;
+    display: block;
+    width: 40%;
+    height: 4px;
+    top: calc(0.4 * 0.5 * 4 * 12 * -0.707px);
+    background-color: currentColor;
+    border-radius: 2px;
+}
+
+.to-top__bars:nth-child(1) {
+    transform-origin: right center;
+    rotate: -45deg;
+}
+
+.to-top__bars:nth-child(2) {
+    transform-origin: left center;
+    rotate: 45deg;
+}

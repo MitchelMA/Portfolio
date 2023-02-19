@@ -1,0 +1,17 @@
+﻿.main-content {
+    position: relative;
+    width: 100%;
+    min-height: 60vh;
+    /* Overload for when small vh is available */
+    min-height: 60svh;
+    padding: 2rem;
+    background-color: var(--background-deep);
+    color: var(--foreground-deep);
+}
+
+.main-content .main-content__inner {
+    position: relative;
+    width: 100%;
+    max-width: var(--content-max-width-l);
+    margin: auto;
+}

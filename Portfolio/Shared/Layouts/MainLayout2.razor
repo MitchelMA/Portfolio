@@ -8,11 +8,27 @@
 <div class="page">
     <TopHeader HeaderImg="@AppState.HeaderImgPath"
                Title="@AppState.HeaderTitle"
-               UnderTitle="@AppState.HeaderUnderTitle"/>
-    
+               UnderTitle="@AppState.HeaderUnderTitle"
+               ScrollToLink="@AppState.Links?[0].Item1"
+               ExtraText="Ik ben Mitchel Vonk, een enthousiaste, Leergierige C# developer die Studeert aan het Media College in Amsterdam"
+               Style="@AppState.HeaderExtraStyles"/>
+
     <TopNav Links="AppState.Links"/>
 
-    @Body
+    <main class="main-content">
+        <div class="main-content__inner">
+            @Body
+        </div>
+    </main>
+    @if (AppState.ShowFooter)
+    {
+        <Footer>
+            <MainSection>
+                <h5 style="margin-bottom: 0">Mitchel Vonk©</h5>
+            </MainSection>
+        </Footer>
+    }
+    <ToTopBtn/>
 </div>
 
 @code {
@@ -20,6 +36,7 @@
     protected override void OnInitialized()
     {
         AppState.StateChanged += StateChanged;
+        AppState.ShowFooter = true;
     }
 
     private void StateChanged()

@@ -1,0 +1,17 @@
+﻿<footer class="bottom-footer">
+   <div class="inner-footer">
+      <section class="inner-footer__main">
+         @MainSection
+      </section>
+      <section class="inner-footer__right">
+         @RightSection
+      </section>
+   </div> 
+</footer>
+
+@code {
+   [Parameter] 
+   public RenderFragment? MainSection { get; set; }
+   [Parameter]
+   public RenderFragment? RightSection { get; set; }
+}

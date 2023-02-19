@@ -2,5 +2,6 @@
 
 public static class StaticData
 {
-   public static readonly string? MainHeaderImgPath = "icon-192.png";
+   public const string? MainHeaderImgPath = "icon-192.png";
+   public const string? ScrollDownImage = "scrolldown_image.png";
 }
