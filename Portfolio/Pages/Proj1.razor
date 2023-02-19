@@ -1,5 +1,6 @@
 ﻿@page "/proj1"
 @using Portfolio.Services
+@using Portfolio.Shared.Layouts
 @layout ProjectLayout
 @inject AppState AppState;
 @inject NavigationManager NavigationManager
@@ -12,7 +13,7 @@
 
     private string RelativeUri => NavigationManager.Uri;
 
-    private (string, string)[] Links => new[]
+    private (string, string)[]? Links => new[]
     {
         (RelativeUri + "#test", "Test"),
         (RelativeUri + "#test2", "Test 2")

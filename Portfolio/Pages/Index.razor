@@ -1,9 +1,29 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+@using Portfolio.Services
+@using Portfolio.Client
+@using Portfolio.Model
+@inject AppState AppState
+<h3>MainPage</h3>
 
-<h1>Hello, world!</h1>
+@code {
 
-Welcome to your new app.
+    private readonly (string, string)[]? _links =
+    {
+        ("#about", "About Me"),
+    };
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    private readonly HeaderData _headerData = new()
+    {
+        ImagePath = StaticData.MainHeaderImgPath,
+        Title = "Portfolio",
+        UnderTitle = "Mitchel Vonk",
+    };
+
+    protected override void OnInitialized()
+    {
+        AppState.Links = _links;
+        AppState.HeaderData = _headerData;
+    }
+
+}

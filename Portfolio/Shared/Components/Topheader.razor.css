@@ -1,0 +1,5 @@
+﻿header.top-header {
+    height: 100vh;
+    /* overload for when small vh is available */
+    height: 100svh;
+}

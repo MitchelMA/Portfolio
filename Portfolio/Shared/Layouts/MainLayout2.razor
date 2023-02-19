@@ -1,0 +1,36 @@
+﻿@using Portfolio.Services
+@using Portfolio.Shared.Components
+
+@inherits LayoutComponentBase
+@implements IDisposable
+@inject AppState AppState
+
+<div class="page">
+    <TopHeader HeaderImg="@AppState.HeaderImgPath"
+               Title="@AppState.HeaderTitle"
+               UnderTitle="@AppState.HeaderUnderTitle"/>
+    
+    <TopNav Links="AppState.Links"/>
+
+    @Body
+</div>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        AppState.StateChanged += StateChanged;
+    }
+
+    private void StateChanged()
+    {
+        StateHasChanged();
+    }
+
+
+    public void Dispose()
+    {
+        AppState.StateChanged -= StateChanged;
+    }
+
+}

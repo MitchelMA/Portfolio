@@ -1,0 +1,13 @@
+﻿<header class="top-header" style="background-image: url('@HeaderImg');">
+   <h2>@Title</h2>
+   <h3>@UnderTitle</h3>
+</header>
+
+@code {
+   [Parameter]
+   public string? HeaderImg { get; set; }
+   [Parameter]
+   public string? Title { get; set; }
+   [Parameter]
+   public string? UnderTitle { get; set; }
+}

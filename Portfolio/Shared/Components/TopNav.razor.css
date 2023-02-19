@@ -4,6 +4,7 @@
     top: 0;
     padding: 0.8rem 1rem;
     background-color: var(--navbar-back);
+    box-shadow: 0 3px 8px rgb(34 34 34 / 70%);
 }
 
 .topnav__inner-container {
@@ -18,13 +19,11 @@
 .topnav__nav-header {
     position: relative;
     width: 100%;
-    border-bottom: 1px solid var(--navbar-fore);
-    padding-bottom: 0.5rem;
 }
 
 .nav-header__burger {
     position: absolute;
-    top: calc(50% - 0.25rem);
+    top: 50%;
     right: 0;
     transform: translateY(-50%);
     height: 45px;
@@ -57,8 +56,6 @@
     width: 100%;
     height: 100%;
     background-color: var(--navbar-fore);
-    transition: top var(--transition-duration) ease var(--transition-duration),
-    rotate var(--transition-duration) ease 0s;
 }
 
 .topnav.shown .burger__bars {
@@ -68,24 +65,31 @@
 .topnav.shown .burger__bars::before,
 .topnav.shown .burger__bars::after {
     top: 0;
-    transition: top var(--transition-duration) ease 0s,
-    rotate var(--transition-duration) ease var(--transition-duration);
+    bottom: 0;
 }
 
 .topnav.shown .burger__bars::before {
     rotate: -45deg;
+    transition: bottom var(--transition-duration) ease 0s,
+    rotate var(--transition-duration) ease var(--transition-duration);
 }
 
 .topnav.shown .burger__bars::after {
     rotate: 45deg;
+    transition: top var(--transition-duration) ease 0s,
+    rotate var(--transition-duration) ease var(--transition-duration);
 }
 
 .nav-header__burger > span.burger__bars::before {
-    top: calc((var(--outset) + 100%) * -1);
+    bottom: var(--outset);
+    transition: bottom var(--transition-duration) ease var(--transition-duration),
+    rotate var(--transition-duration) ease 0s;
 }
 
 .nav-header__burger > span.burger__bars::after {
     top: var(--outset);
+    transition: top var(--transition-duration) ease var(--transition-duration),
+    rotate var(--transition-duration) ease 0s;
 }
 
 .nav-header__brand {
