@@ -10,7 +10,7 @@
                 <span class="burger__bars"></span>
             </button>
 
-            <a class="nav-header__brand" href="">
+            <a class="nav-header__brand" href="" @onclick="ForceClose">
                 <img src="icon-192.png" alt="nav-header" height="50"/>
                 <div class="brand__profile">
                     <span class="profile__name">Mitchel Vonk</span>
@@ -25,12 +25,10 @@
                 @for (int i = 0; i < Links.Length; i++)
                 {
                     <li class="nav-links__nav-item clearfix">
-                        @* <a class="nav-item__nav-link" href="@Links[i].Item1">@Links[i].Item2</a> *@
-
                         @{
                             var (href, display) = Links[i];
                         }
-                        <AnchorLink class="nav-item__nav-link" href="@href">@display</AnchorLink>
+                        <AnchorLink class="nav-item__nav-link" href="@href" @onclick="ForceClose">@display</AnchorLink>
                     </li>
                 }
             }
@@ -52,6 +50,11 @@
     private void ToggleNav()
     {
         _navCollapsed = !_navCollapsed;
+    }
+
+    private void ForceClose()
+    {
+        _navCollapsed = true;
     }
 
     protected override void OnInitialized()
@@ -77,6 +80,6 @@
 
     private async void ScrollToElementId(string elementId)
     {
-        await JsRuntime.InvokeVoidAsync("scrollToId", elementId, 100);
+        await JsRuntime.InvokeVoidAsync("scrollToId", elementId, 200);
     }
 }
