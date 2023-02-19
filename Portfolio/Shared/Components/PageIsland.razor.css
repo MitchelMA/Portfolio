@@ -1,0 +1,14 @@
+﻿.page-island {
+    width: 100%;
+    background-color: var(--page-island-background);
+    color: var(--page-island-foreground);
+    display: flex;
+    flex-flow: column;
+    padding: 0.8rem;
+    border-radius: var(--border-radius-small);
+}
+
+.page-island:not(:nth-child(1))
+{
+    margin-top: 1rem;
+}

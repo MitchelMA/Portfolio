@@ -9,12 +9,12 @@
     <TopHeader HeaderImg="@AppState.HeaderImgPath"
                Title="@AppState.HeaderTitle"
                UnderTitle="@AppState.HeaderUnderTitle"
-               ScrollToLink="@AppState.Links?[0].Item1"
+               ScrollToId="main_content"
                Style="@AppState.HeaderExtraStyles"/>
 
     <TopNav Links="@AppState.Links"/>
 
-    <main class="main-content">
+    <main class="main-content" id="main_content">
         <div class="main-content__inner">
             @Body
         </div>

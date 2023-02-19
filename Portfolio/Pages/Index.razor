@@ -3,14 +3,27 @@
 @using Portfolio.Services
 @using Portfolio.Client
 @using Portfolio.Model
+@using Portfolio.Shared.Components
 @inject AppState AppState
-<h3>MainPage</h3>
+
+<PageIsland IslandTitle="About Me" Id="about">
+    <ChildContent>
+        <p>Dit is de content van de About Me Island</p>
+    </ChildContent>
+</PageIsland>
+
+<PageIsland IslandTitle="Projects" Id="projects">
+    <ChildContent>
+        <p>Dit is de content van de Projects Island</p>
+    </ChildContent>
+</PageIsland>
 
 @code {
 
     private readonly (string, string)[]? _links =
     {
         ("#about", "About Me"),
+        ("#projects", "Projects")
     };
 
     private readonly HeaderData _headerData = new()

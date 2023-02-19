@@ -1,4 +1,6 @@
-﻿@inject NavigationManager NavigationManager;
+﻿@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+@implements IDisposable
 
 <nav class="topnav @ShownClass">
     <div class="topnav__inner-container">
@@ -23,7 +25,12 @@
                 @for (int i = 0; i < Links.Length; i++)
                 {
                     <li class="nav-links__nav-item clearfix">
-                        <a class="nav-item__nav-link" href="@Links[i].Item1">@Links[i].Item2</a>
+                        @* <a class="nav-item__nav-link" href="@Links[i].Item1">@Links[i].Item2</a> *@
+
+                        @{
+                            var (href, display) = Links[i];
+                        }
+                        <AnchorLink class="nav-item__nav-link" href="@href">@display</AnchorLink>
                     </li>
                 }
             }
@@ -32,6 +39,7 @@
 </nav>
 
 @code {
+
     [Parameter]
     public (string, string)[]? Links { get; set; }
 
@@ -46,4 +54,29 @@
         _navCollapsed = !_navCollapsed;
     }
 
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += LocationChanged;
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= LocationChanged;
+    }
+
+    private void LocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        string location = e.Location;
+        Uri uri = NavigationManager.ToAbsoluteUri(location);
+        string fragment = uri.Fragment;
+
+        string elementId = fragment.StartsWith('#') ? fragment[1..] : fragment;
+        
+        ScrollToElementId(elementId);
+    }
+
+    private async void ScrollToElementId(string elementId)
+    {
+        await JsRuntime.InvokeVoidAsync("scrollToId", elementId, 100);
+    }
 }

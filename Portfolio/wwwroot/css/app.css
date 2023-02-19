@@ -8,8 +8,10 @@
     --content-max-width-xl: 1350px;
 
     /* colour-palette */
-    --background-deep: rgb(7 7 39);
+    --background-deep: rgb(39 39 39);
     --foreground-deep: rgb(170 170 170);
+    --page-island-background: rgb(50 50 50);
+    --page-island-foreground: rgb(200 200 200);
 
     /* border radius */
     --border-radius-small: 5px;
@@ -19,7 +21,7 @@
     /* navbar */
     --navbar-back: rgb(34 34 34 / 100%);
     --navbar-fore: rgb(160 160 160 / 100%);
-    --navbar-deep-boxshadow: 0 3px 8px rgb(6 6 29 / 80%);
+    --navbar-deep-boxshadow: 0 3px 8px rgb(29 29 29 / 80%);
 
     /* Footer */
     --footer-back: rgb(34 34 34);

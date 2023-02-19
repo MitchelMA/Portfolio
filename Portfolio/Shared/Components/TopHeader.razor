@@ -1,4 +1,7 @@
 ﻿@using Portfolio.Client
+@using Portfolio.Services
+@inject IJSRuntime JsRuntime
+
 <header class="top-header" style="background-image: url('@HeaderImg');@Style">
     <div class="top-header__inner">
         <section class="top-header__texts">
@@ -11,10 +14,8 @@
             <p class="texts__extra">@ExtraText</p>
         }
 
-        <button class="header__scroll-down">
-            <a class="scroll-down__link" href="@ScrollToLink">
-                <img class="link__img" src="@StaticData.ScrollDownImage" alt="scroll-down image" height="200"/>
-            </a>
+        <button class="header__scroll-down" @onclick="ScrollDown" test="@ScrollToId">
+            <img class="link__img" src="@StaticData.ScrollDownImage" alt="scroll-down image" height="200"/>
         </button>
     </div>
 </header>
@@ -34,9 +35,18 @@
     public string? ExtraText { get; set; }
 
     [Parameter]
-    public string? ScrollToLink { get; set; }
-    
+    public string? ScrollToId { get; set; }
+
     [Parameter]
     public string? Style { get; set; }
 
+    private async void ScrollDown()
+    {
+        if (ScrollToId is null)
+            return;
+
+        string elementId = ScrollToId.StartsWith("#") ? ScrollToId[1..] : ScrollToId;
+
+        await JsRuntime.InvokeVoidAsync("scrollToId", elementId);
+    }
 }

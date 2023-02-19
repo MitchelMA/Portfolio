@@ -17,8 +17,8 @@
 
     private (string, string)[]? Links => new[]
     {
-        (RelativeUri + "#test", "Test"),
-        (RelativeUri + "#test2", "Test 2")
+        ("#test", "Test"),
+        ("#test2", "Test 2"),
     };
 
     private readonly HeaderData _headerData = new()
@@ -26,11 +26,12 @@
         ImagePath = StaticData.MainHeaderImgPath,
         Title = "Project 1",
     };
-    
-    
+
+
     protected override void OnInitialized()
     {
         AppState.Links = Links;
         AppState.HeaderData = _headerData;
     }
+
 }

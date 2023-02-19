@@ -1,9 +1,13 @@
-﻿<section class="page-island @InverseClass">
+﻿<section class="page-island @InverseClass" id="@Id">
     <h2 class="page-island__title">@IslandTitle</h2> 
-    @ChildContent
+    <div class="page-island__child-content">
+        @ChildContent
+    </div>
 </section>
 
 @code {
+    [Parameter]
+    public string? Id { get; set; }
     [Parameter]
     public bool? Inverse { get; set; }
     [Parameter]
@@ -13,5 +17,4 @@
 
 
     protected string? InverseClass => Inverse == true ? "inverse" : null;
-    
 }
