@@ -18,12 +18,19 @@
     </ChildContent>
 </PageIsland>
 
+<PageIsland IslandTitle="Contact Me" Id="contact">
+    <ChildContent>
+        <p>Dit is de content van de Contact Me</p>
+    </ChildContent>
+</PageIsland>
+
 @code {
 
     private readonly (string, string)[]? _links =
     {
         ("#about", "About Me"),
-        ("#projects", "Projects")
+        ("#projects", "Projects"),
+        ("#contact", "Contact Me"),
     };
 
     private readonly HeaderData _headerData = new()

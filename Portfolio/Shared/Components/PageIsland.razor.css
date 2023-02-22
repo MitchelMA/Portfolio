@@ -1,14 +1,30 @@
 ﻿.page-island {
+    position: relative;
     width: 100%;
     background-color: var(--page-island-background);
     color: var(--page-island-foreground);
     display: flex;
     flex-flow: column;
     padding: 0.8rem;
+    padding-top: 1.8rem;
     border-radius: var(--border-radius-small);
+    min-height: 40vh;
+    min-height: 40svh;
+}
+
+.page-island:nth-child(even) {
+    background: var(--page-island-backgroun-alt);
+}
+
+.page-island__inner {
+    position: relative;
+    width: 100%;
+    max-width: var(--content-max-width-l);
+    margin: 0 auto;
 }
 
 .page-island:not(:nth-child(1))
 {
-    margin-top: 1rem;
+    padding-top: 1.0rem;
 }
+
