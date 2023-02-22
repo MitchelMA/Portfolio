@@ -1,17 +1,23 @@
 ﻿<section class="page-island @InverseClass" id="@Id">
-    <h2 class="page-island__title">@IslandTitle</h2> 
-    <div class="page-island__child-content">
-        @ChildContent
+    <div class="page-island__inner">
+        <h2 class="page-island__title">@IslandTitle</h2>
+        <div class="page-island__child-content">
+            @ChildContent
+        </div>
     </div>
 </section>
 
 @code {
+
     [Parameter]
     public string? Id { get; set; }
+
     [Parameter]
     public bool? Inverse { get; set; }
+
     [Parameter]
     public string? IslandTitle { get; set; }
+
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
 
