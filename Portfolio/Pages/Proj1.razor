@@ -1,15 +1,16 @@
 ﻿@page "/proj1"
 @using Portfolio.Services
 @using Portfolio.Shared.Layouts
+@using Portfolio.Shared.Components
 @using Portfolio.Model
 @using Portfolio.Client
 @layout ProjectLayout
 @inject AppState AppState;
 @inject NavigationManager NavigationManager
 
-
-<h3>Proj1</h3>
-<p>Test pagina voor projecten</p>
+<PageIsland IslandTitle="Proj1" Id="test">
+    <ChildContent>Inner Content</ChildContent>
+</PageIsland>
 
 @code {
 
@@ -32,6 +33,7 @@
     {
         AppState.Links = Links;
         AppState.HeaderData = _headerData;
+        AppState.ShowFooter = true;
     }
 
 }
