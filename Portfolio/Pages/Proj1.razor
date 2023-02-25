@@ -1,5 +1,6 @@
 ﻿@page "/proj1"
 @using Portfolio.Services
+@using Portfolio.Shared.Components
 @using Portfolio.Shared.Layouts
 @using Portfolio.Model
 @using Portfolio.Client
@@ -7,9 +8,11 @@
 @inject AppState AppState;
 @inject NavigationManager NavigationManager
 
-
-<h3>Proj1</h3>
-<p>Test pagina voor projecten</p>
+<PageIsland IslandTitle="Project 1">
+    <ChildContent>
+        Dit is de testcontent van Project 1
+    </ChildContent>
+</PageIsland>
 
 @code {
 
