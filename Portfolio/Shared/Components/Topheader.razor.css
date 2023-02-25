@@ -8,6 +8,13 @@
     background-repeat: no-repeat;
     background-attachment: fixed;
     padding: 2rem;
+    contain: layout;
+}
+
+.top-header__overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(transparent, rgb(34 34 34 / 58%));
 }
 
 .top-header__inner {
