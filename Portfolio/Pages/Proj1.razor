@@ -8,7 +8,7 @@
 @inject AppState AppState;
 @inject NavigationManager NavigationManager
 
-<PageIsland IslandTitle="Project 1">
+<PageIsland IslandTitle="Project 1" Id="proj1">
     <ChildContent>
         Dit is de testcontent van Project 1
     </ChildContent>
@@ -20,8 +20,7 @@
 
     private (string, string)[]? Links => new[]
     {
-        ("#test", "Test"),
-        ("#test2", "Test 2"),
+        ("#proj1", "Project 1"),
     };
 
     private readonly HeaderData _headerData = new()
