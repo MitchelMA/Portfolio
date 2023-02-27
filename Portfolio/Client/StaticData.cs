@@ -2,6 +2,6 @@
 
 public static class StaticData
 {
-   public const string? MainHeaderImgPath = "icon-192.png";
+   public const string? MainHeaderImgPath = "./images/cmd_CaIolk4veY.png";
    public const string? ScrollDownImage = "./images/scrolldown_image.png";
 }
