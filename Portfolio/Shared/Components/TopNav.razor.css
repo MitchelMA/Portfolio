@@ -64,10 +64,12 @@
     background-color: transparent;
 }
 
-.topnav.shown .burger__bars::before,
+.topnav.shown .burger__bars::before
+{
+    bottom: 0;
+}
 .topnav.shown .burger__bars::after {
     top: 0;
-    bottom: 0;
 }
 
 .topnav.shown .burger__bars::before {
@@ -176,7 +178,8 @@
 
     .topnav__nav-links {
         flex-flow: row;
-        margin: auto;
+        margin-left: auto;
+        /* Override for when class ".shown" is active */
         height: auto !important;
     }
 
