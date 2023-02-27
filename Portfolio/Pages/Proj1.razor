@@ -16,8 +16,6 @@
 
 @code {
 
-    private string RelativeUri => NavigationManager.Uri;
-
     private (string, string)[]? Links => new[]
     {
         ("#proj1", "Project 1"),
@@ -25,7 +23,7 @@
 
     private readonly HeaderData _headerData = new()
     {
-        ImagePath = StaticData.MainHeaderImgPath,
+        ImagePath = "icon-192.png",
         Title = "Project 1",
     };
 
