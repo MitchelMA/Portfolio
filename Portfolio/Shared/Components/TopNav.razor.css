@@ -21,6 +21,8 @@
 .topnav__nav-header {
     position: relative;
     width: 100%;
+    /* Else the <a/> in de header will grow fully */
+    display: flex;
 }
 
 .nav-header__burger {
