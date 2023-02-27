@@ -1,0 +1,26 @@
+.page-island.inverse .two-view {
+    flex-flow: row-reverse;
+}
+
+.two-view {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    grid-gap: 1rem;
+}
+
+.two-view__one, .two-view__two{
+    padding: 0.7rem;
+}
+
+/* Point at which the flow is *required* to form columns */
+@media (max-width: 600px)
+{
+    .two-view {
+        flex-flow: column;
+    }
+    
+    .page-island.inverse .two-view {
+        flex-flow: column-reverse;
+    }
+}
