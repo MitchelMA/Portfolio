@@ -13,7 +13,7 @@
                 </button>
             }
 
-            <a class="nav-header__brand" href="" @onclick="ForceClose">
+            <a class="nav-header__brand hover-scale sc05" href="" @onclick="ForceClose">
                 <img src="./images/AboutMeCroppedHead.webp" alt="nav-header" height="50"/>
                 <div class="brand__profile">
                     <span class="profile__name">Mitchel Vonk</span>
@@ -31,7 +31,7 @@
                         @{
                             var (href, display) = Links[i];
                         }
-                        <AnchorLink class="nav-item__nav-link" href="@href" @onclick="ForceClose">@display</AnchorLink>
+                        <AnchorLink class="nav-item__nav-link hover-scale sc05" href="@href" @onclick="ForceClose">@display</AnchorLink>
                     </li>
                 }
             </ul>
