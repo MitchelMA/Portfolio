@@ -33,6 +33,19 @@ public class AppState
             NotifyStateChanged();
         }
     }
+    
+    public string PageTitleExtension
+    {
+        get => PageDetails.TitleExtension;
+        set
+        {
+            if (value == PageDetails.TitleExtension)
+                return;
+
+            PageDetails.TitleExtension = value;
+            NotifyStateChanged();
+        }
+    }
 
     public LinkTag PageIcon
     {

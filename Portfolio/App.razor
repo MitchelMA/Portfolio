@@ -1,10 +1,12 @@
 ﻿@using Portfolio.Shared.Layouts
 @using Portfolio.Services
+@using Portfolio.Client
 @inject AppState AppState
 @implements IDisposable
 
 <HeadContent>
     @((MarkupString)AppState.PageIcon.ToString())
+    <PageTitle>@StaticData.PageTitle@AppState.PageTitleExtension</PageTitle>
 </HeadContent>
 
 <Router AppAssembly="@typeof(App).Assembly">
