@@ -16,12 +16,12 @@
 
 @code {
 
-    private (string, string)[]? Links => new[]
+    private static (string, string)[]? Links => new[]
     {
         ("#proj1", "Project 1"),
     };
 
-    private readonly HeaderData _headerData = new()
+    private static readonly HeaderData HeaderData = new()
     {
         ImagePath = "icon-192.png",
         Title = "Project 1",
@@ -31,7 +31,8 @@
     protected override void OnInitialized()
     {
         AppState.Links = Links;
-        AppState.HeaderData = _headerData;
+        AppState.PageIcon = StaticData.DefaultPageIcon;
+        AppState.HeaderData = HeaderData;
     }
 
 }
