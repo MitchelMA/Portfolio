@@ -9,3 +9,49 @@
     position: relative;
     width: 100%;
 }
+
+.hover-scale {
+    position: relative;
+    scale: 1;
+    transition: scale 150ms ease 0s;
+}
+
+.hover-scale:hover {
+    z-index: 1;
+}
+
+.hover-scale:hover {
+    scale: 1.1;
+}
+
+.hover-scale.sc2:hover {
+    scale: 1.2;
+}
+
+.hover-scale.sc3:hover {
+    scale: 1.3;
+}
+
+.hover-scale.sc4:hover {
+    scale: 1.4;
+}
+
+.hover-scale.sc5:hover {
+    scale: 1.5;
+}
+
+.hover-scale.sc6:hover {
+    scale: 1.6;
+}
+
+.hover-scale.sc7:hover {
+    scale: 1.7;
+}
+
+.hover-scale.sc8:hover {
+    scale: 1.8;
+}
+
+.hover-scale.sc9:hover {
+    scale: 1.9;
+}

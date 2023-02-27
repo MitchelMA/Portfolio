@@ -3,7 +3,7 @@
     position: -webkit-sticky;
     top: 0;
     bottom: 0;
-    z-index: 1;
+    z-index: 99;
     padding: 0.8rem 1rem;
     background-color: var(--navbar-back);
     box-shadow: var(--navbar-deep-boxshadow);
@@ -21,6 +21,8 @@
 .topnav__nav-header {
     position: relative;
     width: 100%;
+    /* Else the <a/> in de header will grow fully */
+    display: flex;
 }
 
 .nav-header__burger {
@@ -64,10 +66,12 @@
     background-color: transparent;
 }
 
-.topnav.shown .burger__bars::before,
+.topnav.shown .burger__bars::before
+{
+    bottom: 0;
+}
 .topnav.shown .burger__bars::after {
     top: 0;
-    bottom: 0;
 }
 
 .topnav.shown .burger__bars::before {
@@ -176,7 +180,8 @@
 
     .topnav__nav-links {
         flex-flow: row;
-        margin: auto;
+        margin-left: auto;
+        /* Override for when class ".shown" is active */
         height: auto !important;
     }
 
