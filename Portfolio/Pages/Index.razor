@@ -3,6 +3,7 @@
 @using Portfolio.Services
 @using Portfolio.Client
 @using Portfolio.Model
+@using Portfolio.Model.Tags
 @using Portfolio.Shared.Components
 @inject AppState AppState
 
@@ -60,13 +61,15 @@
 
 @code {
 
-    private readonly (string, string)[]? _links =
+    private static readonly (string, string)[]? Links =
     {
         ("#about", "About Me"),
         ("#projects", "Projects"),
         ("#contact", "Contact Me"),
         (@".\cv.pdf", "CV"),
     };
+
+    private static readonly LinkTag PageIcon = new PageIcon("image/webp", "./images/AboutMeCroppedHead.webp");
 
     private readonly HeaderData _headerData = new()
     {
@@ -78,7 +81,8 @@
 
     protected override void OnInitialized()
     {
-        AppState.Links = _links;
+        AppState.Links = Links;
+        AppState.PageIcon = PageIcon;
         AppState.HeaderData = _headerData;
     }
 

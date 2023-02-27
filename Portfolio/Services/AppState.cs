@@ -1,4 +1,5 @@
 ﻿using Portfolio.Model;
+using Portfolio.Model.Tags;
 
 namespace Portfolio.Services;
 
@@ -29,6 +30,16 @@ public class AppState
                 return;
 
             _headerData = value;
+            NotifyStateChanged();
+        }
+    }
+
+    public LinkTag PageIcon
+    {
+        get => PageDetails.Icon;
+        set
+        {
+            PageDetails.Icon = value;
             NotifyStateChanged();
         }
     }
