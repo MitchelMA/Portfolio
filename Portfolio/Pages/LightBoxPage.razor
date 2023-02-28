@@ -1,0 +1,34 @@
+@using Portfolio.Shared.Components
+@using Portfolio.Shared.Components.Lightbox
+@using Portfolio.Shared.Layouts
+@using Portfolio.Services
+
+@inject AppState AppState
+@inject LightboxRegistry LightboxRegistry
+
+@page "/lightbox"
+
+<PageIsland IslandTitle="LightBoxPage"></PageIsland>
+<LightboxImg src="icon-192.png" alt="image" BoundLightboxName="name"/>
+<Lightbox @ref="_lightboxName" LightboxName="name" Registry="@LightboxRegistry"/>
+
+@code {
+
+    private Lightbox? _lightboxName;
+
+    protected override void OnInitialized()
+    {
+        AppState.PageTitleExtension = " - Lightbox Test";
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (!firstRender)
+            return;
+
+        _lightboxName?.Register();
+    }
+
+}

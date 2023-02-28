@@ -1,0 +1,25 @@
+@using Portfolio.Services
+@using Portfolio.Model.Tags
+
+@inject IJSRuntime JsRuntime
+
+<h3>Lightbox</h3>
+
+@code {
+
+    [Parameter]
+    public string? LightboxName { get; set; }
+    
+    [Parameter]
+    public LightboxRegistry? Registry { get; set; }
+
+    public async void SetImages()
+    {
+        await JsRuntime.InvokeVoidAsync("setLightboxImages", LightboxName);
+    }
+
+    public void Register()
+    {
+        Registry!.TryRegister(LightboxName!, this);
+    }
+}

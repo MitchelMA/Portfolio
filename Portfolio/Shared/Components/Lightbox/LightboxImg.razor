@@ -1,0 +1,26 @@
+@using Portfolio.Services
+
+<img @attributes="@Attributes" data-bound-l-box="@BoundLightboxName" />
+
+@code {
+    private int _idx;
+    
+    [Parameter]
+    public LightboxRegistry? Registry { get; set; }
+    
+    [Parameter] 
+    public string? BoundLightboxName { get; set; }
+    
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? Attributes { get; set; }
+
+    private void ClickHandle()
+    {
+       var box = Registry!.Get(BoundLightboxName!);
+    }
+
+    [JSInvokable("SetIndex")]
+    public static void SetIndex(IJSObjectReference objref)
+    {
+    }
+}
