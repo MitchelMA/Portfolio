@@ -1,24 +1,26 @@
 @using Portfolio.Services
 @using Portfolio.Model.Tags
+@using Portfolio.Client
 
+@implements IDisposable
+
+@inject AppState AppState;
 @inject IJSRuntime JsRuntime
 
-@* TODO: html-elements corresponding to what a Lightbox really is *@
-
-<h3 class="@OpenedClass">Lightbox: @LightboxName</h3>
-@if (_opened)
-{
-    object? alt = null;
-    var cur = _images[CurIdx].Attributes;
-    cur?.TryGetValue("alt", out alt);
-    <img src="@cur!["src"]" alt="@alt" @onclick="Hide"/>
-
-    @for (int i = 0; i < _images.Count; i++)
-    {
-        var idx = i;
-        <p @onclick="() => { OpenAt(idx); }">@_images[idx].Attributes!["src"]</p>
-    }
-}
+<div class="lightbox @OpenedClass" @onclick="Hide">
+    <div class="lightbox__inner">
+        <section class="lightbox__big-image"></section>
+        <section class="lightbox__scroll">
+            @for (int i = 0; i < _images.Count; i++)
+            {
+                var idx = i;
+                var cur = _images[idx].Attributes!;
+                cur.TryGetValue("alt", out var alt);
+                <img class="scroll__image" src="@cur["src"]" alt="@alt" @onclick="() => { CurIdx = idx; }"/>
+            }
+        </section>
+    </div>
+</div>
 
 @code {
 
@@ -32,7 +34,7 @@
     private bool _opened = false;
     private readonly List<LightboxImg> _images = new();
 
-    public string? OpenedClass => _opened ? "show" : null;
+    public string? OpenedClass => _opened ? "open" : null;
 
     public int CurIdx
     {
@@ -68,14 +70,16 @@
         return (true, _images.IndexOf(image));
     }
 
-    public void Hide()
+    private void Hide()
     {
         _opened = false;
+        AppState.RemoveFromScrollLock(this);
     }
 
     private void Show()
     {
         _opened = true;
+        AppState.AddToLockScroll(this);
     }
 
     private void Next()
@@ -92,6 +96,11 @@
     {
         Show();
         CurIdx = idx;
+    }
+
+    public void Dispose()
+    {
+        AppState.RemoveFromScrollLock(this);
     }
 
 }

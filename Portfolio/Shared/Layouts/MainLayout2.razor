@@ -1,10 +1,14 @@
 ﻿@using Portfolio.Services
 @using Portfolio.Shared.Components
 @using Portfolio.Shared.Components.Navigation
+@using Portfolio.Client
 
 @inherits LayoutComponentBase
+
 @implements IDisposable
+
 @inject AppState AppState
+@inject IJSRuntime JsRuntime
 
 <div class="page">
     <TopHeader HeaderImg="@AppState.HeaderImgPath"
@@ -40,8 +44,18 @@
         AppState.ShowFooter = true;
     }
 
-    private void StateChanged()
+    private async void StateChanged()
     {
+        if (AppState.ScrollLocked)
+        {
+            await JsRuntime.InvokeVoidAsync("lockScroll", StaticData.LockedClassName);
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("unlockScroll", StaticData.LockedClassName);
+        }
+        
+        
         StateHasChanged();
     }
 
