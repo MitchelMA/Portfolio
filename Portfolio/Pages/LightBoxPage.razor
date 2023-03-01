@@ -1,0 +1,41 @@
+@using Portfolio.Shared.Components
+@using Portfolio.Shared.Components.Lightbox
+@using Portfolio.Shared.Layouts
+@using Portfolio.Services
+
+@inject AppState AppState
+@inject LightboxRegistry LightboxRegistry
+
+@page "/lightbox"
+
+<PageIsland IslandTitle="LightBoxPage">
+    <ChildContent>
+
+        <TwoView>
+
+            <FirstView>
+                <LightboxImg src="icon-192.png" alt="page icon size 192"
+                             BoundLightboxName="Test box"
+                             Registry="LightboxRegistry"/>
+                <LightboxImg src="./images/AboutMeCroppedHead.webp"
+                             BoundLightboxName="Test box"
+                             Registry="LightboxRegistry"/>
+            </FirstView>
+
+
+        </TwoView>
+
+    </ChildContent>
+</PageIsland>
+
+<Lightbox LightboxName="Test box"
+          Registry="LightboxRegistry"/>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        AppState.PageTitleExtension = " - Lightbox Test";
+    }
+
+}
