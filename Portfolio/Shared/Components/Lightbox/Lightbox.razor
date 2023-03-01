@@ -1,25 +1,95 @@
 @using Portfolio.Services
 @using Portfolio.Model.Tags
 
+@inject LightboxRegistry Registry;
 @inject IJSRuntime JsRuntime
 
-<h3>Lightbox</h3>
+@* TODO: html-elements corresponding to what a Lightbox really is *@
+
+<h3 class="@OpenedClass">Lightbox: @LightboxName</h3>
+@if (_opened)
+{
+    object? alt = null;
+    var cur = _images[CurIdx].Attributes;
+    cur?.TryGetValue("alt", out alt);
+    <img src="@cur!["src"]" alt="@alt" @onclick="Hide" />
+    
+    @for(int i = 0; i < _images.Count; i++)
+    {
+        var idx = i;
+        <p @onclick="() => { OpenAt(idx); }">@_images[idx].Attributes!["src"]</p> 
+    }
+}
 
 @code {
 
     [Parameter]
     public string? LightboxName { get; set; }
-    
-    [Parameter]
-    public LightboxRegistry? Registry { get; set; }
 
-    public async void SetImages()
+    private int _curIdx = 0;
+    private bool _opened = false;
+    private readonly List<LightboxImg> _images = new();
+
+    public string? OpenedClass => _opened ? "show" : null;
+
+    public int CurIdx
     {
-        await JsRuntime.InvokeVoidAsync("setLightboxImages", LightboxName);
+        get => _curIdx;
+        set
+        {
+            value %= _images.Count;
+            if (value < 0)
+                value = _images.Count - 1;
+
+            _curIdx = value;
+            StateHasChanged();
+        }
     }
 
-    public void Register()
+    protected override void OnInitialized()
     {
-        Registry!.TryRegister(LightboxName!, this);
+        RegisterToRegistry();
     }
+
+    private void RegisterToRegistry()
+    {
+        Registry.TryRegister(LightboxName!, this);
+    }
+
+    public (bool succes, int idx) TryRegisterImage(LightboxImg image)
+    {
+        if (_images.Contains(image))
+            return (false, -1);
+
+        _images.Add(image);
+        StateHasChanged();
+        return (true, _images.IndexOf(image));
+    }
+
+    public void Hide()
+    {
+        _opened = false;
+    }
+
+    private void Show()
+    {
+        _opened = true;
+    }
+
+    private void Next()
+    {
+        CurIdx++;
+    }
+
+    private void Previous()
+    {
+        CurIdx--;
+    }
+
+    public void OpenAt(int idx)
+    {
+        Show();
+        CurIdx = idx;
+    }
+
 }

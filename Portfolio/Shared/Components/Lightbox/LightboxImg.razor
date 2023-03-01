@@ -1,26 +1,78 @@
 @using Portfolio.Services
+@inject LightboxRegistry Registry
 
-<img @attributes="@Attributes" data-bound-l-box="@BoundLightboxName" />
+@implements IDisposable
+
+<img @attributes="@Attributes" @onclick="ClickHandle" />
 
 @code {
-    private int _idx;
+    private int _idx = -1;
     
     [Parameter]
-    public LightboxRegistry? Registry { get; set; }
-    
-    [Parameter] 
+    public int Idx
+    {
+        get => _idx;
+        set
+        {
+            if (_idx != -1)
+                return;
+
+            _idx = value;
+        }
+    }
+
+    [Parameter]
     public string? BoundLightboxName { get; set; }
-    
+
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? Attributes { get; set; }
 
-    private void ClickHandle()
+    protected override void OnInitialized()
     {
-       var box = Registry!.Get(BoundLightboxName!);
+        Registry.OnRegister += OnRegister;
+        
+        // Force register when the Lightbox itself registered before this was initialized
+        var value = Registry.Get(BoundLightboxName!);
+        if (!value.succes)
+            return;
+        
+        RegisterToLightbox(value.box!);
     }
 
-    [JSInvokable("SetIndex")]
-    public static void SetIndex(IJSObjectReference objref)
+    private void OnRegister(LightboxRegistry sender, Lightbox lightbox)
     {
+        RegisterToLightbox(lightbox);
+    }
+
+    private void RegisterToLightbox(Lightbox lightbox)
+    {
+         if (BoundLightboxName is null)
+             throw new NullReferenceException($"{nameof(BoundLightboxName)} may not be null");
+             
+         if (lightbox.LightboxName != BoundLightboxName)
+             return;
+         
+         var value = lightbox.TryRegisterImage(this);
+         if (!value.succes)
+             return;
+ 
+         Idx = value.idx;       
+    }
+
+    private void ClickHandle()
+    {
+        var box = Registry.Get(BoundLightboxName!);
+        if (!box.succes)
+            throw new Exception($"Name \"{BoundLightboxName}\" not found in scoped {nameof(LightboxRegistry)}");
+        
+        if (Attributes is null)
+            return;
+        
+        box.box?.OpenAt(Idx);
+    }
+
+    public void Dispose()
+    {
+        Registry.OnRegister -= OnRegister;
     }
 }

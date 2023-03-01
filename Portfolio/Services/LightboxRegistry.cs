@@ -4,7 +4,10 @@ namespace Portfolio.Services;
 
 public class LightboxRegistry
 {
-    private Dictionary<string, Lightbox> _registry = new();
+    public delegate void RegisteredDelegate(LightboxRegistry sender, Lightbox lightbox);
+    public event RegisteredDelegate? OnRegister;
+    
+    private readonly Dictionary<string, Lightbox> _registry = new();
 
     public bool TryRegister(string name, Lightbox box)
     {
@@ -12,7 +15,7 @@ public class LightboxRegistry
             return false;
         
         _registry.Add(name, box);
-        box.SetImages();
+        OnRegister?.Invoke(this, box);
         return true;
     }
 
