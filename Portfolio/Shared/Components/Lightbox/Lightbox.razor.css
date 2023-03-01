@@ -75,6 +75,7 @@
 
 .lightbox__big-image {
     max-height: 85%;
+    max-width: 95%;
 }
 
 .lightbox__scroll {
