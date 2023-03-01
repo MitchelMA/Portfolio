@@ -1,11 +1,12 @@
 .lightbox {
     position: fixed;
+    display: flex;
     z-index: 99;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgb(34 34 34 / 80%);
+    background-color: rgb(24 24 24 / 80%);
     opacity: 0;
     pointer-events: none;
     transition: opacity 150ms ease 0s;
@@ -14,4 +15,84 @@
 .lightbox.open {
     pointer-events: all;
     opacity: 1;
+}
+
+.lightbox__close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    transition: color 125ms ease 0s;
+    z-index: 1;
+}
+
+.lightbox__close:hover {
+    color: red;
+}
+
+.lightbox__inner {
+    position: relative;
+    width: 100%;
+    max-width: var(--content-max-width-l);
+    margin: auto;
+}
+
+.lightbox__big-image-container {
+    position: relative;
+    height: clamp(200px, 60vh, 700px);
+    display: flex;
+    flex-flow: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.btn {
+    outline:none;
+    border: none;
+    background-color: var(--navbar-back);
+    color: whitesmoke;
+    width: 32px;
+    height: 32px;
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.change-btn {
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+}
+
+.change-btn.right {
+    right: 16px;
+}
+
+.change-btn.left {
+    left: 16px;
+}
+
+.lightbox__big-image {
+    max-height: 85%;
+}
+
+.lightbox__scroll {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow: auto hidden;
+}
+
+.scroll__thumbnail {
+    --margin: 1rem;
+    display: inline-block;
+    height: 140px;
+    width: auto;
+    margin-right: var(--margin);
+    border-radius: var(--border-radius-small);
+    cursor: pointer;
+}
+
+.scroll__thumbnail:first-of-type {
+    margin-left: var(--margin);
 }

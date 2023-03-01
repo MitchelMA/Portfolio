@@ -7,19 +7,44 @@
 @inject AppState AppState;
 @inject IJSRuntime JsRuntime
 
-<div class="lightbox @OpenedClass" @onclick="Hide">
-    <div class="lightbox__inner">
-        <section class="lightbox__big-image"></section>
-        <section class="lightbox__scroll">
-            @for (int i = 0; i < _images.Count; i++)
-            {
-                var idx = i;
-                var cur = _images[idx].Attributes!;
-                cur.TryGetValue("alt", out var alt);
-                <img class="scroll__image" src="@cur["src"]" alt="@alt" @onclick="() => { CurIdx = idx; }"/>
-            }
-        </section>
-    </div>
+<div class="lightbox @OpenedClass">
+    @if (_opened)
+    {
+        <div class="lightbox__inner">
+            <button class="lightbox__close btn" @onclick="Hide">
+                <i class="bi bi-x"></i>
+            </button>
+            <section class="lightbox__big-image-container">
+                @if (_images.Count > 1)
+                {
+                    <button class="btn change-btn left" @onclick="Next">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="btn change-btn right" @onclick="Previous">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                }
+                @{
+                    var chosen = _images[CurIdx].Attributes!;
+                    chosen.TryGetValue("alt", out var chosenAlt);
+                }
+                <img class="lightbox__big-image" src="@chosen["src"]" alt="@chosenAlt"/>
+                @if (chosenAlt is not null && ((string)chosenAlt).Length > 0)
+                {
+                    <h3 class="big-image__under-title">@chosenAlt</h3>
+                }
+            </section>
+            <section class="lightbox__scroll">
+                @for (int i = 0; i < _images.Count; i++)
+                {
+                    var idx = i;
+                    var cur = _images[idx].Attributes!;
+                    cur.TryGetValue("alt", out var alt);
+                    <img class="scroll__thumbnail" src="@cur["src"]" alt="@alt" title="@alt" @onclick="() => { CurIdx = idx; }"/>
+                }
+            </section>
+        </div>
+    }
 </div>
 
 @code {
