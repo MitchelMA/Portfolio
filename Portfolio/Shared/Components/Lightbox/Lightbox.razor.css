@@ -39,7 +39,7 @@
 
 .lightbox__big-image-container {
     position: relative;
-    height: clamp(200px, 60vh, 700px);
+    height: clamp(200px, 76vh, 1100px);
     display: flex;
     flex-flow: column;
     justify-content: space-evenly;
