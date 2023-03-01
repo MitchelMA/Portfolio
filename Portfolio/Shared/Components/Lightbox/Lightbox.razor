@@ -17,10 +17,10 @@
             <section class="lightbox__big-image-container">
                 @if (_images.Count > 1)
                 {
-                    <button class="btn change-btn left" @onclick="Next">
+                    <button class="btn change-btn left" @onclick="Previous">
                         <i class="bi bi-chevron-left"></i>
                     </button>
-                    <button class="btn change-btn right" @onclick="Previous">
+                    <button class="btn change-btn right" @onclick="Next">
                         <i class="bi bi-chevron-right"></i>
                     </button>
                 }
