@@ -12,12 +12,12 @@
     object? alt = null;
     var cur = _images[CurIdx].Attributes;
     cur?.TryGetValue("alt", out alt);
-    <img src="@cur!["src"]" alt="@alt" @onclick="Hide" />
-    
-    @for(int i = 0; i < _images.Count; i++)
+    <img src="@cur!["src"]" alt="@alt" @onclick="Hide"/>
+
+    @for (int i = 0; i < _images.Count; i++)
     {
         var idx = i;
-        <p @onclick="() => { OpenAt(idx); }">@_images[idx].Attributes!["src"]</p> 
+        <p @onclick="() => { OpenAt(idx); }">@_images[idx].Attributes!["src"]</p>
     }
 }
 
@@ -53,7 +53,11 @@
 
     private void RegisterToRegistry()
     {
-        Registry.TryRegister(LightboxName!, this);
+        // force overwrite when it's already registered under this name
+        if (Registry.TryRegister(LightboxName!, this)) return;
+
+        Console.WriteLine($"WARNING: overwriting value in scoped {nameof(LightboxRegistry)}");
+        Registry.TryOverWrite(LightboxName!, this);
     }
 
     public (bool succes, int idx) TryRegisterImage(LightboxImg image)

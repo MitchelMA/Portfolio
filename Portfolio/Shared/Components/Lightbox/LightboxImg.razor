@@ -29,7 +29,8 @@
 
     protected override void OnInitialized()
     {
-        Registry.OnRegister += OnRegister;
+        Registry.Registered += Registered;
+        Registry.OverWritten += Registered;
         
         // Force register when the Lightbox itself registered before this was initialized
         var value = Registry.Get(BoundLightboxName!);
@@ -39,7 +40,7 @@
         RegisterToLightbox(value.box!);
     }
 
-    private void OnRegister(LightboxRegistry sender, Lightbox lightbox)
+    private void Registered(LightboxRegistry sender, Lightbox lightbox)
     {
         RegisterToLightbox(lightbox);
     }
@@ -73,6 +74,7 @@
 
     public void Dispose()
     {
-        Registry.OnRegister -= OnRegister;
+        Registry.Registered -= Registered;
+        Registry.OverWritten -= Registered;
     }
 }
