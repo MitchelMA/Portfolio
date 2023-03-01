@@ -14,7 +14,7 @@ public static class Program
 
         builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
         builder.Services.AddSingleton<AppState>();
-        builder.Services.AddScoped<LightboxRegistry>();
+        builder.Services.AddTransient<LightboxRegistry>();
 
         await builder.Build().RunAsync();
     }

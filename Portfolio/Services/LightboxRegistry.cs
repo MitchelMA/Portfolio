@@ -6,7 +6,6 @@ public class LightboxRegistry
 {
     public delegate void RegisteredDelegate(LightboxRegistry sender, Lightbox lightbox);
     public event RegisteredDelegate? Registered;
-    public event RegisteredDelegate? OverWritten;
     
     private readonly Dictionary<string, Lightbox> _registry = new();
 
@@ -17,16 +16,6 @@ public class LightboxRegistry
         
         _registry.Add(name, box);
         Registered?.Invoke(this, box);
-        return true;
-    }
-
-    public bool TryOverWrite(string name, Lightbox box)
-    {
-        if (!_registry.ContainsKey(name))
-            return false;
-
-        _registry[name] = box;
-        OverWritten?.Invoke(this, box);
         return true;
     }
 

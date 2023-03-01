@@ -1,7 +1,6 @@
 @using Portfolio.Services
 @using Portfolio.Model.Tags
 
-@inject LightboxRegistry Registry;
 @inject IJSRuntime JsRuntime
 
 @* TODO: html-elements corresponding to what a Lightbox really is *@
@@ -25,6 +24,9 @@
 
     [Parameter]
     public string? LightboxName { get; set; }
+
+    [Parameter]
+    public LightboxRegistry? Registry { get; set; }
 
     private int _curIdx = 0;
     private bool _opened = false;
@@ -53,11 +55,7 @@
 
     private void RegisterToRegistry()
     {
-        // force overwrite when it's already registered under this name
-        if (Registry.TryRegister(LightboxName!, this)) return;
-
-        Console.WriteLine($"WARNING: overwriting value in scoped {nameof(LightboxRegistry)}");
-        Registry.TryOverWrite(LightboxName!, this);
+        Registry!.TryRegister(LightboxName!, this);
     }
 
     public (bool succes, int idx) TryRegisterImage(LightboxImg image)

@@ -4,6 +4,7 @@
 @using Portfolio.Services
 
 @inject AppState AppState
+@inject LightboxRegistry LightboxRegistry
 
 @page "/lightbox"
 
@@ -13,12 +14,17 @@
         <TwoView>
 
             <FirstView>
-                <LightboxImg src="icon-192.png" alt="page icon size 192" BoundLightboxName="Test box"/>
-                <LightboxImg src="./images/AboutMeCroppedHead.webp" BoundLightboxName="Test box"/>
+                <LightboxImg src="icon-192.png" alt="page icon size 192"
+                             BoundLightboxName="Test box"
+                             Registry="LightboxRegistry"/>
+                <LightboxImg src="./images/AboutMeCroppedHead.webp"
+                             BoundLightboxName="Test box"
+                             Registry="LightboxRegistry"/>
             </FirstView>
 
             <SecondView>
-                <Lightbox LightboxName="Test box"/>
+                <Lightbox LightboxName="Test box"
+                          Registry="LightboxRegistry"/>
             </SecondView>
 
         </TwoView>

@@ -1,5 +1,4 @@
 @using Portfolio.Services
-@inject LightboxRegistry Registry
 
 @implements IDisposable
 
@@ -23,14 +22,16 @@
 
     [Parameter]
     public string? BoundLightboxName { get; set; }
+    
+    [Parameter]
+    public LightboxRegistry? Registry { get; set; }
 
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object>? Attributes { get; set; }
 
     protected override void OnInitialized()
     {
-        Registry.Registered += Registered;
-        Registry.OverWritten += Registered;
+        Registry!.Registered += Registered;
         
         // Force register when the Lightbox itself registered before this was initialized
         var value = Registry.Get(BoundLightboxName!);
@@ -62,9 +63,9 @@
 
     private void ClickHandle()
     {
-        var box = Registry.Get(BoundLightboxName!);
+        var box = Registry!.Get(BoundLightboxName!);
         if (!box.succes)
-            throw new Exception($"Name \"{BoundLightboxName}\" not found in scoped {nameof(LightboxRegistry)}");
+            throw new Exception($"Lightbox-name \"{BoundLightboxName}\" not found in transient {nameof(LightboxRegistry)}");
         
         if (Attributes is null)
             return;
@@ -74,7 +75,6 @@
 
     public void Dispose()
     {
-        Registry.Registered -= Registered;
-        Registry.OverWritten -= Registered;
+        Registry!.Registered -= Registered;
     }
 }
