@@ -1,19 +1,18 @@
-﻿@using Portfolio.Services
-@inject NavigationManager NavigationManager
+﻿@inject NavigationManager NavigationManager
 
 <NavLink @attributes="@Attributes" href="@GetHref()">@ChildContent</NavLink>
 
 @code {
 
     [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object> Attributes { get; set; }
+    public Dictionary<string, object>? Attributes { get; set; }
 
     [Parameter]
-    public RenderFragment ChildContent { get; set; }
+    public RenderFragment? ChildContent { get; set; }
 
     private string? GetHref()
     {
-        string? href = Attributes["href"].ToString();
+        string? href = Attributes!["href"].ToString();
         if (href is not null)
             return LinkHelper.AsLocalHref(href, NavigationManager);
 

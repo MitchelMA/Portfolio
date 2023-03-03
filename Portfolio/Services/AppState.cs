@@ -9,9 +9,15 @@ public class AppState
     private HeaderData _headerData = new();
     private readonly List<object> _scrollLocks = new();
 
-    public event Action StateChanged;
-    private void NotifyStateChanged() => StateChanged?.Invoke();
+    public event Action? StateChanged;
+    public event Func<Task>? StateChangedAsync;
 
+    private void NotifyStateChanged()
+    {
+        StateChangedAsync?.Invoke();
+        StateChanged?.Invoke();
+    }
+    
     public PageDetails PageDetails
     {
         get => _pageDetails;

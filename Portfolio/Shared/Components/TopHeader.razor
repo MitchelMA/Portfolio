@@ -1,5 +1,4 @@
 ﻿@using Portfolio.Client
-@using Portfolio.Services
 @inject IJSRuntime JsRuntime
 
 <header class="top-header" style="background-image: url('@HeaderImg');@Style">
@@ -41,7 +40,7 @@
     [Parameter]
     public string? Style { get; set; }
 
-    private async void ScrollDown()
+    private async Task ScrollDown()
     {
         if (ScrollToId is null)
             return;

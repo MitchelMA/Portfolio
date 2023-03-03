@@ -1,7 +1,4 @@
-﻿@using Portfolio.Services
-@using Portfolio.Shared.Components
-@using Portfolio.Shared.Components.Navigation
-@using Portfolio.Client
+﻿@using Portfolio.Client
 
 @inherits LayoutComponentBase
 
@@ -40,11 +37,17 @@
 
     protected override void OnInitialized()
     {
-        AppState.StateChanged += StateChanged;
+        AppState.StateChangedAsync += StateChanged;
         AppState.ShowFooter = true;
     }
 
-    private async void StateChanged()
+    private async Task StateChanged()
+    {
+        await CheckScroll();
+        StateHasChanged();
+    }
+
+    private async Task CheckScroll()
     {
         if (AppState.ScrollLocked)
         {
@@ -54,15 +57,11 @@
         {
             await JsRuntime.InvokeVoidAsync("unlockScroll", StaticData.LockedClassName);
         }
-        
-        
-        StateHasChanged();
     }
-
 
     public void Dispose()
     {
-        AppState.StateChanged -= StateChanged;
+        AppState.StateChangedAsync -= StateChanged;
     }
 
 }
