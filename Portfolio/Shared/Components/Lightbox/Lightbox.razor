@@ -1,11 +1,6 @@
-@using Portfolio.Services
-@using Portfolio.Model.Tags
-@using Portfolio.Client
-
 @implements IDisposable
 
-@inject AppState AppState;
-@inject IJSRuntime JsRuntime
+@inject AppState AppState
 
 <div class="lightbox @OpenedClass">
     @if (_opened)

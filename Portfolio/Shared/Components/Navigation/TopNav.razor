@@ -70,7 +70,7 @@
         NavigationManager.LocationChanged -= LocationChanged;
     }
 
-    private void LocationChanged(object? sender, LocationChangedEventArgs e)
+    private async void LocationChanged(object? sender, LocationChangedEventArgs e)
     {
         string location = e.Location;
         Uri uri = NavigationManager.ToAbsoluteUri(location);
@@ -78,10 +78,10 @@
 
         string elementId = fragment.StartsWith('#') ? fragment[1..] : fragment;
 
-        ScrollToElementId(elementId);
+        await ScrollToElementId(elementId);
     }
 
-    private async void ScrollToElementId(string elementId)
+    private async Task ScrollToElementId(string elementId)
     {
         await JsRuntime.InvokeVoidAsync("scrollToId", elementId, 200);
     }
