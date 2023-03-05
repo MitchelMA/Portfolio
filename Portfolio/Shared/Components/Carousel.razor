@@ -31,6 +31,7 @@
 
 @code {
 
+    private string? _fromJsonFile;
     private CarouselModel[]? _models;
     private int _index;
     private bool _toggle = false;
@@ -39,10 +40,8 @@
 
     private int _delay;
     private bool _disposed = false;
-    private Task? _loopTask;
+    private CancellationTokenSource _cts = new();
     private Stack<object> _clickStack = new();
-
-    private string? ActiveClass(bool toggle) => toggle ? "active" : null;
 
     /// <summary>
     /// The Starting index of the carousel
@@ -65,7 +64,6 @@
                 return;
 
             _models = value;
-            Loaded();
         }
     }
 
@@ -73,15 +71,9 @@
     /// The file from which the carousel-data gets loaded
     /// </summary>
     [Parameter]
-    public string FromJsonFile
+    public string? FromJsonFile
     {
-        set
-        {
-            if (_models is not null)
-                return;
-
-            Task.Run(async () => await FromJson(value));
-        }
+        set => _fromJsonFile = value;
     }
 
     /// <summary>
@@ -100,6 +92,8 @@
         }
     }
 
+    private float DynamicDelayAmount => DelayAmount / Math.Max(_clickStack.Count * 1.5f, 1f);
+    
     private int CurrentIdx
     {
         get => _index;
@@ -119,17 +113,17 @@
         CurrentModel?.SetHeight is not null ?
             $"height: {CurrentModel?.SetHeight};" : null;
 
-    private async Task FromJson(string file)
+    private string? ActiveClass(bool toggle) => toggle ? "active" : null;
+
+    protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            _models = await HttpClient.GetFromJsonAsync<CarouselModel[]>(file);
-        }
-        catch (Exception e)
-        {
-            Console.Error.WriteLine(e);
-        }
-        Loaded();
+        if (_fromJsonFile is not null)
+            _models = await HttpClient.GetFromJsonAsync<CarouselModel[]>(_fromJsonFile);
+
+        ScrollThrough(CurrentIdx);
+
+        if (_delay != 0 && _models?.Length > 1)
+            await AutoLoop(_cts.Token);
     }
 
     private void ScrollThrough(int nextIdx)
@@ -137,11 +131,11 @@
         int prevIdx = CurrentIdx;
         CurrentIdx = nextIdx;
         bool noChanges = prevIdx == nextIdx;
-        int prevToggleIdx = Convert.ToInt32(_toggle);
-        int nextToggleIdx = noChanges ? prevToggleIdx : (prevToggleIdx + 1) % 2;
 
-        _togglesHeader[nextToggleIdx] = CurrentModel?.Header!;
-        _togglesText[nextToggleIdx] = CurrentModel?.Text!;
+        int toToggleIdx = Convert.ToInt32(noChanges ? _toggle : !_toggle);
+        _togglesHeader[toToggleIdx] = CurrentModel?.Header!;
+        _togglesText[toToggleIdx] = CurrentModel?.Text!;
+
         if (!noChanges)
             _toggle = !_toggle;
 
@@ -154,30 +148,11 @@
         ScrollThrough(nextIdx);
     }
 
-    private void Loaded()
+    private async Task AutoLoop(CancellationToken token)
     {
-        ScrollThrough(_index);
-
-        if (_delay != 0 && _models?.Length > 1)
-            AutoStarter();
-    }
-
-    private void AutoStarter()
-    {
-        _loopTask = AutoLoop();
-        Console.WriteLine("Started auto-loop");
-        _loopTask.ContinueWith(x =>
+        while (!_disposed && !token.IsCancellationRequested)
         {
-            x.Dispose();
-            Console.WriteLine($"Stopped auto-loop gracefully: {x.IsCompletedSuccessfully}");
-        });
-    }
-
-    private async Task AutoLoop()
-    {
-        while (!_disposed)
-        {
-            await Task.Delay(DelayAmount);
+            await Task.Delay((int)DynamicDelayAmount, token);
             if (_clickStack.Count > 0)
             {
                 _clickStack.Pop();
@@ -191,6 +166,8 @@
     public void Dispose()
     {
         _disposed = true;
+        _cts.Cancel();
+        _cts.Dispose();
     }
 
 }
