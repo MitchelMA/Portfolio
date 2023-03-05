@@ -1,5 +1,97 @@
-﻿<h3>Carousel</h3>
+﻿@using System.Text.Json
+@inject HttpClient HttpClient
+
+<div class="carousel" style="background: url(@(_models?[CurrentIdx].Background)">
+    <div class="carousel__overlay"></div>
+    <div class="carousel__inner">
+        <section class="carousel__header-container">
+            <h3 class="header-container__switch-header"></h3>
+            <h3 class="header-container__switch-header"></h3>
+        </section>
+        <article class="carousel__text-container">
+            <p class="text-container__switch-text"></p>
+            <p class="text-container__switch-text"></p>
+        </article>
+        @for (int i = 0; i < _models?.Length; i++)
+        {
+            var current = _models![i];
+            <h2>@current.Header</h2>
+        }
+        <div class="carousel__dots-holder">
+            @for (int i = 0; i < _models?.Length; i++)
+            {
+                <input type="radio" checked="@(i == CurrentIdx)" name="carousel_r_@_guid"/>
+            }
+        </div>
+    </div>
+</div>
 
 @code {
-    
+
+    private Guid _guid = Guid.NewGuid();
+
+    private CarouselModel[]? _models;
+    private int _index;
+
+    [Parameter]
+    public int StartIdx
+    {
+        set => _index = value;
+    }
+
+    [Parameter]
+    public CarouselModel[] CarouselData
+    {
+        set
+        {
+            if (_models is not null)
+                return;
+
+            _models = value;
+        }
+    }
+
+    [Parameter]
+    public string FromJsonFile
+    {
+        set
+        {
+            if (_models is not null)
+                return;
+
+            Task.Run(async () => await FromJson(value));
+        }
+    }
+
+    private int CurrentIdx
+    {
+        get => _index;
+        set
+        {
+            if (value < 0)
+                value = _models!.Length - 1;
+
+            value %= _models!.Length;
+            _index = value;
+        }
+    }
+
+    private async Task FromJson(string file)
+    {
+        try
+        {
+            _models = await HttpClient.GetFromJsonAsync<CarouselModel[]>(file);
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e);
+        }
+        Console.WriteLine(JsonSerializer.Serialize(_models));
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+    }
+
 }
