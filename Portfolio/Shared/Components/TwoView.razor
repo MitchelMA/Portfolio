@@ -4,7 +4,7 @@
     @if (FirstView is not null)
     {
         <div class="two-view__one"
-             style="flex: @FlexValues?.Item1.ToString("0.00", CultureInfo.InvariantCulture)">
+             style="flex: @FlexValues?.Item1">
             @FirstView
         </div>
     }
@@ -12,7 +12,7 @@
     @if (SecondView is not null)
     {
         <div class="two-view__two"
-             style="flex: @FlexValues?.Item2.ToString("0.00", CultureInfo.InvariantCulture)">
+             style="flex: @FlexValues?.Item2">
             @SecondView
         </div>
     }
@@ -24,7 +24,7 @@
     public Dictionary<string, object>? Attributes { get; set; }
     
     [Parameter]
-    public (float, float)? FlexValues { get; set; }
+    public (string, string)? FlexValues { get; set; }
 
     [Parameter]
     public RenderFragment? FirstView { get; set; }

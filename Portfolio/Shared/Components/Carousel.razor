@@ -1,5 +1,196 @@
-﻿<h3>Carousel</h3>
+﻿@using System.Text.Json
+@inject HttpClient HttpClient
+
+@implements IDisposable
+
+<div class="carousel" style="background-image: url(@(CurrentModel?.Background))">
+    <div class="carousel__overlay"></div>
+    <a class="carousel__inner" href="@CurrentModel?.Href">
+        <section class="carousel__header-container">
+            <h3 class="header-container__header switch @ActiveClass(!_toggle)">@_togglesHeader[0]</h3>
+            <h3 class="header-container__header switch @ActiveClass(_toggle)">@_togglesHeader[1]</h3>
+        </section>
+        <article class="carousel__text-container"
+                 style="@HeightString">
+            <p class="text-container__text switch @ActiveClass(!_toggle)">@_togglesText[0]</p>
+            <p class="text-container__text switch @ActiveClass(_toggle)">@_togglesText[1]</p>
+        </article>
+    </a>
+    <div class="carousel__dots-holder">
+        @if (_models?.Length > 1)
+        {
+            @for (int i = 0; i < _models?.Length; i++)
+            {
+                var idx = i;
+                <input type="radio" checked="@(idx == CurrentIdx)"
+                       @onclick="() => { RadioClick(idx); }"/>
+            }
+        }
+    </div>
+</div>
 
 @code {
-    
+
+    private CarouselModel[]? _models;
+    private int _index;
+    private bool _toggle = false;
+    private string[] _togglesText = { "", "" };
+    private string[] _togglesHeader = { "", "" };
+
+    private int _delay;
+    private bool _disposed = false;
+    private Task? _loopTask;
+    private Stack<object> _clickStack = new();
+
+    private string? ActiveClass(bool toggle) => toggle ? "active" : null;
+
+    /// <summary>
+    /// The Starting index of the carousel
+    /// </summary>
+    [Parameter]
+    public int StartIdx
+    {
+        set => _index = value;
+    }
+
+    /// <summary>
+    /// The carousel-data
+    /// </summary>
+    [Parameter]
+    public CarouselModel[] CarouselData
+    {
+        set
+        {
+            if (_models is not null)
+                return;
+
+            _models = value;
+            Loaded();
+        }
+    }
+
+    /// <summary>
+    /// The file from which the carousel-data gets loaded
+    /// </summary>
+    [Parameter]
+    public string FromJsonFile
+    {
+        set
+        {
+            if (_models is not null)
+                return;
+
+            Task.Run(async () => await FromJson(value));
+        }
+    }
+
+    /// <summary>
+    /// The delay in milliseconds
+    /// </summary>
+    [Parameter]
+    public int DelayAmount
+    {
+        get => _delay;
+        set
+        {
+            if (_delay != 0)
+                return;
+
+            _delay = value;
+        }
+    }
+
+    private int CurrentIdx
+    {
+        get => _index;
+        set
+        {
+            if (value < 0)
+                value = _models!.Length - 1;
+
+            value %= _models!.Length;
+            _index = value;
+        }
+    }
+
+    private CarouselModel? CurrentModel => _models?[CurrentIdx];
+
+    private string? HeightString =>
+        CurrentModel?.SetHeight is not null ?
+            $"height: {CurrentModel?.SetHeight};" : null;
+
+    private async Task FromJson(string file)
+    {
+        try
+        {
+            _models = await HttpClient.GetFromJsonAsync<CarouselModel[]>(file);
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine(e);
+        }
+        Loaded();
+    }
+
+    private void ScrollThrough(int nextIdx)
+    {
+        int prevIdx = CurrentIdx;
+        CurrentIdx = nextIdx;
+        bool noChanges = prevIdx == nextIdx;
+        int prevToggleIdx = Convert.ToInt32(_toggle);
+        int nextToggleIdx = noChanges ? prevToggleIdx : (prevToggleIdx + 1) % 2;
+
+        _togglesHeader[nextToggleIdx] = CurrentModel?.Header!;
+        _togglesText[nextToggleIdx] = CurrentModel?.Text!;
+        if (!noChanges)
+            _toggle = !_toggle;
+
+        StateHasChanged();
+    }
+
+    private void RadioClick(int nextIdx)
+    {
+        _clickStack.Push(1);
+        ScrollThrough(nextIdx);
+    }
+
+    private void Loaded()
+    {
+        ScrollThrough(_index);
+
+        if (_delay != 0 && _models?.Length > 1)
+            AutoStarter();
+    }
+
+    private void AutoStarter()
+    {
+        _loopTask = AutoLoop();
+        Console.WriteLine("Started auto-loop");
+        _loopTask.ContinueWith(x =>
+        {
+            x.Dispose();
+            Console.WriteLine($"Stopped auto-loop gracefully: {x.IsCompletedSuccessfully}");
+        });
+    }
+
+    private async Task AutoLoop()
+    {
+        while (!_disposed)
+        {
+            await Task.Delay(DelayAmount);
+            if (_clickStack.Count > 0)
+            {
+                _clickStack.Pop();
+                continue;
+            }
+
+            ScrollThrough(CurrentIdx + 1);
+        }
+    }
+
+    public void Dispose()
+    {
+        _disposed = true;
+    }
+
 }
