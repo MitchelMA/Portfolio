@@ -8,7 +8,9 @@
 <PageIsland IslandTitle="About Me" id="about">
     <ChildContent>
         @* <p>Dit is de content van de About Me Island</p> *@
-        <TwoView style="padding: 0 0.8rem; align-items: center;" FlexValues="@(new ValueTuple<float, float>(2, 1))">
+        <TwoView
+            style="padding: 0 0.8rem; align-items: center; flex-wrap:  wrap;"
+            FlexValues="@(new ValueTuple<string, string>("2 2 300px", "1 0"))">
             <FirstView>
                 <p>
                     Ik ben Mitchel Vonk, geboren te Beverwijk en wonend in Heemskerk. Ik vind programmeren in C#
