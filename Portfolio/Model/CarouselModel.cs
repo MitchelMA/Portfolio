@@ -6,4 +6,5 @@ public struct CarouselModel
     public string Text { get; init; }
     public string Background { get; init; }
     public string? Href { get; init; }
+    public string? SetHeight { get; init; }
 }

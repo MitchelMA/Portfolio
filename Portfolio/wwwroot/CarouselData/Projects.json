@@ -1,17 +1,10 @@
 [
   {
-    "Header": "Prachtig",
-    "Text": "Dit is prachtig",
-    "Background": "./images/cmd_CaIolk4veY.png",
-    "Href": "./proj1"
+    "Header": "Portfolio Project",
+    "Text": "Hier leg ik uit hoe ik mijn portfolio gemaakt heb en waar ik tegen aanliep tijdens dit proces",
+    "Background": "icon-192.png",
+    "Href": "./portfolio",
+    "SetHeight": "23rem"
   },
-  {
-    "Header": "Helemaal mooi",
-    "Text": "Dit is echt ziek",
-    "Background": "./images/IMG-20200501-WA0000.jpg"
-  },
-  {
-    "Header": "Nummer 3",
-    "Text": "Dit is Nummer 34"
-  }
+  {}
 ]

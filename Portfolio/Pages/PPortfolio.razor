@@ -1,0 +1,47 @@
+﻿@page "/portfolio"
+@using Portfolio.Client
+@layout ProjectLayout
+@inject AppState AppState;
+
+<PageIsland IslandTitle="Introductie" id="iductie">
+    <ChildContent>
+        Introductie van mijn Portfolio
+    </ChildContent>
+</PageIsland>
+<PageIsland IslandTitle="Componenten" id="comps">
+    <ChildContent>
+        De componenten die ik heb gemaakt voor mijn portfolio
+    </ChildContent>
+</PageIsland>
+<PageIsland IslandTitle="Services" id="services">
+    <ChildContent>
+        De Services die ik heb gemaakt voor mijn portfolio
+    </ChildContent>
+</PageIsland>
+
+@code {
+
+    private static (string, string)[]? Links => new[]
+    {
+        ("#iductie", "Introductie"),
+        ("#comps", "Componenten"),
+        ("#services", "Services"),
+    };
+
+    private static readonly HeaderData HeaderData = new()
+    {
+        ImagePath = "icon-192.png",
+        Title = "Portfolio Project",
+        UnderTitle = "Project-pagina waar ik uitleg hoe ik mijn Portfolio gemaakt heb"
+    };
+
+
+    protected override void OnInitialized()
+    {
+        AppState.PageTitleExtension = " - Portfolio Project";
+        AppState.Links = Links;
+        AppState.PageIcon = StaticData.DefaultPageIcon;
+        AppState.HeaderData = HeaderData;
+    }
+
+}

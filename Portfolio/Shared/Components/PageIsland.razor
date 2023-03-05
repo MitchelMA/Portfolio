@@ -1,4 +1,4 @@
-﻿<section class="page-island @InverseClass" id="@Id">
+﻿<section class="page-island @InverseClass" @attributes="@Attributes">
     <div class="page-island__inner">
         <h2 class="page-island__title">@IslandTitle</h2>
         <div class="page-island__child-content">
@@ -8,9 +8,12 @@
 </section>
 
 @code {
-
-    [Parameter]
-    public string? Id { get; set; }
+    //
+    // [Parameter]
+    // public string? Id { get; set; }
+    
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? Attributes { get; set; }
 
     [Parameter]
     public bool? Inverse { get; set; }
