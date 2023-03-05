@@ -1,28 +1,25 @@
 ﻿@using System.Text.Json
 @inject HttpClient HttpClient
 
-<div class="carousel" style="background: url(@(_models?[CurrentIdx].Background)">
+<div class="carousel" style="background-image: url(@(CurrentModel?.Background))">
     <div class="carousel__overlay"></div>
     <div class="carousel__inner">
         <section class="carousel__header-container">
-            <h3 class="header-container__switch-header"></h3>
-            <h3 class="header-container__switch-header"></h3>
+            <h3 class="header-container__header switch @ActiveClass(!_toggle)">@_togglesHeader[0]</h3>
+            <h3 class="header-container__header switch @ActiveClass(_toggle)">@_togglesHeader[1]</h3>
         </section>
         <article class="carousel__text-container">
-            <p class="text-container__switch-text"></p>
-            <p class="text-container__switch-text"></p>
+            <p class="text-container__text switch @ActiveClass(!_toggle)">@_togglesText[0]</p>
+            <p class="text-container__text switch @ActiveClass(_toggle)">@_togglesText[1]</p>
         </article>
+    </div>
+    <div class="carousel__dots-holder">
         @for (int i = 0; i < _models?.Length; i++)
         {
-            var current = _models![i];
-            <h2>@current.Header</h2>
+            var idx = i;
+            <input type="radio" checked="@(idx == CurrentIdx)" name="d_dot_@_guid"
+                   @onclick="() => { ScrollThrough(idx); }"/>
         }
-        <div class="carousel__dots-holder">
-            @for (int i = 0; i < _models?.Length; i++)
-            {
-                <input type="radio" checked="@(i == CurrentIdx)" name="carousel_r_@_guid"/>
-            }
-        </div>
     </div>
 </div>
 
@@ -32,11 +29,16 @@
 
     private CarouselModel[]? _models;
     private int _index;
+    private bool _toggle = false;
+    private string[] _togglesText = { "", "" };
+    private string[] _togglesHeader = { "", "" };
+
+    private string? ActiveClass(bool toggle) => toggle ? "active" : null;
 
     [Parameter]
     public int StartIdx
     {
-        set => _index = value;
+        set => CurrentIdx = value;
     }
 
     [Parameter]
@@ -48,6 +50,7 @@
                 return;
 
             _models = value;
+            Loaded();
         }
     }
 
@@ -76,6 +79,8 @@
         }
     }
 
+    private CarouselModel? CurrentModel => _models?[CurrentIdx];
+
     private async Task FromJson(string file)
     {
         try
@@ -87,11 +92,27 @@
             Console.Error.WriteLine(e);
         }
         Console.WriteLine(JsonSerializer.Serialize(_models));
+        Loaded();
+    }
+
+    private void ScrollThrough(int nextIdx)
+    {
+        int prevIdx = CurrentIdx;
+        CurrentIdx = nextIdx;
+        bool noChanges = prevIdx == nextIdx;
+        int prevToggleIdx = Convert.ToInt32(_toggle);
+        int nextToggleIdx = noChanges ? prevToggleIdx : (prevToggleIdx + 1) % 2;
+
+        _togglesHeader[nextToggleIdx] = CurrentModel?.Header!;
+        _togglesText[nextToggleIdx] = CurrentModel?.Text!;
+        if(!noChanges)
+            _toggle = !_toggle;
+        
         StateHasChanged();
     }
 
-    protected override void OnInitialized()
+    private void Loaded()
     {
+        ScrollThrough(_index);
     }
-
 }

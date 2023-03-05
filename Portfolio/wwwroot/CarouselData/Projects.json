@@ -6,6 +6,12 @@
     "Href": "./proj1"
   },
   {
-    "Header": "Helemaal mooi"
+    "Header": "Helemaal mooi",
+    "Text": "Dit is echt ziek",
+    "Background": "./images/IMG-20200501-WA0000.jpg"
+  },
+  {
+    "Header": "Nummer 3",
+    "Text": "Dit is Nummer 34"
   }
 ]
