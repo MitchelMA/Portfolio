@@ -3,7 +3,7 @@
 
 @implements IDisposable
 
-<div class="carousel" style="background-image: url(@(CurrentModel?.Background))">
+<div class="carousel" style="background-image: url(@(CurrentModel?.Background)); @TransitionString">
     <div class="carousel__overlay"></div>
     <a class="carousel__inner" href="@CurrentModel?.Href">
         <section class="carousel__header-container">
@@ -92,8 +92,14 @@
         }
     }
 
+    /// <summary>
+    /// The duration of the transition in between slide
+    /// </summary>
+    [Parameter]
+    public int? TransitionDuration { get; set; }
+
     private float DynamicDelayAmount => DelayAmount / Math.Max(_clickStack.Count * 1.5f, 1f);
-    
+
     private int CurrentIdx
     {
         get => _index;
@@ -112,6 +118,10 @@
     private string? HeightString =>
         CurrentModel?.SetHeight is not null ?
             $"height: {CurrentModel?.SetHeight};" : null;
+
+    private string? TransitionString =>
+        TransitionDuration is not null ?
+            $"--transition-duration: {TransitionDuration}ms;" : null;
 
     private string? ActiveClass(bool toggle) => toggle ? "active" : null;
 
