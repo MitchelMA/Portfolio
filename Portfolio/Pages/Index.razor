@@ -1,37 +1,87 @@
 ﻿@page "/"
 
-@using Portfolio.Services
 @using Portfolio.Client
-@using Portfolio.Model
-@using Portfolio.Shared.Components
+
 @inject AppState AppState
+@inject LightboxRegistry LightboxRegistry
 
-<PageIsland IslandTitle="About Me" Id="about">
+<PageIsland IslandTitle="About Me" id="about">
     <ChildContent>
-        <p>Dit is de content van de About Me Island</p>
+        @* <p>Dit is de content van de About Me Island</p> *@
+        <TwoView
+            style="padding: 0 0.8rem; align-items: center; flex-wrap:  wrap;"
+            FlexValues="@(new ValueTuple<string, string>("2 2 300px", "1 0"))">
+            <FirstView>
+                <p>
+                    Ik ben Mitchel Vonk, geboren te Beverwijk en wonend in Heemskerk. Ik vind programmeren in C#
+                    erg leuk
+                    en fijn (deze portfolio is gemaakt in blazor pages)! Ik leer er dagelijks nieuwe dingen in.
+                </p>
+                <hr/>
+                <p>
+                    Ik programmeer al sinds begin 2019 met JavaScript in de browser. Ik was voornamelijk begonnen om
+                    wiskundige formules uit te werken (ik heb alijd al van wiskunde gehouden).
+                    Ook heb ik kleine spelletjes gemaakt in JavaScript in de browser, en was ik begonnen met het
+                    maken van Console-applications in Python
+                </p>
+                <hr/>
+                <p>
+                    Toen ik in 2021 mijn Havo met succes afrondde, begon ik aan mijn vervolg-opleiding: Software Developer
+                    aan het Mediacollege Amsterdam. In het eerste halfjaar van jaar één hebben we daar met Python gewerkt.
+                    Aan het einde van dit halve jaar, kregen we de keuze of we Media-Developer wilde worden of Game-Developer.
+                    Toen heb ik de keuze gemaakt voor Game-Developer.
+                </p>
+                <hr/>
+                <p>
+                    Naast programmeren ga ik graag om met vrienden, welke voort zijn gekomen uit een hechte groep die was
+                    gevormd aan het begin van mijn middelbare school periode. Ook sport ik erg graag en heb ik ook al redelijk
+                    wat beoefend: skiën, schaatsen en snowboarden. En ga ik wekelijks naar de sportschool.
+                </p>
+            </FirstView>
+            <SecondView>
+                <article style="display: flex; justify-content: center;">
+                    @* <img class="hover-scale sc075" src="./images/AboutMeCropped.webp" alt="" height="500" style="border-radius: var(--border-radius-small);"/> *@
+                    <LightboxImg
+                        BoundLightboxName="Welkom Lightbox"
+                        Registry="LightboxRegistry"
+                        class="hover-scale sc075"
+                        src="./images/AboutMeCropped.webp"
+                        alt="Foto van mij op wintersport"
+                        height="500"
+                        style="border-radius: var(--border-radius-small);"/>
+                </article>
+            </SecondView>
+        </TwoView>
     </ChildContent>
 </PageIsland>
 
-<PageIsland IslandTitle="Projects" Id="projects">
+<PageIsland IslandTitle="Projects" id="projects">
     <ChildContent>
-        <p>Dit is de content van de Projects Island</p>
+        <Carousel FromJsonFile="./CarouselData/Projects.json"
+                  DelayAmount="7000"/>
     </ChildContent>
 </PageIsland>
 
-<PageIsland IslandTitle="Contact Me" Id="contact">
+<PageIsland IslandTitle="Contact Me" id="contact">
     <ChildContent>
         <p>Dit is de content van de Contact Me</p>
     </ChildContent>
 </PageIsland>
 
+<Lightbox LightboxName="Welkom Lightbox"
+          Registry="LightboxRegistry"/>
+
 @code {
 
-    private readonly (string, string)[]? _links =
+    private static readonly (string, string)[]? Links =
     {
         ("#about", "About Me"),
         ("#projects", "Projects"),
         ("#contact", "Contact Me"),
+        (@".\cv.pdf", "CV"),
     };
+
+    private static readonly LinkTag PageIcon = new PageIcon("image/webp", "./images/AboutMeCroppedHead.webp");
 
     private readonly HeaderData _headerData = new()
     {
@@ -43,7 +93,9 @@
 
     protected override void OnInitialized()
     {
-        AppState.Links = _links;
+        AppState.PageTitleExtension = string.Empty;
+        AppState.Links = Links;
+        AppState.PageIcon = PageIcon;
         AppState.HeaderData = _headerData;
     }
 

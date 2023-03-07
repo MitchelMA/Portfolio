@@ -1,0 +1,14 @@
+.page-island.inverse .two-view {
+    flex-flow: row-reverse;
+}
+
+.two-view {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    grid-gap: 1rem;
+}
+
+.two-view__one, .two-view__two {
+    padding: 0.7rem;
+}

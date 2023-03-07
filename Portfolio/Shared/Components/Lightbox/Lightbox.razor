@@ -1,0 +1,129 @@
+@implements IDisposable
+
+@inject AppState AppState
+
+<div class="lightbox @OpenedClass">
+    @if (_opened)
+    {
+        <div class="lightbox__inner">
+            <button class="lightbox__close btn" @onclick="Hide">
+                <i class="bi bi-x"></i>
+            </button>
+            <section class="lightbox__big-image-container">
+                @if (_images.Count > 1)
+                {
+                    <button class="btn change-btn left" @onclick="Previous">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="btn change-btn right" @onclick="Next">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                }
+                @{
+                    var chosen = _images[CurIdx].Attributes!;
+                    chosen.TryGetValue("alt", out var chosenAlt);
+                }
+                <img class="lightbox__big-image" src="@chosen["src"]" alt="@chosenAlt"/>
+                @if (chosenAlt is not null && ((string)chosenAlt).Length > 0)
+                {
+                    <h3 class="big-image__under-title">@chosenAlt</h3>
+                }
+            </section>
+            @if (_images.Count > 1)
+            {
+                <section class="lightbox__scroll">
+                    @for (int i = 0; i < _images.Count; i++)
+                    {
+                        var idx = i;
+                        var cur = _images[idx].Attributes!;
+                        cur.TryGetValue("alt", out var alt);
+                        <img class="scroll__thumbnail" src="@cur["src"]" alt="@alt" title="@alt" @onclick="() => { CurIdx = idx; }"/>
+                    }
+                </section>
+            }
+        </div>
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public string? LightboxName { get; set; }
+
+    [Parameter]
+    public LightboxRegistry? Registry { get; set; }
+
+    private int _curIdx = 0;
+    private bool _opened = false;
+    private readonly List<LightboxImg> _images = new();
+
+    public string? OpenedClass => _opened ? "open" : null;
+
+    public int CurIdx
+    {
+        get => _curIdx;
+        set
+        {
+            value %= _images.Count;
+            if (value < 0)
+                value = _images.Count - 1;
+
+            _curIdx = value;
+            StateHasChanged();
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        RegisterToRegistry();
+    }
+
+    private void RegisterToRegistry()
+    {
+        Registry!.TryRegister(LightboxName!, this);
+    }
+
+    public (bool succes, int idx) TryRegisterImage(LightboxImg image)
+    {
+        if (_images.Contains(image))
+            return (false, -1);
+
+        _images.Add(image);
+        StateHasChanged();
+        return (true, _images.IndexOf(image));
+    }
+
+    private void Hide()
+    {
+        _opened = false;
+        AppState.RemoveFromScrollLock(this);
+    }
+
+    private void Show()
+    {
+        _opened = true;
+        AppState.AddToLockScroll(this);
+    }
+
+    private void Next()
+    {
+        CurIdx++;
+    }
+
+    private void Previous()
+    {
+        CurIdx--;
+    }
+
+    public void OpenAt(int idx)
+    {
+        Show();
+        CurIdx = idx;
+    }
+
+    public void Dispose()
+    {
+        AppState.RemoveFromScrollLock(this);
+    }
+
+}

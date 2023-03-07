@@ -1,0 +1,42 @@
+@inject AppState AppState
+@inject LightboxRegistry LightboxRegistry
+
+@page "/lightbox"
+
+<PageIsland IslandTitle="LightBoxPage">
+    <ChildContent>
+
+        <TwoView>
+
+            <FirstView>
+                <LightboxImg src="icon-192.png" alt="page icon size 192"
+                             BoundLightboxName="Test box"
+                             Registry="LightboxRegistry"/>
+                <LightboxImg src="./images/AboutMeCroppedHead.webp" alt="Mijn hoofd"
+                             BoundLightboxName="Test box"
+                             Registry="LightboxRegistry"/>
+                <LightboxImg src="./images/cmd_CaIolk4veY.png" alt="Voorbeeld van een project"
+                             BoundLightboxName="Test box"
+                             Registry="LightboxRegistry"/>
+                <LightboxImg src="./images/AboutMeCropped.webp" alt="Foto van mij op wintersport"
+                             BoundLightboxName="Test box"
+                             Registry="LightboxRegistry"/>
+            </FirstView>
+
+
+        </TwoView>
+
+    </ChildContent>
+</PageIsland>
+
+<Lightbox LightboxName="Test box"
+          Registry="LightboxRegistry"/>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        AppState.PageTitleExtension = " - Lightbox Test";
+    }
+
+}

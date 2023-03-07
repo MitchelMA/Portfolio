@@ -1,4 +1,5 @@
 ﻿using Portfolio.Model;
+using Portfolio.Model.Tags;
 
 namespace Portfolio.Services;
 
@@ -6,10 +7,17 @@ public class AppState
 {
     private PageDetails _pageDetails = new();
     private HeaderData _headerData = new();
+    private readonly List<object> _scrollLocks = new();
 
-    public event Action StateChanged;
-    private void NotifyStateChanged() => StateChanged?.Invoke();
+    public event Action? StateChanged;
+    public event Func<Task>? StateChangedAsync;
 
+    private void NotifyStateChanged()
+    {
+        StateChangedAsync?.Invoke();
+        StateChanged?.Invoke();
+    }
+    
     public PageDetails PageDetails
     {
         get => _pageDetails;
@@ -29,6 +37,29 @@ public class AppState
                 return;
 
             _headerData = value;
+            NotifyStateChanged();
+        }
+    }
+    
+    public string PageTitleExtension
+    {
+        get => PageDetails.TitleExtension;
+        set
+        {
+            if (value == PageDetails.TitleExtension)
+                return;
+
+            PageDetails.TitleExtension = value;
+            NotifyStateChanged();
+        }
+    }
+
+    public LinkTag PageIcon
+    {
+        get => PageDetails.Icon;
+        set
+        {
+            PageDetails.Icon = value;
             NotifyStateChanged();
         }
     }
@@ -106,5 +137,34 @@ public class AppState
             _headerData.ExtraStyles = value;
             NotifyStateChanged();
         }
+    }
+
+    public bool ScrollLocked => _scrollLocks.Count > 0;
+    
+    public bool IsLocking(object obj) => _scrollLocks.Contains(obj);
+
+    public bool AddToLockScroll(object obj)
+    {
+        if (IsLocking(obj))
+            return false;
+        
+        _scrollLocks.Add(obj);
+        NotifyStateChanged();
+        return true;
+    }
+
+    public bool RemoveFromScrollLock(object obj)
+    {
+        bool success = _scrollLocks.Remove(obj);
+        if(success)
+            NotifyStateChanged();
+
+        return success;
+    }
+
+    public void ForceScrollUnlock()
+    {
+        _scrollLocks.Clear();
+        NotifyStateChanged();
     }
 }

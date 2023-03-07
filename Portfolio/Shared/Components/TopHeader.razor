@@ -1,8 +1,8 @@
 ﻿@using Portfolio.Client
-@using Portfolio.Services
 @inject IJSRuntime JsRuntime
 
 <header class="top-header" style="background-image: url('@HeaderImg');@Style">
+    <div class="top-header__overlay"></div>
     <div class="top-header__inner">
         <section class="top-header__texts">
             <h1 class="texts__title">@Title</h1>
@@ -15,7 +15,7 @@
         }
 
         <button class="header__scroll-down" @onclick="ScrollDown" test="@ScrollToId">
-            <img class="link__img" src="@StaticData.ScrollDownImage" alt="scroll-down image" height="200"/>
+            <img class="link__img hover-scale sc075" src="@StaticData.ScrollDownImage" alt="scroll-down image" height="200"/>
         </button>
     </div>
 </header>
@@ -40,7 +40,7 @@
     [Parameter]
     public string? Style { get; set; }
 
-    private async void ScrollDown()
+    private async Task ScrollDown()
     {
         if (ScrollToId is null)
             return;

@@ -1,0 +1,96 @@
+.carousel {
+    --radial-outside: rgb(34 34 34 / 80%);
+    --radial-inside: transparent;
+    --transition-duration: 250ms;
+    
+    position: relative;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    transition: background-image var(--transition-duration) ease 0s;
+    border-radius: var(--border-radius-medium);
+    overflow: hidden;
+}
+
+.carousel__overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    background-color: rgb(24 24 24 / 60%);
+    background-image: radial-gradient(closest-corner, var(--radial-inside), var(--radial-outside));
+}
+
+.carousel__inner {
+    width: clamp(350px, 75%, 100%);
+    display: block;
+    text-decoration: none;
+    color: whitesmoke;
+    margin: auto;
+}
+
+.carousel__overlay ~ * {
+    position: relative;
+}
+
+.text-container__text {
+    font-size: 1.1rem;
+}
+
+.carousel__dots-holder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    padding: 0.6rem;
+}
+
+.carousel__dots-holder input[type="radio"]
+{
+    --size: 1.0rem;
+    
+    appearance: none;
+    width: var(--size);
+    height: var(--size);
+    margin: 0 calc(var(--size)/2);
+    background-color: transparent;
+    border: 2px solid whitesmoke;
+    border-radius: calc(var(--size)/2);
+    transition: background-color var(--transition-duration) ease 0s;
+    cursor: pointer;
+}
+
+.carousel__dots-holder input[type="radio"]:checked
+{
+    background-color: whitesmoke;
+}
+
+
+.carousel__header-container {
+    position: relative;
+    height: 4rem;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.carousel__text-container {
+    position: relative;
+    height: 15rem;
+    transition: height var(--transition-duration) ease 0s;
+}
+
+.switch {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    opacity: 0;
+    transition: opacity var(--transition-duration) ease 0s;
+}
+
+.switch.active {
+    opacity: 1;
+}
+

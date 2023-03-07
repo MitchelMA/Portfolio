@@ -1,0 +1,40 @@
+@using System.Globalization
+
+<section @attributes="@Attributes" class="two-view">
+    @if (FirstView is not null)
+    {
+        <div class="two-view__one"
+             style="flex: @FlexValues?.Item1">
+            @FirstView
+        </div>
+    }
+
+    @if (SecondView is not null)
+    {
+        <div class="two-view__two"
+             style="flex: @FlexValues?.Item2">
+            @SecondView
+        </div>
+    }
+</section>
+
+@code {
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? Attributes { get; set; }
+    
+    [Parameter]
+    public (string, string)? FlexValues { get; set; }
+
+    [Parameter]
+    public RenderFragment? FirstView { get; set; }
+
+    [Parameter]
+    public RenderFragment? SecondView { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine($"Flex-values: {FlexValues}");
+    }
+
+}

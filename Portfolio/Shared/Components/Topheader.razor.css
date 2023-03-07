@@ -3,14 +3,23 @@
     height: 100vh;
     /* overload for when small vh is available */
     height: 100svh;
-    background-size: contain;
+    background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
     background-attachment: fixed;
     padding: 2rem;
+    contain: layout;
+}
+
+.top-header__overlay {
+    position: fixed;
+    inset: 0;
+    /*background: radial-gradient(transparent, rgb(34 34 34 / 58%)) fixed;*/
+    background-color: rgb(220 220 220 / 60%);
 }
 
 .top-header__inner {
+    position: relative;
     width: 100%;
     height: 100%;
     max-width: var(--content-max-width-l);
