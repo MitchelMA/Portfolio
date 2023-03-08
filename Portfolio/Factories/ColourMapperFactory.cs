@@ -34,7 +34,8 @@ public class ColourMapperFactory
     private Dictionary<T, Color>? Lexer<T>(string fileText)
         where T : Enum
     {
-        Liner(fileText);
+        string[] lexedlines = Liner(fileText);
+        Console.WriteLine(lexedlines[0]);
         string trim = fileText.Trim();
         if (trim.Length == 0)
             return null;
@@ -69,7 +70,20 @@ public class ColourMapperFactory
 
         while ((c = ms.ReadByte()) != -1)
         {
-            Console.WriteLine((char)c);
+            if (c == '@')
+            {
+                while (ms.ReadByte() is '\n' or -1) ;
+                lines.Add(buffer);
+                buffer = string.Empty;
+            }
+
+            if (c == '\n')
+            {
+                lines.Add(buffer);
+                buffer = string.Empty;
+            }
+
+            buffer += (char)c;
         }
 
         return lines.ToArray();
