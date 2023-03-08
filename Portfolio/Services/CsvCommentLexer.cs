@@ -6,7 +6,7 @@ public static class CsvCommentLexer
 {
     public static char CommentStarter = '#';
     public static char CsvSplitter = ',';
-    
+
     /// <summary>
     /// Lexes out the comments from the line with the specified `CommendStarter`
     /// </summary>
@@ -54,23 +54,37 @@ public static class CsvCommentLexer
     }
 
     /// <summary>
-    /// Lexes the csv string fully, also ignoring comments
+    /// Lexes the csv string fully, also ignoring comments and lexing from [lowerBound, upperBound).
+    /// In the case both are `0`, it will lex the entire csv file
     /// </summary>
     /// <param name="csv">The CSV string</param>
-    /// <returns>an array of the split csv values</returns>
-    public static string[][]? LexValues(string csv)
+    /// <param name="lowerBound">The inclusive lowerBound</param>
+    /// <param name="upperBound">The exclusive upperBound</param>
+    /// <returns>an array of the split csv values in the specified bounds</returns>
+    public static string[][]? LexValues(string csv, int lowerBound = 0, int upperBound = 0)
     {
         Span<string> lines = LexComments(csv);
         int l = lines.Length;
-        
+
         if (l == 0)
             return null;
 
-        string[][] data = new string[l][];
+        int min = Math.Max(lowerBound, 0);
 
-        for (int i = 0; i < l; i++)
+        int max = upperBound == 0 ? l : upperBound;
+
+        int amount = max - min;
+
+        string[][] data = new string[amount][];
+        int dataIdx = 0;
+        int lineIdx = min;
+
+        while (dataIdx < amount && lineIdx < max)
         {
-            data[i] = lines[i].Split(CsvSplitter).Select(x => x.Trim()).ToArray();
+            data[dataIdx] = lines[lineIdx].Split(CsvSplitter).Select(x => x.Trim()).ToArray();
+
+            lineIdx++;
+            dataIdx++;
         }
 
         return data;
