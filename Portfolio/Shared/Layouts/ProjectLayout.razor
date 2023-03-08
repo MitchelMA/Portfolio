@@ -1,5 +1,12 @@
 ﻿@inherits LayoutComponentBase
+
 @inject AppState AppState;
+@inject ProjectState ProjectState;
+@inject ColourMapperFactory MapperFactory;
+
+@using Portfolio.ColourMapper
+@using System.Drawing
+
 @implements IDisposable;
 
 <div class="page">
@@ -16,7 +23,7 @@
             @Body
         </div>
     </main>
-    
+
     @if (AppState.ShowFooter)
     {
         <Footer>
@@ -25,7 +32,9 @@
             </MainSection>
         </Footer>
     }
-
+    
+    <ProjStateIndicator ProjectStatus="@ProjectState.ProjectStatus"/>
+    
     <ToTopBtn/>
 </div>
 
@@ -34,12 +43,14 @@
     protected override void OnInitialized()
     {
         AppState.StateChanged += StateChanged;
+        ProjectState.StateChanged += StateChanged;
         AppState.ShowFooter = false;
     }
 
     public void Dispose()
     {
         AppState.StateChanged -= StateChanged;
+        ProjectState.StateChanged -= StateChanged;
     }
 
     private void StateChanged()
