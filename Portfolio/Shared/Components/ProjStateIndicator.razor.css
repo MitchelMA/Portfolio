@@ -1,6 +1,6 @@
 .state-indicator {
     --size: 2rem;
-    --background-color: red;
+    --background-color: #212529;
     --transition-duration: 125ms;
     --hover-width: 9rem;
     

@@ -3,7 +3,7 @@
 
 @inject ColourMapperFactory MapperFactory;
 
-<div class="state-indicator" style="--background-color: @StatusColour?.ToCssString();">
+<div class="state-indicator" style="@StatusColourString">
     <section class="state-indicator__inner">
         <p class="inner__status">@FormattedStatus</p>
     </section>
@@ -43,6 +43,10 @@
 
     private string FormattedStatus =>
         Enum.Format(typeof(ProjectStatus), ProjectStatus, "G");
+
+    private string? StatusColourString =>
+        StatusColour is null ?
+            null : $"--background-color: {StatusColour?.ToCssString()};";
 
     protected override async Task OnInitializedAsync()
     {

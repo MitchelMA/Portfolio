@@ -1,6 +1,6 @@
 using System.Drawing;
-using System.Text;
 using Portfolio.ColourMapper;
+using Portfolio.Services;
 
 namespace Portfolio.Factories;
 
@@ -21,7 +21,7 @@ public class ColourMapperFactory
             return _maps[typeof(T)] as Mapper<T>;
 
         var fileText = await _httpClient.GetStringAsync(fileHref);
-        var outcome = Lexer<T>(fileText)!;
+        var outcome = ToDict<T>(fileText)!;
 
         if (outcome is null || outcome.Count == 0)
             return null;
@@ -31,62 +31,26 @@ public class ColourMapperFactory
         return mapper;
     }
 
-    private Dictionary<T, Color>? Lexer<T>(string fileText)
+    private static Dictionary<T, Color>? ToDict<T>(string fileText)
         where T : Enum
     {
-        string[] lexedlines = Liner(fileText);
-        Console.WriteLine(lexedlines[0]);
-        string trim = fileText.Trim();
-        if (trim.Length == 0)
+        string[][]? values = CsvCommentLexer.LexValues(fileText);
+        int l = values?.Length ?? 0;
+        if (l == 0)
             return null;
 
         Dictionary<T, Color> dict = new();
 
-        trim.ReplaceLineEndings();
-        Span<string> lines = trim.Split(Environment.NewLine);
-        int l = lines.Length;
         for (int i = 0; i < l; i++)
         {
-            var cur = lines[i];
-
-            string[] split = cur.Split(',');
-            int[] colourValues = split[1].Trim().Split(' ').Select(int.Parse).ToArray();
-
-            T value = (T)(object)int.Parse(split[0]);
-            Color color = Color.FromArgb(colourValues[3], colourValues[0], colourValues[1], colourValues[2]);
+            var cur = values![i];
+            T value = (T)(object)int.Parse(cur[0]);
+            int[] rgba = cur[1].Split(' ').Select(int.Parse).ToArray();
+            Color color = Color.FromArgb(rgba[3], rgba[0], rgba[1], rgba[2]);
             dict.Add(value, color);
         }
-
+        
         return dict;
-    }
-
-    private string[]? Liner(string fileText)
-    {
-        byte[] byteArr = Encoding.UTF8.GetBytes(fileText.Trim());
-        using MemoryStream ms = new(byteArr);
-        string buffer = string.Empty;
-        List<string> lines = new();
-        int c;
-
-        while ((c = ms.ReadByte()) != -1)
-        {
-            if (c == '@')
-            {
-                while (ms.ReadByte() is '\n' or -1) ;
-                lines.Add(buffer);
-                buffer = string.Empty;
-            }
-
-            if (c == '\n')
-            {
-                lines.Add(buffer);
-                buffer = string.Empty;
-            }
-
-            buffer += (char)c;
-        }
-
-        return lines.ToArray();
     }
 
     public void Flush()
