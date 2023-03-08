@@ -9,7 +9,9 @@
 
 @implements IDisposable;
 
-<div class="page">
+<div class="page" @onclick="() => { 
+    ProjectState.ProjectStatus = ProjectStatus.Done;
+}">
     <TopHeader HeaderImg="@AppState.HeaderImgPath"
                Title="@AppState.HeaderTitle"
                UnderTitle="@AppState.HeaderUnderTitle"
@@ -32,52 +34,30 @@
             </MainSection>
         </Footer>
     }
-
+    
+    <ProjStateIndicator ProjectStatus="@ProjectState.ProjectStatus"/>
+    
     <ToTopBtn/>
 </div>
 
 @code {
 
-    private Mapper<ProjectStatus>? _projMapper;
-    private Color? _statusColour;
-
-    public Color? StatusColour
-    {
-        get => _statusColour;
-        set
-        {
-            _statusColour = value;
-            StateChanged();
-        }
-    }
-
     protected override void OnInitialized()
     {
         AppState.StateChanged += StateChanged;
-        ProjectState.StateChanged += ProjectStateChanged;
+        ProjectState.StateChanged += StateChanged;
         AppState.ShowFooter = false;
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        _projMapper = await MapperFactory.CreateMap<ProjectStatus>("./ColourMaps/ProjectStatusMap.csv");
-        StatusColour = _projMapper?.GetColour(ProjectState.ProjectStatus);
     }
 
     public void Dispose()
     {
         AppState.StateChanged -= StateChanged;
-        ProjectState.StateChanged -= ProjectStateChanged;
+        ProjectState.StateChanged -= StateChanged;
     }
 
     private void StateChanged()
     {
         StateHasChanged();
-    }
-
-    private void ProjectStateChanged()
-    {
-        StatusColour = _projMapper?.GetColour(ProjectState.ProjectStatus);
     }
 
 }

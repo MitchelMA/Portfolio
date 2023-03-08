@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Text;
 using Portfolio.ColourMapper;
 
 namespace Portfolio.Factories;
@@ -33,6 +34,7 @@ public class ColourMapperFactory
     private Dictionary<T, Color>? Lexer<T>(string fileText)
         where T : Enum
     {
+        Liner(fileText);
         string trim = fileText.Trim();
         if (trim.Length == 0)
             return null;
@@ -55,6 +57,22 @@ public class ColourMapperFactory
         }
 
         return dict;
+    }
+
+    private string[]? Liner(string fileText)
+    {
+        byte[] byteArr = Encoding.UTF8.GetBytes(fileText.Trim());
+        using MemoryStream ms = new(byteArr);
+        string buffer = string.Empty;
+        List<string> lines = new();
+        int c;
+
+        while ((c = ms.ReadByte()) != -1)
+        {
+            Console.WriteLine((char)c);
+        }
+
+        return lines.ToArray();
     }
 
     public void Flush()
