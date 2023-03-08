@@ -3,7 +3,7 @@
 
 @inject ColourMapperFactory MapperFactory;
 
-<div class="state-indicator" style="@StatusColourString">
+<div class="state-indicator" style="@StatusColourString" @onclick="() => {ProjectStatus = ProjectStatus.Test;}">
     <section class="state-indicator__inner">
         <p class="inner__status">@FormattedStatus</p>
     </section>
@@ -50,7 +50,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _mapper = await MapperFactory.CreateMap<ProjectStatus>("./ColourMaps/ProjectStatusMap.csv");
+        _mapper = await MapperFactory.CreateMap<ProjectStatus>("./ColourMaps/ProjectStatusMap.csv", 0, 3);
         StatusColour = _mapper?.GetColour(ProjectStatus);
     }
 
