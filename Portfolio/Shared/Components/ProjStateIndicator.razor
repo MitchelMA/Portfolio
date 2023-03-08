@@ -1,0 +1,57 @@
+@using Portfolio.ColourMapper
+@using System.Drawing
+
+@inject ColourMapperFactory MapperFactory;
+
+<div class="state-indicator" style="@StatusColourString">
+    <section class="state-indicator__inner">
+        <p class="inner__status">@FormattedStatus</p>
+    </section>
+</div>
+
+@code {
+    private ProjectStatus _projectStatus;
+    private Mapper<ProjectStatus>? _mapper;
+    private Color? _statusColour;
+
+    [Parameter]
+    public ProjectStatus ProjectStatus
+    {
+        get => _projectStatus;
+        set
+        {
+            if (value == _projectStatus)
+                return;
+
+            _projectStatus = value;
+            StatusColour = _mapper?.GetColour(_projectStatus);
+        }
+    }
+
+    public Color? StatusColour
+    {
+        get => _statusColour;
+        set
+        {
+            if (value == _statusColour)
+                return;
+
+            _statusColour = value;
+            StateHasChanged();
+        }
+    }
+
+    private string FormattedStatus =>
+        Enum.Format(typeof(ProjectStatus), ProjectStatus, "G");
+
+    private string? StatusColourString =>
+        StatusColour is null ?
+            null : $"--background-color: {StatusColour?.ToCssString()};";
+
+    protected override async Task OnInitializedAsync()
+    {
+        _mapper = await MapperFactory.CreateMap<ProjectStatus>("./ColourMaps/ProjectStatusMap.csv");
+        StatusColour = _mapper?.GetColour(ProjectStatus);
+    }
+
+}
