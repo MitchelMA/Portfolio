@@ -23,7 +23,7 @@ public class ColourMapperFactory
         var fileText = await _httpClient.GetStringAsync(fileHref);
         var outcome = ToDict<T>(fileText)!;
 
-        if (outcome is null || outcome.Count == 0)
+        if (outcome.Count == 0)
             return null;
 
         var mapper = new Mapper<T>(outcome);
