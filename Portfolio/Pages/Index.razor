@@ -75,12 +75,12 @@
 
 @code {
 
-    private static readonly (string, string)[]? Links =
+    private static readonly NavLinkData[]? Links =
     {
-        ("#about", "About Me"),
-        ("#projects", "Projects"),
-        ("#contact", "Contact Me"),
-        (@".\cv.pdf", "CV"),
+        new("#about", "About Me"),
+        new("#projects", "Projects"),
+        new("#contact", "Contact Me"),
+        new(@".\cv.pdf", "CV", true),
     };
 
     private static readonly LinkTag PageIcon = new PageIcon("image/webp", "./images/AboutMeCroppedHead.webp");

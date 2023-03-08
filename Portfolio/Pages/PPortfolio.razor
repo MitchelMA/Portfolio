@@ -21,11 +21,11 @@
 
 @code {
 
-    private static (string, string)[]? Links => new[]
+    private static readonly NavLinkData[] Links = 
     {
-        ("#iductie", "Introductie"),
-        ("#comps", "Componenten"),
-        ("#services", "Services"),
+        new("#iductie", "Introductie"),
+        new("#comps", "Componenten"),
+        new("#services", "Services")
     };
 
     private static readonly HeaderData HeaderData = new()
