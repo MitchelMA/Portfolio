@@ -13,10 +13,16 @@ public class ColourMapperFactory
       _httpClient = httpClient;
    }
 
-   public ColourMapper<T> CreateMap<T>(string fileHref) 
+   public async Task<ColourMapper<T>> CreateMap<T>(string fileHref) 
       where T : Enum
    {
-      throw new NotImplementedException();
+      if (_maps.ContainsKey(typeof(T)))
+         return _maps[typeof(T)];
+      
+      var fileText = await _httpClient.GetStringAsync(fileHref);
+      var outcome = Lexer<T>(fileText);
+      
+      return new ColourMapper<T>(outcome);
    }
 
    private Dictionary<T, Color> Lexer<T>(string fileText)
