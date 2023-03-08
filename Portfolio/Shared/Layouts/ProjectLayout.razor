@@ -1,5 +1,12 @@
 ﻿@inherits LayoutComponentBase
+
 @inject AppState AppState;
+@inject ProjectState ProjectState;
+@inject ColourMapperFactory MapperFactory;
+
+@using Portfolio.ColourMapper
+@using System.Drawing
+
 @implements IDisposable;
 
 <div class="page">
@@ -16,7 +23,7 @@
             @Body
         </div>
     </main>
-    
+
     @if (AppState.ShowFooter)
     {
         <Footer>
@@ -31,20 +38,46 @@
 
 @code {
 
+    private Mapper<ProjectStatus>? _projMapper;
+    private Color? _statusColour;
+
+    public Color? StatusColour
+    {
+        get => _statusColour;
+        set
+        {
+            _statusColour = value;
+            StateChanged();
+        }
+    }
+
     protected override void OnInitialized()
     {
         AppState.StateChanged += StateChanged;
+        ProjectState.StateChanged += ProjectStateChanged;
         AppState.ShowFooter = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _projMapper = await MapperFactory.CreateMap<ProjectStatus>("./ColourMaps/ProjectStatusMap.csv");
+        StatusColour = _projMapper?.GetColour(ProjectState.ProjectStatus);
     }
 
     public void Dispose()
     {
         AppState.StateChanged -= StateChanged;
+        ProjectState.StateChanged -= ProjectStateChanged;
     }
 
     private void StateChanged()
     {
         StateHasChanged();
+    }
+
+    private void ProjectStateChanged()
+    {
+        StatusColour = _projMapper?.GetColour(ProjectState.ProjectStatus);
     }
 
 }

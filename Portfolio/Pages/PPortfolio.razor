@@ -2,6 +2,7 @@
 @using Portfolio.Client
 @layout ProjectLayout
 @inject AppState AppState;
+@inject ProjectState ProjectState;
 
 <PageIsland IslandTitle="Introductie" id="iductie">
     <ChildContent>
@@ -21,7 +22,7 @@
 
 @code {
 
-    private static readonly NavLinkData[] Links = 
+    private static readonly NavLinkData[] Links =
     {
         new("#iductie", "Introductie"),
         new("#comps", "Componenten"),
@@ -42,6 +43,7 @@
         AppState.Links = Links;
         AppState.PageIcon = StaticData.DefaultPageIcon;
         AppState.HeaderData = HeaderData;
+        ProjectState.ProjectStatus = ProjectStatus.Development;
     }
 
 }
