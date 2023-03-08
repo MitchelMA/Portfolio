@@ -77,7 +77,7 @@ public class AppState
         }
     }
 
-    public (string, string)[]? Links
+    public NavLinkData[]? Links
     {
         get => PageDetails.Links;
         set
