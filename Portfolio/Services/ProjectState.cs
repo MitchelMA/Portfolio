@@ -10,4 +10,6 @@ public class ProjectState
         StateChangedAsync?.Invoke();
         StateChanged?.Invoke();
     }
+    
+    
 }
