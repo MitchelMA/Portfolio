@@ -5,5 +5,12 @@
     "Background": "icon-192.png",
     "Href": "./portfolio",
     "SetHeight": "21rem"
+  },
+  {
+    "Header": "Line Collisions",
+    "Text": "Een simpel voorbeeld van line collisions met behulp van Vector Resolution",
+    "Background": "./images/Unity_OfLfkoIeGj.png",
+    "Href": "./line-collisions",
+    "SetHeight": "21rem"
   }
 ]

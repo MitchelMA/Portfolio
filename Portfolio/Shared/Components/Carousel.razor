@@ -23,6 +23,7 @@
             {
                 var idx = i;
                 <input type="radio" checked="@(idx == CurrentIdx)"
+                       title="@_models[idx].Header"
                        @onclick="() => { RadioClick(idx); }"/>
             }
         }
