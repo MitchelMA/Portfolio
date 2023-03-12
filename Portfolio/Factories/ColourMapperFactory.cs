@@ -86,7 +86,15 @@ public class ColourMapperFactory
         for (int i = 0; i < l; i++)
         {
             var cur = values![i];
-            T value = (T)(object)int.Parse(cur[0]);
+            T value;
+            if (int.TryParse(cur[0], out var intVal))
+            {
+                value = (T)(object)intVal;
+            }
+            else
+            {
+                value = (T)Enum.Parse(typeof(T), cur[0]);
+            }
             int[] rgba = cur[1].Split(' ').Select(int.Parse).ToArray();
             Color color = Color.FromArgb(rgba[3], rgba[0], rgba[1], rgba[2]);
             dict.Add(value, color);
