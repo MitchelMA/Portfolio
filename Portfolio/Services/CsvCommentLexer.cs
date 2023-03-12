@@ -8,11 +8,11 @@ public static class CsvCommentLexer
     public static char CsvSplitter = ',';
 
     /// <summary>
-    /// Lexes out the comments from the line with the specified `CommendStarter`
+    /// Lexes out the comments from the line with the specified `CommentStarter`
     /// </summary>
     /// <param name="csv">The CSV string you want to get lexed</param>
     /// <returns>An array of trimmed lines without the comments</returns>
-    public static string[] LexComments(string csv)
+    private static unsafe string[] LexComments(string csv)
     {
         byte[] byteArr = Encoding.UTF8.GetBytes(csv.Trim());
         using MemoryStream ms = new(byteArr);
@@ -29,16 +29,14 @@ public static class CsvCommentLexer
             {
                 while (ms.ReadByte() is not '\n' and not -1) ;
                 // after consumption, add the line to the list of lines
-                lines.Add(buffer.Trim());
-                buffer = string.Empty;
+                EOLProc(&buffer, lines);
                 continue;
             }
 
             // when we find the end of the line, add the buffer to the list of lines
             if (c == '\n')
             {
-                lines.Add(buffer.Trim());
-                buffer = string.Empty;
+                EOLProc(&buffer, lines);
                 continue;
             }
 
@@ -47,8 +45,7 @@ public static class CsvCommentLexer
         }
 
         // add the last buffer to the list of lines to include the last line
-        if (buffer.Length > 0)
-            lines.Add(buffer.Trim());
+        EOLProc(&buffer, lines);
 
         return lines.ToArray();
     }
@@ -88,5 +85,19 @@ public static class CsvCommentLexer
         }
 
         return data;
+    }
+
+    private static unsafe bool EOLProc(string* buff, ICollection<string> lines)
+    {
+        if (buff is null)
+            return false;
+
+        // dependant on the fact that "Trim()" creates a copy
+        string trimmed = buff->Trim();
+        if (trimmed.Length > 0)
+            lines.Add(trimmed);
+
+        *buff = "";
+        return true;
     }
 }

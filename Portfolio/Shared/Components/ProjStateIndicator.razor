@@ -3,7 +3,7 @@
 
 @inject ColourMapperFactory MapperFactory;
 
-<div class="state-indicator" style="@StatusColourString" @onclick="() => {ProjectStatus = ProjectStatus.Test;}">
+<div class="state-indicator" style="@StatusColourString">
     <section class="state-indicator__inner">
         <p class="inner__status">@FormattedStatus</p>
     </section>
@@ -42,7 +42,7 @@
     }
 
     private string FormattedStatus =>
-        Enum.Format(typeof(ProjectStatus), ProjectStatus, "G");
+        ProjectStatus.ToString("F");
 
     private string? StatusColourString =>
         StatusColour is null ?
