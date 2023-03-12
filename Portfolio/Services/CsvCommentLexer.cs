@@ -12,7 +12,7 @@ public static class CsvCommentLexer
     /// </summary>
     /// <param name="csv">The CSV string you want to get lexed</param>
     /// <returns>An array of trimmed lines without the comments</returns>
-    private static unsafe string[] LexComments(string csv)
+    private static string[] LexComments(string csv)
     {
         byte[] byteArr = Encoding.UTF8.GetBytes(csv.Trim());
         using MemoryStream ms = new(byteArr);
@@ -29,14 +29,14 @@ public static class CsvCommentLexer
             {
                 while (ms.ReadByte() is not '\n' and not -1) ;
                 // after consumption, add the line to the list of lines
-                EOLProc(&buffer, lines);
+                EOLProc(ref buffer, lines);
                 continue;
             }
 
             // when we find the end of the line, add the buffer to the list of lines
             if (c == '\n')
             {
-                EOLProc(&buffer, lines);
+                EOLProc(ref buffer, lines);
                 continue;
             }
 
@@ -45,7 +45,7 @@ public static class CsvCommentLexer
         }
 
         // add the last buffer to the list of lines to include the last line
-        EOLProc(&buffer, lines);
+        EOLProc(ref buffer, lines);
 
         return lines.ToArray();
     }
@@ -87,17 +87,14 @@ public static class CsvCommentLexer
         return data;
     }
 
-    private static unsafe bool EOLProc(string* buff, ICollection<string> lines)
+    private static bool EOLProc(ref string buff, ICollection<string> lines)
     {
-        if (buff is null)
-            return false;
-
         // dependant on the fact that "Trim()" creates a copy
-        string trimmed = buff->Trim();
+        string trimmed = buff.Trim();
         if (trimmed.Length > 0)
             lines.Add(trimmed);
 
-        *buff = "";
+        buff = "";
         return true;
     }
 }
