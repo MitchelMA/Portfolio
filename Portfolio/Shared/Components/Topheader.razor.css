@@ -9,6 +9,7 @@
     background-attachment: fixed;
     padding: 2rem;
     contain: layout;
+    min-height: 600px;
 }
 
 .top-header__overlay {

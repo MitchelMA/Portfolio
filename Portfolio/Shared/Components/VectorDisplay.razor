@@ -1,0 +1,22 @@
+<span class="vector @TransposedClass">
+    @if (Values is not null)
+    {
+        @foreach (float value in Values)
+        {
+            <span>@value</span>
+        }
+    }
+</span>
+
+@code {
+
+    [Parameter]
+    public float[]? Values { get; set; }
+
+    [Parameter]
+    public bool Transposed { get; set; }
+
+    private string? TransposedClass =>
+        Transposed ? "transpose" : null;
+
+}

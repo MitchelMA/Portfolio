@@ -1,0 +1,27 @@
+.vector {
+    margin: 0.1rem 0.5rem;
+    display: inline-flex;
+    flex-flow: column;
+    border-left: 1px solid currentColor;
+    border-right: 1px solid currentColor;
+    vertical-align: middle;
+}
+
+.vector.transpose {
+    flex-flow: row;
+}
+
+.vector span {
+    margin: 0 0.5rem;
+    text-align: end;
+}
+
+.vector.transpose span {
+    margin: 0 0.2rem;
+    text-align: unset;
+}
+
+.vector.transpose span:not(:last-child)::after {
+    content: ' ;';
+}
+

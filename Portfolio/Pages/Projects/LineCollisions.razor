@@ -1,18 +1,160 @@
 @page "/line-collisions"
 @layout ProjectLayout
 
+@inject LightboxRegistry Registry
 @inject AppState AppState
 @inject ProjectState ProjectState
 
-<PageIsland IslandTitle="Line Collisions" id="colls">
-    
+<PageIsland IslandTitle="Introductie" id="iductie">
+    <ChildContent>
+        <TwoView
+            style="flex-wrap: wrap;"
+            FlexValues="@(new("1 0 200px", "3 0"))">
+            <FirstView>
+                <p>Line collisions zijn een hele belangrijke vorm/basis van collisions.</p>
+                <hr/>
+                <p>
+                    Een vast regel bij line collisions is "Hoek van inval, is hoek van uitval".
+                    Deze is het makkelijkst toe te passen bij perfecte horizontale of verticale lijnen.
+                </p>
+                <hr/>
+                <p>
+                    Een andere manier om dit te berekenen, is middels
+                    <a
+                        href="https://www.physicsclassroom.com/class/vectors/Lesson-1/Vector-Resolution"
+                        target="_blank">
+                        Vector Resolution
+                    </a>
+                    en lijkt heel erg op het berekenen van de
+                    <a
+                        href="https://www.mrchadd.nl/academy/vakken/wiskunde/de-richtingscoefficient"
+                        target="_blank">
+                        De Richtingscoëfficient
+                    </a> van een lineare formule.
+                </p>
+            </FirstView>
+            <SecondView>
+                <article style="
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: center;
+                grid-gap: 0.5rem;">
+                    <LightboxImg class="hover-scale sc075"
+                                 src="./images/circle-line-2.png"
+                                 alt="Hoek van inval, is hoek van uitval"
+                                 height="250"
+                                 BoundLightboxName="@nameof(LineCollisions)"
+                                 Registry="Registry"/>
+                    <LightboxImg class="hover-scale sc075"
+                                 src="./images/vector-resolution.png"
+                                 alt="Simpele uitwerking van Vector Resolution"
+                                 height="250"
+                                 BoundLightboxName="@nameof(LineCollisions)"
+                                 Registry="Registry"/>
+                </article>
+            </SecondView>
+        </TwoView>
+    </ChildContent>
 </PageIsland>
+
+<PageIsland IslandTitle="Voorbeeld Uitwerking" id="uit" Inverse="true">
+    <ChildContent>
+        <TwoView FlexValues="@new("2 0 500px", "1 0")" style="flex-wrap: wrap;">
+            <FirstView>
+                <p>
+                    Een voorbeelduitwerking van hoe ik dit toegepast heb,
+                    lijkt enorm op vector resolution. Alleen in mijn geval houdt het rekening met de hoek waronder
+                    de lijn staat.
+                </p>
+                <hr/>
+                <p>
+                    Laten we beginnen met een lijn die onder een hoek van 45° staat, en
+                    een bal die deze tegemoet komt met een richting van `v` = <VectorDisplay Values="@(new[] { 0.89f, -0.44f })" Transposed="true"/>.
+                    De normal van de lijn is als volgt: <VectorDisplay Values="@(new[] { -0.71f, 0.71f })" Transposed="true"/>, ook hebben we een vector nodig
+                    die de lijn navolgt: <VectorDisplay Values="@(new[] { 0.71f, 0.71f })" Transposed="true"/>. Om met deze twee vectoren een "bounding-box"
+                    te vormen, vermenigvuldigen we deze met de dotproduct. hieruit volgt weer een scalair,
+                    dus vermenigvuldigen we hiervan de uitkomst weer met de corresponderende vector. Als voorbeeld de normal: <br/>
+                    nieuwe normal (nn) =
+                    <VectorDisplay Values="@(new[] { -0.71f, 0.71f })"/> •
+                    <VectorDisplay Values="@(new[] { 0.89f, -0.44f })"/>
+                    = - 0.9443 × <VectorDisplay Values="@(new[] { -0.71f, 0.71f })"/> =
+                    <VectorDisplay Values="@(new[] { 0.67f, -0.67f })"/> <br/>
+                    nieuwe along (na) =
+                    <VectorDisplay Values="@(new[] { 0.71f, 0.71f })"/> •
+                    <VectorDisplay Values="@(new[] { 0.89f, -0.44f })"/>
+                    = 0.3195 × <VectorDisplay Values="@(new[] { 0.71f, 0.71f })"/> =
+                    <VectorDisplay Values="@(new[] { 0.23f, 0.23f })"/> <br/>
+                    Nu hebben we een resolutie-vector van `v`, die rekening houdt met de normal van de lijn.
+                    De nieuwe velocity `v` na impact wordt als volgt berekent: <br/>
+                    `v` = (-nn + na) =
+                    -<VectorDisplay Values="@(new[] { 0.67f, -0.67f })"/> +
+                    <VectorDisplay Values="@(new[] { 0.23f, 0.23f })"/> =
+                    <VectorDisplay Values="@(new[] { -0.44f, 0.89f })"/>
+                </p>
+            </FirstView>
+            <SecondView>
+                <article style="position: sticky; top: 7rem; display: flex; justify-content: center;">
+                    <LightboxImg class="hover-scale sc075"
+                                 src="./images/resolution-process.png"
+                                 alt="Resolution process"
+                                 style="position: sticky; top: 10rem; max-width:  85vw;"
+                                 BoundLightboxName="@nameof(LineCollisions)"
+                                 Registry="Registry"/>
+                </article>
+            </SecondView>
+        </TwoView>
+    </ChildContent>
+</PageIsland>
+
+<PageIsland IslandTitle="Achterliggend Systeem" id="systeem">
+    <TwoView style="flex-wrap: wrap;"
+             FlexValues="@(new("2 0 300px", "1 0"))">
+        <FirstView>
+            <p>
+                Ik heb, als achterliggend systeem, een singleton gebouwd waar ik aan het begin van de scene
+                alle lijnen bij kan registreren. Later tijdens het spelen, kan de bal checken bij deze singleton of
+                hij in de buurt komt van een lijn. Hier kan hij de normal van de lijn opvragen en de richting van de lijn.
+                Deze info is, zoals net aangegeven, nodig voor het berekenen van de nieuwe velocity na impact.
+            </p>
+            <hr/>
+            <p>
+                Ook heb ik, zoals je in het vorige plaatje kon zien, een `<a
+                    href="https://github.com/MitchelMA/Line-collision/blob/revision/lineparts/Assets/Scripts/Utils/PqrForm.cs"
+                    target="_blank">
+                    PqrForm
+                </a>` gemaakt. dit is een class
+                die ik gebruik om wiskundige berekeningen te maken met de componenten p, q en r in de
+                opbouw: `px + qy = r`.
+                Ik kan met deze class de slope van een formule berekenen, de angle, ik kan de x ophalen met
+                een gegeven y en andersom.. en nog veel meer.
+            </p>
+        </FirstView>
+        <SecondView>
+            <article style="display: flex; justify-content: center;">
+
+                <LightboxImg class="hover-scale sc075"
+                             src="./images/rider64_SUVtMKrW1o.png"
+                             alt="De Add method in de singleton"
+                             style="max-width:  85vw;"
+                             BoundLightboxName="@nameof(LineCollisions)"
+                             Registry="Registry"/>
+            </article>
+        </SecondView>
+    </TwoView>
+</PageIsland>
+
+
+<Lightbox LightboxName="@nameof(LineCollisions)"
+          Registry="Registry"/>
 
 @code {
 
     private static readonly NavLinkData[] Links =
     {
-        new("#colls", "Collisions"),
+        new("#iductie", "Introductie"),
+        new("#uit", "Uitwerking"),
+        new("#systeem", "Achterliggend"),
     };
 
     private static readonly HeaderData HeaderData = new()
@@ -25,7 +167,7 @@
     protected override void OnInitialized()
     {
         AppState.Links = Links;
-        AppState.MinNonStackedSize = 450;
+        AppState.MinNonStackedSize = 750;
         AppState.HeaderData = HeaderData;
         AppState.PageTitleExtension = " - Line Collisions";
         AppState.PageIcon = new PageIcon("image/png", "./images/Unity_AmCJ2pY4oC.png");
