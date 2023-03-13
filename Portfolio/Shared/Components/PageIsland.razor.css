@@ -28,3 +28,6 @@
     padding-top: 1.0rem;
 }
 
+.page-island:last-of-type .page-island__child-content {
+    background: red;
+}

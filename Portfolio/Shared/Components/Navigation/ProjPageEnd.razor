@@ -1,0 +1,98 @@
+@inject HttpClient HttpClient
+@inject NavigationManager NavManager
+
+@implements IDisposable
+
+<section class="project-page-end">
+    <div class="project-page-end__inner-container">
+        @if (GithubLink is not null)
+        {
+            <a href="@GithubLink" target="_blank">GitHub</a>
+        }
+        <h3 style="margin-bottom:2rem;">Andere projecten</h3>
+
+        <div class="inner-container__buttons">
+            <a class="buttons buttons__prev" href="@_models?[PrevIdx].Href">
+                <div class="btn prev">
+                    <i class="bi bi-chevron-left"></i>
+                </div>
+                <p>
+                    @_models?[PrevIdx].Header
+                </p>
+            </a>
+            <a class="buttons buttons__next" href="@_models?[NextIdx].Href">
+                <div class="btn next">
+                    <i class="bi bi-chevron-right"></i>
+                </div>
+                <p>
+                    @_models?[NextIdx].Header
+                </p>
+            </a>
+        </div>
+    </div>
+</section>
+
+@code {
+
+    [Parameter]
+    public string? GithubLink { get; set; }
+
+    private int _projectIdx;
+
+    private CarouselModel[]? _models;
+
+    private int NextIdx
+    {
+        get
+        {
+            if (_models is null || _models.Length == 0)
+                return 0;
+
+
+            return (_projectIdx + 1) % _models.Length;
+        }
+    }
+
+    private int PrevIdx
+    {
+        get
+        {
+            if (_models is null || _models.Length == 0)
+                return 0;
+
+            int prev = _projectIdx - 1;
+            if (prev < 0)
+                prev = _models.Length - 1;
+
+            return prev;
+        }
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        NavManager.LocationChanged += OnLocationChanged;
+        _models = await HttpClient.GetFromJsonAsync<CarouselModel[]>("./CarouselData/Projects.json");
+        GetProjIdx();
+        StateHasChanged();
+    }
+
+    private void GetProjIdx()
+    {
+        string path = "./" + NavManager.ToBaseRelativePath(NavManager.Uri);
+        List<string?> paths = _models!.Select(x => x.Href).ToList();
+        _projectIdx = paths.IndexOf(path);
+    }
+
+    public void Dispose()
+    {
+        NavManager.LocationChanged -= OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        GetProjIdx();
+        StateHasChanged();
+    }
+
+}

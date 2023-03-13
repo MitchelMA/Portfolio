@@ -119,7 +119,8 @@
             </p>
             <hr/>
             <p>
-                Ook heb ik, zoals je in het vorige plaatje kon zien, een `<a
+                Ook heb ik, zoals je in het vorige plaatje kon zien, een `
+                <a
                     href="https://github.com/MitchelMA/Line-collision/blob/revision/lineparts/Assets/Scripts/Utils/PqrForm.cs"
                     target="_blank">
                     PqrForm
@@ -139,9 +140,11 @@
                              style="max-width:  85vw;"
                              BoundLightboxName="@nameof(LineCollisions)"
                              Registry="Registry"/>
+                
             </article>
         </SecondView>
     </TwoView>
+    <hr/>
 </PageIsland>
 
 
@@ -171,8 +174,10 @@
         AppState.HeaderData = HeaderData;
         AppState.PageTitleExtension = " - Line Collisions";
         AppState.PageIcon = new PageIcon("image/png", "./images/Unity_AmCJ2pY4oC.png");
+        AppState.ShowFooter = true;
 
         ProjectState.ProjectStatus = ProjectStatus.Prototype;
+        ProjectState.PageEndGithub = "https://github.com/MitchelMA/Line-collision";
     }
 
 }

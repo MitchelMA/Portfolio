@@ -2,11 +2,9 @@
 
 @inject AppState AppState;
 @inject ProjectState ProjectState;
-@inject ColourMapperFactory MapperFactory;
+@inject IJSRuntime JsRuntime
 
-@using Portfolio.ColourMapper
-@using System.Drawing
-
+@using Portfolio.Client
 @implements IDisposable;
 
 <div class="page">
@@ -22,8 +20,10 @@
     <main class="main-content" id="main_content">
         <div class="main-content__inner">
             @Body
+            <ProjPageEnd GithubLink="@ProjectState.PageEndGithub"/>
         </div>
     </main>
+
 
     @if (AppState.ShowFooter)
     {
@@ -33,9 +33,9 @@
             </MainSection>
         </Footer>
     }
-    
+
     <ProjStateIndicator ProjectStatus="@ProjectState.ProjectStatus"/>
-    
+
     <ToTopBtn/>
 </div>
 
@@ -43,20 +43,39 @@
 
     protected override void OnInitialized()
     {
-        AppState.StateChanged += StateChanged;
-        ProjectState.StateChanged += StateChanged;
+        AppState.StateChangedAsync += AppStateChanged;
+        ProjectState.StateChanged += ProjectStateChanged;
         AppState.ShowFooter = false;
     }
 
     public void Dispose()
     {
-        AppState.StateChanged -= StateChanged;
-        ProjectState.StateChanged -= StateChanged;
+        AppState.StateChangedAsync -= AppStateChanged;
+        ProjectState.StateChanged -= ProjectStateChanged;
     }
 
-    private void StateChanged()
+    private async Task AppStateChanged()
+    {
+        await CheckScroll();
+        StateHasChanged();
+    }
+
+    private void ProjectStateChanged()
     {
         StateHasChanged();
+    }
+
+
+    private async Task CheckScroll()
+    {
+        if (AppState.ScrollLocked)
+        {
+            await JsRuntime.InvokeVoidAsync("lockScroll", StaticData.LockedClassName);
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("unlockScroll", StaticData.LockedClassName);
+        }
     }
 
 }
