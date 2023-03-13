@@ -79,7 +79,7 @@
 
     private void GetProjIdx()
     {
-        string path = "./" + NavManager.ToBaseRelativePath(NavManager.Uri);
+        string path = "./" + NavManager.ToBaseRelativePath(NavManager.Uri).Split('#')[0];
         List<string?> paths = _models!.Select(x => x.Href).ToList();
         _projectIdx = paths.IndexOf(path);
     }
