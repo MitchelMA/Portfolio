@@ -9,4 +9,5 @@ public class PageDetails
     public LinkTag Icon = StaticData.DefaultPageIcon;
     public bool ShowFooter = true;
     public NavLinkData[]? Links;
+    public int MinNonStackedSize = 900;
 }
