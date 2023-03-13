@@ -28,6 +28,10 @@
     padding-top: 1.0rem;
 }
 
-.page-island:last-of-type .page-island__child-content {
-    background: red;
+.page-island:nth-last-child(1 of .page-island) .page-island__inner::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 1px;
+    background-color: currentColor;
 }
