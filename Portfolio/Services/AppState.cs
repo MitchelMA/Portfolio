@@ -87,6 +87,19 @@ public class AppState
         }
     }
 
+    public int MinNonStackedSize
+    {
+        get => PageDetails.MinNonStackedSize;
+        set
+        {
+            if (value == PageDetails.MinNonStackedSize)
+                return;
+
+            PageDetails.MinNonStackedSize = value;
+            NotifyStateChanged();
+        }
+    }
+    
     public string? HeaderImgPath
     {
         get => HeaderData.ImagePath;

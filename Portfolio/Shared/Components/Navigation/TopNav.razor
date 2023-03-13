@@ -2,7 +2,7 @@
 @inject IJSRuntime JsRuntime
 @implements IDisposable
 
-<nav class="topnav @ShownClass">
+<nav class="topnav @ShownClass" data-non-stacked-size="@MinNonStackedSize">
     <div class="topnav__inner-container">
 
         <div class="topnav__nav-header">
@@ -44,6 +44,9 @@
     [Parameter]
     public NavLinkData[]? Links { get; set; }
 
+    [Parameter]
+    public int MinNonStackedSize { get; set; } = 950;
+
     private bool _navCollapsed = true;
     private int? ElementsHeight => 56 * Links?.Length;
 
@@ -63,6 +66,14 @@
     protected override void OnInitialized()
     {
         NavigationManager.LocationChanged += LocationChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+        
+        await JsRuntime.InvokeVoidAsync("checkTopNav");
     }
 
     public void Dispose()
