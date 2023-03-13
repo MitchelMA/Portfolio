@@ -1,0 +1,32 @@
+.not-found {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column;
+    background-color: #009688;
+    color: black;
+}
+
+.not-found h1 {
+    font-size: 16rem;
+    text-decoration: underline;
+}
+
+.not-found p {
+    font-size: 2.6rem;
+}
+
+.back-btn {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1;
+    color: black;
+    font-size: 2.6rem;
+}

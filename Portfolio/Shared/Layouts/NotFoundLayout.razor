@@ -1,0 +1,15 @@
+@inherits LayoutComponentBase
+@inject NavigationManager NavManager
+
+<a class="back-btn" href="./"><i class="bi bi-arrow-left-circle-fill"></i></a>
+
+<div class="not-found">
+    <h1>404</h1>
+    <p>Er is niks te vinden op ./@Path</p>
+</div>
+
+@code {
+
+    private string Path => NavManager.ToBaseRelativePath(NavManager.Uri);
+
+}
