@@ -19,7 +19,16 @@
 
     <main class="main-content" id="main_content">
         <div class="main-content__inner">
-            @Body
+            <MainAside>
+                <Main>
+                    @Body
+                </Main>
+                <Right>
+                    <article>
+                        <h3>Aside</h3>
+                    </article>
+                </Right>
+            </MainAside>
             <ProjPageEnd GithubLink="@ProjectState.PageEndGithub"/>
         </div>
     </main>

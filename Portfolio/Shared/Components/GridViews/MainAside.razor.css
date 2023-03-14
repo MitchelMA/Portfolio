@@ -1,0 +1,40 @@
+.main-aside {
+    width: 100%;
+    max-width: var(--content-max-width-l);
+    margin: 0 auto;
+    position: relative;
+    
+    --columnTemplate: min(850px, 100%) 1fr;
+    display: grid;
+    grid-template-columns: var(--columnTemplate);
+    grid-template-areas: "main right" ;
+    grid-gap: 0.4rem;
+}
+
+.main-aside::after {
+    content: '';
+    position: absolute;
+    display: flex;
+    bottom: -0.7rem;
+    left: 50%;
+    translate: -50% 0;
+    height: 1px;
+    width: 96%;
+    background-color: currentColor;
+}
+
+.main-aside__main {
+    grid-area: main;
+}
+
+.main-aside__right {
+    grid-area: right;
+}
+
+@media (max-width: 1100px)
+{
+    .main-aside {
+        grid-template-areas: "main" "right";
+        grid-template-columns: 1fr;
+    }
+}

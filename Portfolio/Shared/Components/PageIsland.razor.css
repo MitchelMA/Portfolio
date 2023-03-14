@@ -29,7 +29,7 @@
 }
 
 .page-island:nth-last-child(1 of .page-island) .page-island__inner::after {
-    content: '';
+    /*content: '';*/
     display: block;
     width: 100%;
     height: 1px;
