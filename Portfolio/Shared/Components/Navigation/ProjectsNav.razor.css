@@ -1,0 +1,50 @@
+.proj-nav {
+    --transition-duration: 125ms;
+    
+    width: 90%;
+    max-width: var(--content-max-width-s);
+    margin: 1rem auto;
+    border-radius: var(--border-radius-small);
+    padding: 0.3rem 0.5rem;
+    position: sticky;
+    top: 7rem;
+}
+
+.proj-nav__header {
+    text-align: center;
+    margin-bottom: 0.6rem;
+}
+
+.proj-nav__projects {
+    list-style: none;
+    margin: 0;
+    padding: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.projects__proj {
+    flex-basis: 10rem;
+}
+
+.projects__proj > a {
+    display: block;
+    text-decoration: none;
+    color: currentColor;
+    padding: 0.5rem 0.7rem;
+    background-color: var(--navbar-back);
+    margin: 0.3rem;
+    border-radius: var(--border-radius-medium);
+    user-select: none;
+    transition: border var(--transition-duration) ease 0s,
+    background-color var(--transition-duration) ease 0s;
+}
+
+.projects__proj.active > a {
+    border: 1px solid currentColor;
+}
+
+.projects__proj > a:hover {
+    background-color: rgb(255 255 255 / 10%);
+}

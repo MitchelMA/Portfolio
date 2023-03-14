@@ -19,8 +19,14 @@
 
     <main class="main-content" id="main_content">
         <div class="main-content__inner">
-            @Body
-            <ProjPageEnd GithubLink="@ProjectState.PageEndGithub"/>
+            <MainAside>
+                <Main>
+                    @Body
+                </Main>
+                <Right>
+                    <ProjectsNav GitHubLink="@ProjectState.PageEndGithub"/>
+                </Right>
+            </MainAside>
         </div>
     </main>
 
@@ -45,7 +51,6 @@
     {
         AppState.StateChangedAsync += AppStateChanged;
         ProjectState.StateChanged += ProjectStateChanged;
-        AppState.ShowFooter = false;
     }
 
     public void Dispose()
@@ -79,3 +84,4 @@
     }
 
 }
+

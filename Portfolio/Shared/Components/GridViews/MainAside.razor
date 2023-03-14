@@ -1,0 +1,20 @@
+<div class="main-aside">
+    <section class="main-aside__main">
+        @Main
+    </section>
+    <article class="main-aside__right">
+        @Right
+    </article>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? Left { get; set; }
+    
+    [Parameter]
+    public RenderFragment? Main { get; set; }
+    
+    [Parameter]
+    public RenderFragment? Right { get; set; }
+
+}
