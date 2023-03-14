@@ -12,5 +12,12 @@
     "Background": "./images/Unity_OfLfkoIeGj.png",
     "Href": "./line-collisions",
     "SetHeight": "21rem"
+  },
+  {
+    "Header": "Vertical Slice",
+    "Text": "De vertical slice waar ik aan heb gewerkt in de tweede periode van het tweede jaar aan het MA",
+    "Background": "./images/Unity_KFo5HjMIzQ.png",
+    "Href": "./vertical-slice",
+    "SetHeight": "21rem"
   }
 ]

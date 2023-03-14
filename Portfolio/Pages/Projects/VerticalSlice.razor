@@ -1,0 +1,46 @@
+@page "/vertical-slice"
+@layout ProjectLayout
+
+@inject AppState AppState
+@inject ProjectState ProjectState
+@inject LightboxRegistry Registry
+
+<PageIsland IslandTitle="Introductie" id="iductie">
+    <ChildContent>
+        <LightboxImg src="./images/Unity_KFo5HjMIzQ.png"
+                     alt="Dodgeball Academia"
+                     style="max-width: 100%;"
+                     BoundLightboxName="@nameof(VerticalSlice)"
+                     Registry="Registry"/>
+    </ChildContent>
+</PageIsland>
+
+<Lightbox LightboxName="@nameof(VerticalSlice)"
+          Registry="Registry"/>
+
+@code {
+
+    private static readonly NavLinkData[] Links =
+    {
+        new("#iductie", "Introductie"),
+    };
+
+    private static readonly HeaderData HeaderData = new()
+    {
+        ImagePath = "./images/Unity_KFo5HjMIzQ.png",
+        Title = "Vertical Slice",
+        UnderTitle = "Dodgeball Academia"
+    };
+    
+    protected override void OnInitialized()
+    {
+        AppState.Links = Links;
+        AppState.MinNonStackedSize = 480;
+        AppState.HeaderData = HeaderData;
+        AppState.ShowFooter = true;
+
+        ProjectState.ProjectStatus = ProjectStatus.Done;
+        ProjectState.PageEndGithub = "https://github.com/MitchelMA/Vertical-Slice-P2";
+    }
+
+}
