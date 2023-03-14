@@ -4,11 +4,11 @@
     margin: 0 auto;
     position: relative;
     
-    --columnTemplate: min(850px, 100%) 1fr;
+    --columnTemplate: min(925px, 100%) 1fr;
     display: grid;
     grid-template-columns: var(--columnTemplate);
     grid-template-areas: "main right" ;
-    grid-gap: 0.4rem;
+    grid-gap: 1rem;
 }
 
 .main-aside::after {
