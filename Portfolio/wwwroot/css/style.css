@@ -13,3 +13,13 @@
 .scroll-locked {
     overflow: hidden;
 }
+
+.contact-link {
+    display: inline-flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+ 
+    text-decoration: none;
+    color: currentColor !important;
+}

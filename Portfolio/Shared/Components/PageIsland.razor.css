@@ -8,8 +8,8 @@
     padding: 0.8rem;
     padding-top: 1.8rem;
     border-radius: var(--border-radius-small);
-    min-height: clamp(300px, 40vh, 500px);
-    min-height: clamp(300px, 40svh, 500px);
+    min-height: clamp(300px, 30vh, 500px);
+    min-height: clamp(300px, 30svh, 500px);
 }
 
 .page-island:nth-child(even) {

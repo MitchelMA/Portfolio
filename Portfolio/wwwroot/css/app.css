@@ -2,6 +2,7 @@
 
 :root {
     /* General */
+    --content-max-width-xs: 550px;
     --content-max-width-s: 750px;
     --content-max-width-m: 950px;
     --content-max-width-l: 1150px;
