@@ -1,0 +1,52 @@
+﻿@page "/towerdefense"
+@using Portfolio.Client
+
+@layout ProjectLayout
+
+@inject AppState AppState;
+@inject ProjectState ProjectState;
+@inject LightboxRegistry Registry
+
+<PageIsland IslandTitle="Introductie" id="iductie">
+    <ChildContent>
+        <LightboxImg src="./images/Unity_4xajzJxaDR.jpg"
+                     alt="De map van het spel"
+                     class="hover-scale sc075"
+                     style="max-width: 100%;"
+                     BoundLightboxName="@nameof(TowerDefense)"
+                     Registry="Registry"/>
+    </ChildContent>
+</PageIsland>
+
+<Lightbox LightboxName="@nameof(TowerDefense)"
+          Registry="Registry"/>
+
+@code {
+
+    private static readonly NavLinkData[] Links =
+    {
+        new("#iductie", "Introductie"),
+    };
+
+    private static readonly HeaderData HeaderData = new()
+    {
+        ImagePath = "./images/Unity_4xajzJxaDR.jpg",
+        Title = "Tower-defense",
+        UnderTitle = "Eerste game helemaal zelf"
+    };
+
+
+    protected override void OnInitialized()
+    {
+        AppState.PageTitleExtension = " - Tower-defense";
+        AppState.Links = Links;
+        AppState.MinNonStackedSize = 480;
+        AppState.PageIcon = StaticData.DefaultPageIcon;
+        AppState.HeaderData = HeaderData;
+        AppState.ShowFooter = true;
+
+        ProjectState.ProjectStatus = ProjectStatus.Done;
+        ProjectState.PageEndGithub = "https://github.com/MitchelMA/TowerDefense";
+    }
+
+}
