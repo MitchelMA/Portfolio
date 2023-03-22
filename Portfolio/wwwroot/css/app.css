@@ -7,13 +7,15 @@
     --content-max-width-m: 950px;
     --content-max-width-l: 1150px;
     --content-max-width-xl: 1350px;
+    
+    --accent-colour: rgb(0 180 160);
 
     /* colour-palette */
     --background-deep: rgb(45 45 45);
     --foreground-deep: rgb(170 170 170);
     --page-island-background: rgb(50 50 50);
     --page-island-foreground: rgb(200 200 200);
-    --page-island-backgroun-alt: rgb(40 40 40);
+    --page-island-background-alt: rgb(40 40 40);
 
     /* border radius */
     --border-radius-small: 5px;

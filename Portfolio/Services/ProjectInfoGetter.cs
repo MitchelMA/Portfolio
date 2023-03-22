@@ -33,7 +33,7 @@ public class ProjectInfoGetter
             // extra escape for when the lock unlocks for the next;
             if (_data.Count > 0)
                 return;
-            
+
             int l = _pdm!.Length;
             for (int i = 0; i < l; i++)
             {
@@ -47,13 +47,19 @@ public class ProjectInfoGetter
     {
         await RetrieveData();
         string path = "./" + _navigationManager.ToBaseRelativePath(_navigationManager.Uri).Split('#')[0];
-        return _data[path];
+        if (_data.TryGetValue(path, out var value))
+            return value;
+
+        return null;
     }
 
     public async Task<ProjectDataModel?> GetWithHref(string href)
     {
         await RetrieveData();
-        return _data[href];
+        if (_data.TryGetValue(href, out var value))
+            return value;
+
+        return null;
     }
 
     private bool AddOrReplace(ProjectDataModel model)

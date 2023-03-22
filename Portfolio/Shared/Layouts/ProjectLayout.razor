@@ -2,9 +2,12 @@
 
 @inject AppState AppState;
 @inject ProjectState ProjectState;
+@inject NavigationManager NavManager;
+@inject ProjectInfoGetter Getter
 @inject IJSRuntime JsRuntime
 
 @using Portfolio.Client
+@using Portfolio.Model.Project
 @implements IDisposable;
 
 <div class="page">
@@ -21,10 +24,31 @@
         <div class="main-content__inner">
             <MainAside>
                 <Main>
+                    <PageIsland IslandTitle="Info">
+                        <article style="display: flex; justify-content: center;">
+                            <table class="styled-table">
+                                <thead>
+                                <tr>
+                                    <th>Duur</th>
+                                    <th>Groep grootte</th>
+                                    <th>Talen</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>@_model?.Planning.Duration</td>
+                                    <td>@_model?.Planning.PeopleCount</td>
+                                    <td>@_model?.Planning.Language</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </article>
+                    </PageIsland>
                     @Body
                 </Main>
                 <Right>
-                    <ProjectsNav GitHubLink=@($"https://github.com/MitchelMA/{ProjectState.PageEndGithub}") />
+                    <ProjectsNav 
+                        GitHubLink=@($"https://github.com/MitchelMA/{ProjectState.PageEndGithub}") />
                 </Right>
             </MainAside>
         </div>
@@ -47,16 +71,26 @@
 
 @code {
 
+    private ProjectDataModel? _model;
+
     protected override void OnInitialized()
     {
         AppState.StateChangedAsync += AppStateChanged;
         ProjectState.StateChanged += ProjectStateChanged;
+        NavManager.LocationChanged += OnLocationChanged;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _model = await Getter.GetCorrespondingToUri();
+        StateHasChanged();
     }
 
     public void Dispose()
     {
         AppState.StateChangedAsync -= AppStateChanged;
         ProjectState.StateChanged -= ProjectStateChanged;
+        NavManager.LocationChanged -= OnLocationChanged;
     }
 
     private async Task AppStateChanged()
@@ -70,6 +104,10 @@
         StateHasChanged();
     }
 
+    private async void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        _model = await Getter.GetCorrespondingToUri();
+    }
 
     private async Task CheckScroll()
     {
@@ -84,4 +122,3 @@
     }
 
 }
-

@@ -8,12 +8,10 @@
     padding: 0.8rem;
     padding-top: 1.8rem;
     border-radius: var(--border-radius-small);
-    min-height: clamp(300px, 30vh, 500px);
-    min-height: clamp(300px, 30svh, 500px);
 }
 
 .page-island:nth-child(even) {
-    background: var(--page-island-backgroun-alt);
+    background: var(--page-island-background-alt);
 }
 
 .page-island__inner {
