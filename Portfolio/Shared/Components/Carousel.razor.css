@@ -80,6 +80,28 @@
     background-color: whitesmoke;
 }
 
+.carousel__buttons-holder {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.carousel__buttons-holder .btn {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    color: var(--foreground-deep);
+    justify-content: center;
+    align-items: center;
+    border-radius: 1rem;
+    font-size: 2rem;
+    outline: none !important;
+    box-shadow: none !important;
+}
 
 .carousel__header-container {
     position: relative;

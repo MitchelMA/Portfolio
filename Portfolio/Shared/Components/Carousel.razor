@@ -29,6 +29,24 @@
             }
         }
     </div>
+    <div class="carousel__buttons-holder">
+        @{
+            var nextIdx = (CurrentIdx + 1) % _models?.Length ?? 0;
+            var prevIdx = CurrentIdx - 1;
+            if (prevIdx < 0)
+                prevIdx = _models?.Length - 1 ?? 0;
+        }
+        <button class="btn btn-prev"
+                @onclick="() => { RadioClick(CurrentIdx - 1); }"
+                title="@_models?[prevIdx].Header">
+            <i class="bi bi-arrow-left-circle-fill"></i>
+        </button>
+        <button class="btn btn-next"
+                @onclick="() => { RadioClick(CurrentIdx + 1); }"
+                title="@_models?[nextIdx].Header">
+            <i class="bi bi-arrow-right-circle-fill"></i>
+        </button>
+    </div>
 </div>
 
 @code {
@@ -191,7 +209,7 @@
 
         _models = data.ToArray();
     }
-    
+
     private CarouselModel FromProjectDataModel(ProjectDataModel model) =>
         new()
         {
@@ -208,4 +226,5 @@
         _cts.Cancel();
         _cts.Dispose();
     }
+
 }
