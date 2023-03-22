@@ -1,4 +1,6 @@
 @page "/vertical-slice"
+@using Portfolio.Model.Project
+@using Portfolio.Client
 @layout ProjectLayout
 
 @inject AppState AppState
@@ -26,23 +28,31 @@
         new("#iductie", "Introductie"),
     };
 
-    private static readonly HeaderData HeaderData = new()
-    {
-        ImagePath = "./images/Unity_KFo5HjMIzQ.png",
-        Title = "Vertical Slice",
-        UnderTitle = "Dodgeball Academia"
-    };
-    
-    protected override void OnInitialized()
-    {
-        AppState.Links = Links;
-        AppState.MinNonStackedSize = 480;
-        AppState.HeaderData = HeaderData;
-        AppState.ShowFooter = true;
+    private static ProjectDataModel? _model;
+    private static readonly PageDetails PageDetails = new();
+    private static readonly HeaderData HeaderData = new();
 
-        ProjectState.ProjectStatus = ProjectStatus.Done;
-        ProjectState.PageEndGithub = "https://github.com/MitchelMA/Vertical-Slice-P2";
-        // Getter.GetWithHref("test");
+    protected override async Task OnInitializedAsync()
+    {
+        _model = await Getter.GetCorrespondingToUri();
+        
+        // setup of page-details
+        PageDetails.Links = Links;
+        PageDetails.Icon = StaticData.DefaultPageIcon;
+        PageDetails.ShowFooter = true;
+        PageDetails.TitleExtension = _model?.TitleExtension;
+        PageDetails.MinNonStackedSize = 480;
+        
+        // setup of header data
+        HeaderData.Title = _model?.Header.HeaderTitle;
+        HeaderData.ImagePath = _model?.Header.HeaderImage;
+        HeaderData.UnderTitle = _model?.Header.UnderTitle;
+
+        AppState.PageDetails = PageDetails;
+        AppState.HeaderData = HeaderData;
+
+        ProjectState.ProjectStatus = _model?.Status ?? ProjectStatus.Done;
+        ProjectState.PageEndGithub = _model?.GitHub;
     }
 
 }

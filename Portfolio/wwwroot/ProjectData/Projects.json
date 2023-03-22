@@ -1,7 +1,7 @@
 [
   {
     "Planning": {
-      "Duration": "2 weken",
+      "Duration": "10 weken",
       "PeopleCount": 1,
       "Language": "C#"
     },
@@ -12,9 +12,51 @@
       "Text": "Het eerste project van het tweede jaar waar ik in mijn eentje aan heb gewerkt"
     },
     "Status": 0,
-    "TitleExtension": " - Tower Defense lol",
+    "TitleExtension": " - Tower Defense",
     "LocalHref": "./towerdefense",
     "GitHub": "towerdefense",
+    "CardInfo": {
+      "SetHeight": "21rem"
+    }
+  },
+  
+  {
+    "Planning": {
+      "Duration": "5 dagen",
+      "PeopleCount": 1,
+      "Language": "C#"
+    },
+    "Header": {
+      "HeaderTitle": "Line Collisions",
+      "HeaderImage": "./images/Unity_OfLfkoIeGj.png",
+      "UnderTitle": "Line collisions middels vector-resolution",
+      "Text": "Een simpel voorbeeld van line collisions met behulp van Vector Resolution"
+    },
+    "Status": 2,
+    "TitleExtension": " - Line Collision",
+    "LocalHref": "./line-collisions",
+    "GitHub": "Line-collision",
+    "CardInfo": {
+      "SetHeight": "21rem"
+    }
+  },
+
+  {
+    "Planning": {
+      "Duration": "10 weken",
+      "PeopleCount": 8,
+      "Language": "C#"
+    },
+    "Header": {
+      "HeaderTitle": "Vertical Slice",
+      "HeaderImage": "./images/Unity_KFo5HjMIzQ.png",
+      "UnderTitle": "Dodgeball Academia",
+      "Text": "De vertical slice waar ik aan heb gewerkt in de tweede periode van het tweede jaar aan het MA"
+    },
+    "Status": 0,
+    "TitleExtension": " - Vertical Slice",
+    "LocalHref": "./vertical-slice",
+    "GitHub": "Vertical-Slice-P2",
     "CardInfo": {
       "SetHeight": "21rem"
     }

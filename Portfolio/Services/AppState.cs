@@ -41,7 +41,7 @@ public class AppState
         }
     }
     
-    public string PageTitleExtension
+    public string? PageTitleExtension
     {
         get => PageDetails.TitleExtension;
         set

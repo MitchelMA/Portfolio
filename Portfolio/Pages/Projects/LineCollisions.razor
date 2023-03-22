@@ -1,9 +1,11 @@
 @page "/line-collisions"
+@using Portfolio.Model.Project
 @layout ProjectLayout
 
 @inject LightboxRegistry Registry
 @inject AppState AppState
 @inject ProjectState ProjectState
+@inject ProjectInfoGetter Getter
 
 <PageIsland IslandTitle="Introductie" id="iductie">
     <ChildContent>
@@ -152,6 +154,10 @@
 
 @code {
 
+    private static ProjectDataModel? _model;
+    private static readonly HeaderData HeaderData = new();
+    private static readonly PageDetails PageDetails = new();
+
     private static readonly NavLinkData[] Links =
     {
         new("#iductie", "Introductie"),
@@ -159,24 +165,28 @@
         new("#systeem", "Achterliggend"),
     };
 
-    private static readonly HeaderData HeaderData = new()
+    protected override async Task OnInitializedAsync()
     {
-        ImagePath = "./images/Unity_OfLfkoIeGj.png",
-        Title = "Line Collisions",
-        UnderTitle = "Line collisions middels vector-resolution",
-    };
+        _model = await Getter.GetCorrespondingToUri();
+        
+        // page details
+        PageDetails.Links = Links;
+        PageDetails.Icon = new PageIcon("image/png", "./images/Unity_AmCJ2pY4oC.png");
+        PageDetails.ShowFooter = true;
+        PageDetails.TitleExtension = _model?.TitleExtension;
+        PageDetails.MinNonStackedSize = 750;
+        
+        // header data
+        HeaderData.Title = _model?.Header.HeaderTitle;
+        HeaderData.ImagePath = _model?.Header.HeaderImage;
+        HeaderData.UnderTitle = _model?.Header.UnderTitle;
 
-    protected override void OnInitialized()
-    {
-        AppState.Links = Links;
-        AppState.MinNonStackedSize = 750;
+        AppState.PageDetails = PageDetails;
         AppState.HeaderData = HeaderData;
-        AppState.PageTitleExtension = " - Line Collisions";
-        AppState.PageIcon = new PageIcon("image/png", "./images/Unity_AmCJ2pY4oC.png");
-        AppState.ShowFooter = true;
 
-        ProjectState.ProjectStatus = ProjectStatus.Prototype;
-        ProjectState.PageEndGithub = "https://github.com/MitchelMA/Line-collision";
+        // project data
+        ProjectState.PageEndGithub = _model?.GitHub;
+        ProjectState.ProjectStatus = _model?.Status ?? ProjectStatus.Done;
     }
 
 }

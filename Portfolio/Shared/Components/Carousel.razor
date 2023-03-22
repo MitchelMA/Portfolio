@@ -1,4 +1,5 @@
 ﻿@using System.Text.Json
+@using Portfolio.Model.Project
 @inject HttpClient HttpClient
 
 @implements IDisposable
@@ -128,8 +129,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (_fromJsonFile is not null)
-            _models = await HttpClient.GetFromJsonAsync<CarouselModel[]>(_fromJsonFile);
+        await GetCarouselModels();
 
         ScrollThrough(CurrentIdx);
 
@@ -174,11 +174,38 @@
         }
     }
 
+    private async Task GetCarouselModels()
+    {
+        if (_fromJsonFile is null)
+            return;
+
+        List<CarouselModel> data = new();
+        var tmp = await HttpClient.GetFromJsonAsync<ProjectDataModel[]>(_fromJsonFile);
+
+        int l = tmp?.Length ?? 0;
+        for (int i = 0; i < l; i++)
+        {
+            var cur = tmp![i];
+            data.Add(FromProjectDataModel(cur));
+        }
+
+        _models = data.ToArray();
+    }
+    
+    private CarouselModel FromProjectDataModel(ProjectDataModel model) =>
+        new()
+        {
+            Header = model.Header.HeaderTitle,
+            Background = model.Header.HeaderImage,
+            Href = model.LocalHref,
+            SetHeight = model.CardInfo.SetHeight,
+            Text = model.Header.Text ?? string.Empty,
+        };
+
     public void Dispose()
     {
         _disposed = true;
         _cts.Cancel();
         _cts.Dispose();
     }
-
 }

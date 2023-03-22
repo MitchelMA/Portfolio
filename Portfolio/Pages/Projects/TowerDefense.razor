@@ -41,13 +41,13 @@
         _model = await Getter.GetCorrespondingToUri();
         
         // setup of the header data
-        HeaderData.ImagePath = _model?.Header.HeaderImage ?? "";
-        HeaderData.Title = _model?.Header.HeaderTitle ?? "";
-        HeaderData.UnderTitle = _model?.Header.UnderTitle ?? "";
+        HeaderData.ImagePath = _model?.Header.HeaderImage;
+        HeaderData.Title = _model?.Header.HeaderTitle;
+        HeaderData.UnderTitle = _model?.Header.UnderTitle;
         
         // setup of the page details
         PageDetails.ShowFooter = true;
-        PageDetails.TitleExtension = _model?.TitleExtension ?? "";
+        PageDetails.TitleExtension = _model?.TitleExtension;
         PageDetails.Links = Links;
         PageDetails.MinNonStackedSize = 480;
         PageDetails.Icon = StaticData.DefaultPageIcon;
