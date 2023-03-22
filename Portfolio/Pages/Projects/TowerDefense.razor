@@ -32,27 +32,28 @@
 
     private static ProjectDataModel? _model;
 
-    private static readonly HeaderData HeaderData = new()
-    {
-        ImagePath = "./images/Unity_4xajzJxaDR.jpg",
-        Title = "Tower-defense",
-        UnderTitle = "Eerste game helemaal zelf"
-    };
+    private static readonly HeaderData HeaderData = new();
+    private static readonly PageDetails PageDetails = new();
 
 
     protected override async Task OnInitializedAsync()
     {
-        _model = await Getter.GetWithHref();
+        _model = await Getter.GetCorrespondingToUri();
+        
+        // setup of the header data
         HeaderData.ImagePath = _model?.Header.HeaderImage ?? "";
         HeaderData.Title = _model?.Header.HeaderTitle ?? "";
         HeaderData.UnderTitle = _model?.Header.UnderTitle ?? "";
         
-        AppState.PageTitleExtension = _model?.TitleExtension ?? "";
-        AppState.Links = Links;
-        AppState.MinNonStackedSize = 480;
+        // setup of the page details
+        PageDetails.ShowFooter = true;
+        PageDetails.TitleExtension = _model?.TitleExtension ?? "";
+        PageDetails.Links = Links;
+        PageDetails.MinNonStackedSize = 480;
+        PageDetails.Icon = StaticData.DefaultPageIcon;
+
         AppState.HeaderData = HeaderData;
-        AppState.PageIcon = StaticData.DefaultPageIcon;
-        AppState.ShowFooter = true;
+        AppState.PageDetails = PageDetails;
 
         ProjectState.ProjectStatus = _model?.Status ?? ProjectStatus.Done;
         ProjectState.PageEndGithub = _model?.GitHub;
