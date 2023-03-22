@@ -2,6 +2,7 @@
 @using Portfolio.Services
 @using Portfolio.Client
 @inject AppState AppState
+@inject ProjectInfoGetter InfoGetter
 @implements IDisposable
 
 <HeadContent>
@@ -26,6 +27,7 @@
     {
         AppState.StateChanged += StateChanged;
     }
+    
 
     public void Dispose()
     {

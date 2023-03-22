@@ -1,0 +1,22 @@
+[
+  {
+    "Planning": {
+      "Duration": "2 weken",
+      "PeopleCount": 1,
+      "Language": "C#"
+    },
+    "Header": {
+      "HeaderTitle": "Tower Defense",
+      "HeaderImage": "./images/Unity_4xajzJxaDR.jpg",
+      "UnderTitle": "Eerste game helemaal zelf",
+      "Text": "Het eerste project van het tweede jaar waar ik in mijn eentje aan heb gewerkt"
+    },
+    "Status": 0,
+    "TitleExtension": " - Tower Defense lol",
+    "LocalHref": "./towerdefense",
+    "GitHub": "Test",
+    "CardInfo": {
+      "SetHeight": "21rem"
+    }
+  }
+]

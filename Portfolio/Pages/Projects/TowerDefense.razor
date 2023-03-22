@@ -1,10 +1,12 @@
 ﻿@page "/towerdefense"
 @using Portfolio.Client
+@using Portfolio.Model.Project
 
 @layout ProjectLayout
 
-@inject AppState AppState;
-@inject ProjectState ProjectState;
+@inject AppState AppState
+@inject ProjectInfoGetter Getter
+@inject ProjectState ProjectState
 @inject LightboxRegistry Registry
 
 <PageIsland IslandTitle="Introductie" id="iductie">
@@ -28,6 +30,8 @@
         new("#iductie", "Introductie"),
     };
 
+    private static ProjectDataModel? _model;
+
     private static readonly HeaderData HeaderData = new()
     {
         ImagePath = "./images/Unity_4xajzJxaDR.jpg",
@@ -36,17 +40,22 @@
     };
 
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        AppState.PageTitleExtension = " - Tower-defense";
+        _model = await Getter.GetWithHref();
+        HeaderData.ImagePath = _model?.Header.HeaderImage ?? "";
+        HeaderData.Title = _model?.Header.HeaderTitle ?? "";
+        HeaderData.UnderTitle = _model?.Header.UnderTitle ?? "";
+        
+        AppState.PageTitleExtension = _model?.TitleExtension ?? "";
         AppState.Links = Links;
         AppState.MinNonStackedSize = 480;
-        AppState.PageIcon = StaticData.DefaultPageIcon;
         AppState.HeaderData = HeaderData;
+        AppState.PageIcon = StaticData.DefaultPageIcon;
         AppState.ShowFooter = true;
 
-        ProjectState.ProjectStatus = ProjectStatus.Done;
-        ProjectState.PageEndGithub = "https://github.com/MitchelMA/TowerDefense";
+        ProjectState.ProjectStatus = _model?.Status ?? ProjectStatus.Done;
+        ProjectState.PageEndGithub = _model?.GitHub;
     }
 
 }

@@ -4,6 +4,7 @@
 @inject AppState AppState
 @inject ProjectState ProjectState
 @inject LightboxRegistry Registry
+@inject ProjectInfoGetter Getter;
 
 <PageIsland IslandTitle="Introductie" id="iductie">
     <ChildContent>
@@ -41,6 +42,7 @@
 
         ProjectState.ProjectStatus = ProjectStatus.Done;
         ProjectState.PageEndGithub = "https://github.com/MitchelMA/Vertical-Slice-P2";
+        // Getter.GetWithHref("test");
     }
 
 }
