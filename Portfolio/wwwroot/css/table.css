@@ -2,7 +2,7 @@
     border-collapse: collapse;
     margin: 25px 0;
     font-size: 0.9em;
-    min-width: 400px;
+    width: min(450px, 96%);
     box-shadow: var(--navbar-deep-boxshadow);
     border-radius: var(--border-radius-small);
     overflow: hidden;
