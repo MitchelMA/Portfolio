@@ -42,7 +42,7 @@
 }
 
 .projects__proj.active > a {
-    outline: 1px solid currentColor;
+    outline: 1px solid var(--accent-colour);
 }
 
 .projects__proj > a:hover {
