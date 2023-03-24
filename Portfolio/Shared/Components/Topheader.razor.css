@@ -1,4 +1,7 @@
 ﻿header.top-header {
+    --radial-inside: transparent;
+    --radial-outside: rgb(34 34 34 / 80%);
+    
     position: relative;
     height: 100vh;
     /* overload for when small vh is available */
@@ -10,13 +13,15 @@
     padding: 2rem;
     contain: layout;
     min-height: 600px;
+    
+    color: whitesmoke;
 }
 
 .top-header__overlay {
     position: fixed;
     inset: 0;
-    /*background: radial-gradient(transparent, rgb(34 34 34 / 58%)) fixed;*/
-    background-color: rgb(220 220 220 / 60%);
+    background-color: rgb(24 24 24 / 60%);
+    background-image: radial-gradient(closest-corner, var(--radial-inside), var(--radial-outside));
 }
 
 .top-header__inner {
@@ -52,5 +57,6 @@
 }
 
 .texts__extra {
-    font-size: 1.3rem;
+    margin-top: 5rem;
+    font-size: 1.6rem;
 }

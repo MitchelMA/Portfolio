@@ -49,6 +49,9 @@
 }
 
 .text-container__text {
+    top: unset !important;
+    bottom: 0;
+    translate: -50% 0 !important;
     font-size: 1.1rem;
 }
 
@@ -85,9 +88,10 @@
     left: 50%;
     top: 50%;
     translate: -50% -50%;
-    width: 70%;
+    width: 85%;
     display: flex;
     justify-content: space-between;
+    pointer-events: none;
 }
 
 .carousel__buttons-holder .btn {
@@ -101,6 +105,7 @@
     font-size: 2rem;
     outline: none !important;
     box-shadow: none !important;
+    pointer-events: all;
 }
 
 .carousel__header-container {
