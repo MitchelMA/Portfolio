@@ -40,3 +40,15 @@
 .state-indicator:hover .state-indicator__inner {
     scale: 1;
 }
+
+@media screen and (min-width: 565px)
+{
+    .state-indicator {
+        width: auto;
+        padding: 0 2rem;
+    }
+    
+    .state-indicator__inner {
+        scale: 1;
+    }
+}

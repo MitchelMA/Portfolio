@@ -2,7 +2,7 @@ namespace Portfolio.Enums;
 
 public enum ProjectStatus
 {
-    Done,
+    Finished,
     InDevelopment,
     Prototype,
 }
