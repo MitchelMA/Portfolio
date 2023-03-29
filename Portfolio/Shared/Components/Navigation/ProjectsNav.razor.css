@@ -4,10 +4,10 @@
     width: 90%;
     max-width: var(--content-max-width-s);
     margin: 1rem auto;
-    border-radius: var(--border-radius-small);
     padding: 0.3rem 0.5rem;
     position: sticky;
     top: 7rem;
+    border-bottom: thin solid var(--accent-colour);
 }
 
 .proj-nav__header {
@@ -16,7 +16,7 @@
 }
 
 .proj-nav__header > a {
-    font-size: 1.2em;
+    font-size: 1.35em;
 }
 
 .proj-nav__projects {
@@ -46,7 +46,7 @@
 }
 
 .projects__proj.active > a {
-    outline: 1px solid var(--accent-colour);
+    outline: thin solid var(--accent-colour);
 }
 
 .projects__proj > a:hover {

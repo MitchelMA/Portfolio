@@ -48,6 +48,10 @@
         padding: 0 2rem;
     }
     
+    .state-indicator:hover {
+        width: unset;
+    }
+    
     .state-indicator__inner {
         scale: 1;
     }

@@ -11,13 +11,68 @@
 
 <PageIsland IslandTitle="Introductie" id="iductie">
     <ChildContent>
-        <LightboxImg src="./images/Unity_4xajzJxaDR.jpg"
-                     alt="De map van het spel"
-                     class="hover-scale sc075"
-                     style="max-width: 100%;"
-                     BoundLightboxName="@nameof(TowerDefense)"
-                     Registry="Registry"/>
+        <TwoView style="flex-wrap: wrap;"
+                 FlexValues="@(new("1 300px", "3 300px"))">
+            <FirstView>
+                <p>
+                    In de eerste periode van het tweede jaar op deze studie, hadden wij
+                    10 weken de tijd gekregen om aan een 
+                    <a href="https://en.wikipedia.org/wiki/Tower_defense" target="_blank">tower defense</a>
+                    spel te werken. <br/>
+                    Het doel van deze opdracht was niet om een mooi uitziend spel te maken,
+                    maar eerder het leren van implementeren van 
+                    <a href="https://en.wikipedia.org/wiki/Game_mechanics" target="_blank">game mechanics</a>
+                    (i.e. enemy-wave systeem; schieten van projectielen; etc..)
+                </p>
+            </FirstView>
+
+            <SecondView>
+                <LightboxImg src="./images/Unity_4xajzJxaDR.jpg"
+                             alt="De map van het spel"
+                             class="hover-scale sc075"
+                             style="max-width: 100%;"
+                             BoundLightboxName="@nameof(TowerDefense)"
+                             Registry="Registry"/>
+            </SecondView>
+        </TwoView>
+
     </ChildContent>
+</PageIsland>
+
+<PageIsland IslandTitle="Path Finding" id="path" Inverse="true">
+    <ChildContent>
+        <TwoView
+            style="flex-wrap: wrap;"
+            FlexValues="@(new("2 300px", "2 300px"))">
+            
+            <FirstView>
+                Om enemies een pad af te kunnen laten lopen, is er een systeem nodig
+                om aan te geven waar het pad is. <br/>
+                Volgorde is alvolgt: een enemy wordt ingespawned; deze krijgt zijn eerste "target"
+                doorgegeven. Wanneer deze bij zijn target is, vraagt de enemy aan zijn target wat
+                de volgende target is. Het pad vormt op deze manier iets genaamd een
+                <a href="https://en.wikipedia.org/wiki/Linked_list" target="_blank">Linked List</a>.
+                <br/><br/>
+                Het allermooiste van dit systeem is, is dat ik het ook voor de camera kan gebruiken.
+                Meestal zie je wel wanneer je in een level komt; dat er een korte "cutscene" is waar
+                het hele level wordt laten zien.
+                Het pad van de cutscene kan ik maken middels het zelfde systeem wat ik gebruik voor
+                de enemies.
+            </FirstView>
+            
+            <SecondView>
+                
+                <LightboxImg src="./images/PathFinding.png"
+                             alt="Visual sheet van path finding mechanic"
+                             class="hover-scale sc075"
+                             style="max-width: 100%;"
+                             BoundLightboxName="@nameof(TowerDefense)"
+                             Registry="Registry"/>
+                
+            </SecondView>
+            
+        </TwoView>
+    </ChildContent> 
 </PageIsland>
 
 <Lightbox LightboxName="@nameof(TowerDefense)"
@@ -28,6 +83,7 @@
     private static readonly NavLinkData[] Links =
     {
         new("#iductie", "Introductie"),
+        new("#path", "Path Finding"),
     };
 
     private static ProjectDataModel? _model;
@@ -39,17 +95,17 @@
     protected override async Task OnInitializedAsync()
     {
         _model = await Getter.GetCorrespondingToUri();
-        
-        // setup of the header data
+
+    // setup of the header data
         HeaderData.ImagePath = _model?.Header.HeaderImage;
         HeaderData.Title = _model?.Header.HeaderTitle;
         HeaderData.UnderTitle = _model?.Header.UnderTitle;
-        
-        // setup of the page details
+
+    // setup of the page details
         PageDetails.ShowFooter = true;
         PageDetails.TitleExtension = _model?.TitleExtension;
         PageDetails.Links = Links;
-        PageDetails.MinNonStackedSize = 480;
+        PageDetails.MinNonStackedSize = 530;
         PageDetails.Icon = StaticData.DefaultPageIcon;
 
         AppState.HeaderData = HeaderData;

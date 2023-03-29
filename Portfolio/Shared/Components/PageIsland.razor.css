@@ -7,7 +7,6 @@
     flex-flow: column;
     padding: 0.8rem;
     padding-top: 1.8rem;
-    border-radius: var(--border-radius-small);
 }
 
 .page-island:nth-child(even) {
@@ -24,6 +23,7 @@
 .page-island:not(:nth-child(1))
 {
     padding-top: 1.0rem;
+    border-top: thin solid var(--accent-colour);
 }
 
 .page-island:nth-last-child(1 of .page-island) .page-island__inner::after {
