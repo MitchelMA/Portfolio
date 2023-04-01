@@ -8,13 +8,95 @@
 @inject LightboxRegistry Registry
 @inject ProjectInfoGetter Getter;
 
-<PageIsland IslandTitle="Introductie" id="iductie">
+<PageIsland IslandTitle="Showreel" id="reel">
     <ChildContent>
-        <LightboxImg src="./images/Unity_KFo5HjMIzQ.png"
-                     alt="Dodgeball Academia"
-                     style="max-width: 100%;"
-                     BoundLightboxName="@nameof(VerticalSlice)"
-                     Registry="Registry"/>
+        <p>Dit is een showreel van tijdens development:</p>
+        <video controls
+               width="100%"
+               autoplay
+               style="border-radius: var(--border-radius-small)">
+            
+            <source
+                src="./videos/DAReel.mp4"
+                type="video/mp4"/>
+        </video>
+    </ChildContent>
+</PageIsland>
+
+<PageIsland IslandTitle="Rolverdeling" id="rol">
+    <ChildContent>
+        <TwoView
+            style="flex-wrap: wrap;"
+            FlexValues="@(new("1 350px", "3 300px"))">
+            <FirstView>
+                <article style="display: flex; justify-content: center;">
+                    <table class="styled-table">
+                        <thead>
+                        <tr>
+                            <th>Namen</th>
+                            <th>Rol</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr>
+                            <td>Bas, Yana</td>
+                            <td>Character art en animation</td>
+                        </tr>
+
+                        <tr>
+                            <td>Stan</td>
+                            <td>Environment art</td>
+                        </tr>
+
+                        <tr>
+                            <td>Araysha</td>
+                            <td>UI art</td>
+                        </tr>
+
+                        <tr>
+                            <td>Dylan</td>
+                            <td>Movement programming</td>
+                        </tr>
+
+                        <tr>
+                            <td>Leon</td>
+                            <td>Samenstellen prototype en programmeren trefballen gooien</td>
+                        </tr>
+
+                        <tr>
+                            <td>Tijmen</td>
+                            <td>Targeting systeem programeren</td>
+                        </tr>
+
+                        <tr>
+                            <td>Ik</td>
+                            <td>AI Programming, camera instellingen en boundaries</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </article>
+            </FirstView>
+            <SecondView>
+                <article style="display: flex; align-items: center; height: 100%;">
+                    <LightboxImg src="./images/Unity_KFo5HjMIzQ.png"
+                                 alt="Dodgeball Academia"
+                                 style="max-width: 100%;"
+                                 BoundLightboxName="@nameof(VerticalSlice)"
+                                 Registry="Registry"/>
+
+                </article>
+            </SecondView>
+        </TwoView>
+
+    </ChildContent>
+</PageIsland>
+
+<PageIsland IslandTitle="Camera Instellen" id="camera">
+    <ChildContent>
+        <TwoView>
+
+        </TwoView>
     </ChildContent>
 </PageIsland>
 
@@ -25,7 +107,8 @@
 
     private static readonly NavLinkData[] Links =
     {
-        new("#iductie", "Introductie"),
+        new("#rol", "Rolverdeling"),
+        new("#camera", "Camera"),
     };
 
     private static ProjectDataModel? _model;
@@ -35,15 +118,15 @@
     protected override async Task OnInitializedAsync()
     {
         _model = await Getter.GetCorrespondingToUri();
-        
-        // setup of page-details
+
+    // setup of page-details
         PageDetails.Links = Links;
         PageDetails.Icon = StaticData.DefaultPageIcon;
         PageDetails.ShowFooter = true;
         PageDetails.TitleExtension = _model?.TitleExtension;
         PageDetails.MinNonStackedSize = 480;
-        
-        // setup of header data
+
+    // setup of header data
         HeaderData.Title = _model?.Header.HeaderTitle;
         HeaderData.ImagePath = _model?.Header.HeaderImage;
         HeaderData.UnderTitle = _model?.Header.UnderTitle;

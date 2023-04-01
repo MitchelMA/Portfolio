@@ -4,5 +4,5 @@ public struct Planning
 {
     public string Duration { get; init; }
     public int PeopleCount { get; init; }
-    public string Language { get; init; }
+    public string Software { get; init; }
 }

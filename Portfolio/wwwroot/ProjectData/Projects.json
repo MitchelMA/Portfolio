@@ -3,7 +3,7 @@
     "Planning": {
       "Duration": "10 weken",
       "PeopleCount": 1,
-      "Language": "C#"
+      "Software": "C#, Unity"
     },
     "Header": {
       "HeaderTitle": "Tower Defense",
@@ -24,7 +24,7 @@
     "Planning": {
       "Duration": "5 dagen",
       "PeopleCount": 1,
-      "Language": "C#"
+      "Software": "C#, Unity"
     },
     "Header": {
       "HeaderTitle": "Line Collisions",
@@ -45,7 +45,7 @@
     "Planning": {
       "Duration": "10 weken",
       "PeopleCount": 8,
-      "Language": "C#"
+      "Software": "C#, Unity, Photoshop"
     },
     "Header": {
       "HeaderTitle": "Vertical Slice",
