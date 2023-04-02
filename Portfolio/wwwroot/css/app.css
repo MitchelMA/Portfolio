@@ -112,11 +112,15 @@ a,
 }
 
 .loading-progress {
-    position: relative;
-    display: block;
-    width: 8rem;
-    height: 8rem;
-    margin: 20vh auto 1rem auto;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--page-island-background);
 }
 
 .loading-progress circle {
