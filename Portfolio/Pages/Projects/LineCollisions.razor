@@ -11,7 +11,7 @@
     <ChildContent>
         <TwoView
             style="flex-wrap: wrap;"
-            FlexValues="@(new("1 0 200px", "3 0"))">
+            FlexValues="@(new("3 260px", "1 460px"))">
             <FirstView>
                 <p>Line collisions zijn een hele belangrijke vorm/basis van collisions.</p>
                 <hr/>
@@ -42,16 +42,18 @@
                 align-items: center;
                 justify-content: center;
                 grid-gap: 0.5rem;">
-                    <LightboxImg class="hover-scale sc075"
+                    <LightboxImg class="hover-scale sc05"
                                  src="./images/circle-line-2.png"
                                  alt="Hoek van inval, is hoek van uitval"
                                  height="250"
+                                 style="border-radius: var(--border-radius-small);"
                                  BoundLightboxName="@nameof(LineCollisions)"
                                  Registry="Registry"/>
-                    <LightboxImg class="hover-scale sc075"
+                    <LightboxImg class="hover-scale sc05"
                                  src="./images/vector-resolution.png"
                                  alt="Simpele uitwerking van Vector Resolution"
                                  height="250"
+                                 style="border-radius: var(--border-radius-small);"
                                  BoundLightboxName="@nameof(LineCollisions)"
                                  Registry="Registry"/>
                 </article>
@@ -62,7 +64,7 @@
 
 <PageIsland IslandTitle="Voorbeeld Uitwerking" id="uit" Inverse="true">
     <ChildContent>
-        <TwoView FlexValues="@new("2 0 300px", "1 0")" style="flex-wrap: wrap;">
+        <TwoView FlexValues="@new("2 300px", "1 350px")" style="flex-wrap: wrap;">
             <FirstView>
                 <p>
                     Een voorbeelduitwerking van hoe ik dit toegepast heb,
@@ -97,10 +99,10 @@
             </FirstView>
             <SecondView>
                 <article style="position: sticky; top: 7rem; display: flex; justify-content: center;">
-                    <LightboxImg class="hover-scale sc075"
+                    <LightboxImg class="hover-scale sc05"
                                  src="./images/resolution-process.png"
                                  alt="Resolution process"
-                                 style="position: sticky; top: 10rem; max-width:  85vw;"
+                                 style="position: sticky; top: 10rem; width:  100%; border-radius: var(--border-radius-small);"
                                  BoundLightboxName="@nameof(LineCollisions)"
                                  Registry="Registry"/>
                 </article>
@@ -111,7 +113,7 @@
 
 <PageIsland IslandTitle="Achterliggend Systeem" id="systeem">
     <TwoView style="flex-wrap: wrap;"
-             FlexValues="@(new("2 0 300px", "1 0"))">
+             FlexValues="@(new("2 450px", "1 450px"))">
         <FirstView>
             <p>
                 Ik heb, als achterliggend systeem, een singleton gebouwd waar ik aan het begin van de scene
@@ -136,10 +138,10 @@
         <SecondView>
             <article style="display: flex; justify-content: center;">
 
-                <LightboxImg class="hover-scale sc075"
+                <LightboxImg class="hover-scale sc05"
                              src="./images/rider64_SUVtMKrW1o.png"
                              alt="De Add method in de singleton"
-                             style="max-width:  85vw;"
+                             style="width:  100%; border-radius: var(--border-radius-small);"
                              BoundLightboxName="@nameof(LineCollisions)"
                              Registry="Registry"/>
                 
@@ -174,7 +176,7 @@
         PageDetails.Icon = new PageIcon("image/png", "./images/Unity_AmCJ2pY4oC.png");
         PageDetails.ShowFooter = true;
         PageDetails.TitleExtension = _model?.TitleExtension;
-        PageDetails.MinNonStackedSize = 750;
+        PageDetails.MinNonStackedSize = 640;
         
         // header data
         HeaderData.Title = _model?.Header.HeaderTitle;

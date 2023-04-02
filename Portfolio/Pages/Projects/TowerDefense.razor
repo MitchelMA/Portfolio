@@ -11,8 +11,9 @@
 
 <PageIsland IslandTitle="Introductie" id="iductie">
     <ChildContent>
-        <TwoView style="flex-wrap: wrap;"
-                 FlexValues="@(new("1 300px", "3 300px"))">
+        <TwoView 
+            style="flex-wrap: wrap;"
+            FlexValues="@(new("1 300px", "3 450px"))">
             <FirstView>
                 <p>
                     In de eerste periode van het tweede jaar op deze studie, hadden wij
@@ -29,8 +30,8 @@
             <SecondView>
                 <LightboxImg src="./images/Unity_4xajzJxaDR.jpg"
                              alt="De map van het spel"
-                             class="hover-scale sc075"
-                             style="max-width: 100%;"
+                             class="hover-scale sc05"
+                             style="max-width: 100%; border-radius: var(--border-radius-small);"
                              BoundLightboxName="@nameof(TowerDefense)"
                              Registry="Registry"/>
             </SecondView>
@@ -64,8 +65,8 @@
                 
                 <LightboxImg src="./images/PathFinding.png"
                              alt="Visual sheet van path finding mechanic"
-                             class="hover-scale sc075"
-                             style="max-width: 100%;"
+                             class="hover-scale sc05"
+                             style="max-width: 100%; border-radius:  var(--border-radius-small);"
                              BoundLightboxName="@nameof(TowerDefense)"
                              Registry="Registry"/>
                 
