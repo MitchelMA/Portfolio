@@ -9,15 +9,114 @@
 
 <PageIsland IslandTitle="Introductie" id="iductie">
     <ChildContent>
-        <TwoView 
+        <TwoView
             style="flex-wrap: wrap;"
             FlexValues="@(new("3 350px", "1 350px"))">
-            <FirstView></FirstView>
-            
-            <SecondView></SecondView>
+            <FirstView>
+                <p>
+                    Csv,
+                    <a href="https://nl.wikipedia.org/wiki/Kommagescheiden_bestand" target="_blank">comma-seperated values</a>,
+                    is een lightweight bestands format om gegevens in op te slaan. Het kan bijvoorbeeld gebruikt worden om waardes te kunnen mappen
+                    (input waarde die gebonden is aan een output waarde). Ik maak er ook gebruik van in dit project om
+                    kleurecodes toe te passen op de indicator die je linksonderin ziet.
+                </p>
+            </FirstView>
+
+            <SecondView>
+                <article style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                    <LightboxImg
+                        class="hover-scale sc05"
+                        src="./images/rider64_6CXTNg5dUr.png"
+                        alt="voorbeeld van een .csv bestand"
+                        style="border-radius: var(--border-radius-small); width:  100%;"
+                        BoundLightboxName="@nameof(CsvLexing)"
+                        Registry="Registry"/>
+                </article>
+            </SecondView>
         </TwoView>
     </ChildContent>
 </PageIsland>
+<PageIsland IslandTitle="Standaard" id="stand">
+    <ChildContent>
+        <p>
+            Er is op het moment wel een idee voor een "officiële"
+            <a href="https://datatracker.ietf.org/doc/html/rfc4180">definitie (RFC 4180)</a>
+            voor .csv bestanden, maar over het algemeen wordt hier vaak van afgeweken.
+        </p>
+        <hr/>
+        <p>
+            De standaarden zijn als volgt:
+        </p>
+        <ul>
+            <li>Csv is gewone tekst, net zoals .txt bestandjes op computers</li>
+            <li>Het bestaat uit aantekeningen (1 per regel is gebruikelijk)</li>
+            <li>
+                De aantekening van een regel zijn opgesplits in stukjes middels een scheidingsteken (dit is gebruikelijk
+                één teken als een komma)
+            </li>
+            <li>Elke aantekening heeft de zelfde volgorde van soort gegevens per stukje</li>
+            <li>
+                Een
+                `<a href="https://developer.mozilla.org/en-US/docs/Glossary/String" target="_blank">string</a>`
+                wordt geöpend en gesloten met een aanhalingsteken, en mag voorbij het einde van een regel lopen
+            </li>
+            <li>
+                In het geval dat je een aanhalingsteken wilt opnemen in een string, gebruik je er twee achter elkaar:
+                "John ""Doe""" = John "Doe". Dit heet een
+                <a href="https://en.wikipedia.org/wiki/Escape_sequence" target="_blank">escape sequence</a>
+            </li>
+        </ul>
+        <hr/>
+        <p>
+            Op het moment wijk ik ook af van deze standaard. Ik heb iets toegevoegd als `Comments`, kleine stukjes tekst
+            die bedoelt zijn om de code te verduidelijken.
+        </p>
+    </ChildContent>
+</PageIsland>
+<PageIsland IslandTitle="Voorbeeld" id="ex">
+    <ChildContent>
+        <TwoView
+            style="flex-wrap: wrap;"
+            FlexValues="@(new("2 300px", "3 400px"))">
+            <FirstView>
+                <p>
+                    Ik heb ook nog een klein voorbeeld om aan te geven hoe dit er precies uitziet.
+                    Het eerste plaatje is het csv-bestandje en het tweede plaatje een voorbeeld van hoe ik het kan 
+                    uitlezen in code.
+                    Dit wordt ook wel een model genoemd.
+                </p>
+            </FirstView>
+
+            <SecondView>
+                <article style="
+                         display: flex;
+                         flex-wrap:  wrap;
+                         align-items: center;
+                         justify-content: center;
+                         grid-gap: 0.5rem;">
+                    
+                    <LightboxImg class="hover-scale sc05"
+                                 src="./images/rider64_6CXTNg5dUr.png"
+                                 alt="Voorbeeld van .csv waardes"
+                                 style="border-radius: var(--border-radius-small); max-width: 100%;"
+                                 BoundLightboxName="@nameof(CsvLexing)"
+                                 Registry="Registry"/>
+
+                    <LightboxImg class="hover-scale sc05"
+                                 src="./images/rider64_DgcDDkJOS9.png"
+                                 alt="Voorbeeld van een model in code"
+                                 style="border-radius: var(--border-radius-small); max-width: 100%;"
+                                 BoundLightboxName="@nameof(CsvLexing)"
+                                 Registry="Registry"/>
+                    
+                </article>
+            </SecondView>
+        </TwoView>
+    </ChildContent>
+</PageIsland>
+
+<Lightbox LightboxName="@nameof(CsvLexing)"
+          Registry="Registry"/>
 
 @code {
 
@@ -28,26 +127,28 @@
     private static readonly NavLinkData[] Links =
     {
         new("#iductie", "Introductie"),
+        new("#stand", "Standaard"),
+        new("#ex", "Voorbeeld"),
     };
 
     protected override async Task OnInitializedAsync()
     {
         _model = await Getter.GetCorrespondingToUri();
-        
-        // page details
+
+    // page details
         PageDetails.Links = Links;
         PageDetails.ShowFooter = true;
         PageDetails.TitleExtension = _model?.TitleExtension;
-        
-        // header data
+
+    // header data
         HeaderData.Title = _model?.Header.HeaderTitle;
         HeaderData.ImagePath = _model?.Header.HeaderImage;
         HeaderData.UnderTitle = _model?.Header.UnderTitle;
 
         AppState.PageDetails = PageDetails;
         AppState.HeaderData = HeaderData;
-        
-        // project data
+
+    // project data
         ProjectState.PageEndGithub = _model?.GitHub;
         ProjectState.ProjectStatus = _model?.Status ?? ProjectStatus.Finished;
     }
