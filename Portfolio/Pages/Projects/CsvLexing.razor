@@ -1,0 +1,55 @@
+@page "/csv-lexer"
+@using Portfolio.Model.Project
+@layout ProjectLayout
+
+@inject LightboxRegistry Registry
+@inject AppState AppState
+@inject ProjectState ProjectState
+@inject ProjectInfoGetter Getter
+
+<PageIsland IslandTitle="Introductie" id="iductie">
+    <ChildContent>
+        <TwoView 
+            style="flex-wrap: wrap;"
+            FlexValues="@(new("3 350px", "1 350px"))">
+            <FirstView></FirstView>
+            
+            <SecondView></SecondView>
+        </TwoView>
+    </ChildContent>
+</PageIsland>
+
+@code {
+
+    private static ProjectDataModel? _model;
+    private static readonly HeaderData HeaderData = new();
+    private static readonly PageDetails PageDetails = new();
+
+    private static readonly NavLinkData[] Links =
+    {
+        new("#iductie", "Introductie"),
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        _model = await Getter.GetCorrespondingToUri();
+        
+        // page details
+        PageDetails.Links = Links;
+        PageDetails.ShowFooter = true;
+        PageDetails.TitleExtension = _model?.TitleExtension;
+        
+        // header data
+        HeaderData.Title = _model?.Header.HeaderTitle;
+        HeaderData.ImagePath = _model?.Header.HeaderImage;
+        HeaderData.UnderTitle = _model?.Header.UnderTitle;
+
+        AppState.PageDetails = PageDetails;
+        AppState.HeaderData = HeaderData;
+        
+        // project data
+        ProjectState.PageEndGithub = _model?.GitHub;
+        ProjectState.ProjectStatus = _model?.Status ?? ProjectStatus.Finished;
+    }
+
+}
