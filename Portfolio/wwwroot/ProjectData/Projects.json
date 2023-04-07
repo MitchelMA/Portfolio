@@ -60,5 +60,26 @@
     "CardInfo": {
       "SetHeight": "21rem"
     }
+  },
+  {
+    "Planning": {
+      "Duration": "10 dagen",
+      "PeopleCount": 1,
+      "Software": "C#"
+    },
+    "Header":
+    {
+      "HeaderTitle": "Csv Lexer",
+      "HeaderImage": "./images/CsvDelimited001.svg",
+      "UnderTitle": "Uitlezen van csv bestanden",
+      "Text": "Een project waarin ik bezig ben met het maken van een programma dat csv bestanden kan uitlezen/deserialiseren"
+    },
+    "Status": 1,
+    "TitleExtension": " - Csv Lexer",
+    "LocalHref": "./csv-lexer",
+    "GitHub": "Csv-lexer",
+    "CardInfo": {
+      "SetHeight": "21rem"
+    }
   }
 ]
