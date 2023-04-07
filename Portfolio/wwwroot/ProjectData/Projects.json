@@ -74,7 +74,7 @@
       "UnderTitle": "Uitlezen van csv bestanden",
       "Text": "Een project waarin ik bezig ben met het maken van een programma dat csv bestanden kan uitlezen/deserialiseren"
     },
-    "Status": 1,
+    "Status": 0,
     "TitleExtension": " - Csv Lexer",
     "LocalHref": "./csv-lexer",
     "GitHub": "Csv-lexer",
