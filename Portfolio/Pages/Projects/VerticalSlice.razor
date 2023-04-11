@@ -8,70 +8,32 @@
 @inject LightboxRegistry Registry
 @inject ProjectInfoGetter Getter;
 
-<PageIsland IslandTitle="Rolverdeling" id="rol">
+<PageIsland IslandTitle="Project Aandeel" id="aandeel">
     <ChildContent>
-        <article style="display: flex; justify-content: center;">
-            <table class="styled-table">
-                <thead>
-                <tr>
-                    <th>Namen</th>
-                    <th>Rol</th>
-                </tr>
-                </thead>
-                <tbody>
-
-                <tr>
-                    <td>Bas, Yana</td>
-                    <td>Character art en animation</td>
-                </tr>
-
-                <tr>
-                    <td>Stan</td>
-                    <td>Environment art</td>
-                </tr>
-
-                <tr>
-                    <td>Araysha</td>
-                    <td>UI art</td>
-                </tr>
-
-                <tr>
-                    <td>Dylan</td>
-                    <td>Movement programming</td>
-                </tr>
-
-                <tr>
-                    <td>Leon</td>
-                    <td>Samenstellen prototype en programmeren trefballen gooien</td>
-                </tr>
-
-                <tr>
-                    <td>Tijmen</td>
-                    <td>Targeting systeem programeren</td>
-                </tr>
-
-                <tr>
-                    <td>Ik</td>
-                    <td>AI Programming, camera instellingen en boundaries</td>
-                </tr>
-                </tbody>
-            </table>
-        </article>
+        <p style="padding: 0.7rem;">
+            Mijn aandeel in dit project bestond uit het maken van de boundaries, de camera en de enemy ai.
+            We hadden eigen boundaries gebruikt omdat die van Unity niet helemaal lekker werkte, we hadden
+            en de camera zo geschreven dat hij mooi onder een hoek stond en focust op een bepaald punt en
+            de enemy-ai logischerwijs zodat je tegenstanders had om tegen te spelen.
+        </p> 
+        
     </ChildContent>
 </PageIsland>
 
 <PageIsland IslandTitle="Showreel" id="reel">
     <ChildContent>
-        <p>Dit is een showreel van tijdens development:</p>
-        <video controls
-               poster="./images/Unity_KFo5HjMIzQ.png"
-               width="100%"
-               style="border-radius: var(--border-radius-small)">
+        <div style="padding: 0.7rem;">
+            <p>Dit is een showreel van tijdens development:</p>
+            <video controls
+                   poster="./images/Unity_KFo5HjMIzQ.png"
+                   width="100%"
+                   style="border-radius: var(--border-radius-small)">
 
-            <source
-                src="./videos/DAReel.mp4"
-                type="video/mp4"/>
-        </video>
+                <source
+                    src="./videos/DAReel.mp4"
+                    type="video/mp4"/>
+            </video>
+        </div>
     </ChildContent>
 </PageIsland>
 
@@ -155,7 +117,7 @@
 
     private static readonly NavLinkData[] Links =
     {
-        new("#rol", "Rolverdeling"),
+        new("#aandeel", "Aandeel"),
         new("#reel", "Showreel"),
         new("#camera", "Camera"),
         new("#bounds", "Boundaries"),

@@ -5,6 +5,14 @@
 @inject AppState AppState
 @inject LightboxRegistry LightboxRegistry
 
+<PageIsland IslandTitle="Projects" id="projects">
+    <ChildContent>
+        <Carousel FromJsonFile="./ProjectData/Projects.json"
+                  DelayAmount="7000"
+                  StartIdx="1"/>
+    </ChildContent>
+</PageIsland>
+
 <PageIsland IslandTitle="About Me" id="about">
     <ChildContent>
         @* <p>Dit is de content van de About Me Island</p> *@
@@ -53,14 +61,6 @@
                 </article>
             </SecondView>
         </TwoView>
-    </ChildContent>
-</PageIsland>
-
-<PageIsland IslandTitle="Projects" id="projects">
-    <ChildContent>
-        <Carousel FromJsonFile="./ProjectData/Projects.json"
-                  DelayAmount="7000"
-                  StartIdx="1"/>
     </ChildContent>
 </PageIsland>
 
@@ -118,8 +118,8 @@
 
     private static readonly NavLinkData[]? Links =
     {
-        new("#about", "About Me"),
         new("#projects", "Projects"),
+        new("#about", "About Me"),
         new("#contact", "Contact Me"),
         new(@".\cv.pdf", "CV", true),
     };
