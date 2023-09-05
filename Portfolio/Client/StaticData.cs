@@ -4,6 +4,7 @@ namespace Portfolio.Client;
 
 public static class StaticData
 {
+   public const string DefaultLangCode = "nl";
    public const string PageTitle = "Portfolio";
    public static readonly LinkTag DefaultPageIcon = new PageIcon("image/png", "favicon.png");
    public const string MainHeaderImgPath = "./images/cmd_CaIolk4veY.png";
