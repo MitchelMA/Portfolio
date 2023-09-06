@@ -127,7 +127,7 @@
 
     private static readonly LinkTag PageIcon = new PageIcon("image/webp", "./images/AboutMeCroppedHead.webp");
 
-    private HeaderData _headerData = new()
+    private static HeaderData _headerData = new()
     {
         ImagePath = StaticData.MainHeaderImgPath,
     };
@@ -158,6 +158,7 @@
         var currentData = await LanguageTable.LoadCurrentPageData();
         if (currentData is null)
         {
+            AppState.HeaderData = _headerData;
             await Console.Error.WriteLineAsync("Couldn't get Page Data in specified language!");
             return;
         }

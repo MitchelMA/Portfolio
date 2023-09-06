@@ -16,12 +16,12 @@ public sealed class LanguageTable
     private readonly AppState _appState;
     private readonly HttpClient _httpClient;
 
-    private static readonly CsvSettings _csvSettings = new()
+    private static readonly CsvSettings CsvSettings = new()
     {
         FirstIsHeader = true,
         Separator = ',',
         CommentStarter = '#',
-        Patches = false
+        Patches = true
     };
 
     private LanguageTableManifestModel _manifestContent;
@@ -90,12 +90,12 @@ public sealed class LanguageTable
 
         LangPageData data = new();
 
-        using var headerFileLexer = new CsvLexer(headerFileContent, _csvSettings);
-        var headerContentDeserialized = (await headerFileLexer.DeserializeAsync<LangHeaderModel>())[langIdx];
+        using var headerFileLexer = new CsvLexer(headerFileContent, CsvSettings);
+        var headerContentDeserialized = await headerFileLexer.DeserializeAsync<LangHeaderModel>();
+        if (langIdx >= headerContentDeserialized.Length)
+            return default;
 
-        data.HeaderData = headerContentDeserialized;
-
-
+        data.HeaderData = headerContentDeserialized[langIdx];
         return data;
     }
 }
