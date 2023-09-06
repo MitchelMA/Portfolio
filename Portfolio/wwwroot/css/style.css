@@ -23,3 +23,20 @@
     text-decoration: none;
     color: currentColor !important;
 }
+
+.two-view__img-article {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    grid-gap: 0.5rem;
+    
+    &.sticky {
+        position: sticky;
+        top: 7rem;
+    }
+    
+    & > img {
+        border-radius: var(--border-radius-small);
+    }
+}

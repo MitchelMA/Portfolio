@@ -1,0 +1,17 @@
+[
+  {
+    "Inverted": false,
+    "Title": "About Me",
+    "Content": "HTMLStringContent",
+    "ImagesSticky": true,
+    "Images": [
+      {
+        "Src": "./images/AboutMeCropped.webp",
+        "Alt": "Foto van mij op wintersport",
+        "Width": null,
+        "Height": 460,
+        "ExtraCSSStyles": null
+      }
+    ]
+  }
+]

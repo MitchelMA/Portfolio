@@ -72,7 +72,7 @@ public sealed class LanguageTable
         var linksFilepath = Path.Combine(LocationBase, curUri, _manifestContent.LinkDataFileName);
         var contentsFilepath = Path.Combine(LocationBase, curUri,
             _manifestContent.PageContentsPrefix + _manifestContent.LanguageIndexTable[langIdx] +
-            ".csv");
+            ".json");
 
         string headerFileContent;
         string linksFileContent;

@@ -9,9 +9,7 @@
 
 <PageIsland IslandTitle="Introductie" id="iductie">
     <ChildContent>
-        <TwoView
-            style="flex-wrap: wrap;"
-            FlexValues="@(new("3 350px", "1 350px"))">
+        <TwoView FlexValues="@(new("3 350px", "1 350px"))">
             <FirstView>
                 <p>
                     Csv,
@@ -23,12 +21,12 @@
             </FirstView>
 
             <SecondView>
-                <article style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                <article class="two-view__img-article sticky">
                     <LightboxImg
                         class="hover-scale sc05"
                         src="./images/rider64_6CXTNg5dUr.png"
                         alt="voorbeeld van een .csv bestand"
-                        style="border-radius: var(--border-radius-small); width:  100%;"
+                        style="max-width:100%;"
                         BoundLightboxName="@nameof(CsvLexing)"
                         Registry="Registry"/>
                 </article>
@@ -75,9 +73,7 @@
 </PageIsland>
 <PageIsland IslandTitle="Voorbeeld" id="ex">
     <ChildContent>
-        <TwoView
-            style="flex-wrap: wrap;"
-            FlexValues="@(new("2 300px", "3 400px"))">
+        <TwoView FlexValues="@(new("2 300px", "3 400px"))">
             <FirstView>
                 <p>
                     Ik heb ook nog een klein voorbeeld om aan te geven hoe dit er precies uitziet.
@@ -88,24 +84,19 @@
             </FirstView>
 
             <SecondView>
-                <article style="
-                         display: flex;
-                         flex-wrap:  wrap;
-                         align-items: center;
-                         justify-content: center;
-                         grid-gap: 0.5rem;">
+                <article class="two-view__img-article">
                     
                     <LightboxImg class="hover-scale sc05"
                                  src="./images/rider64_6CXTNg5dUr.png"
                                  alt="Voorbeeld van .csv waardes"
-                                 style="border-radius: var(--border-radius-small); max-width: 100%;"
+                                 style="max-width: 100%;"
                                  BoundLightboxName="@nameof(CsvLexing)"
                                  Registry="Registry"/>
 
                     <LightboxImg class="hover-scale sc05"
                                  src="./images/rider64_DgcDDkJOS9.png"
                                  alt="Voorbeeld van een model in code"
-                                 style="border-radius: var(--border-radius-small); max-width: 100%;"
+                                 style="max-width: 100%;"
                                  BoundLightboxName="@nameof(CsvLexing)"
                                  Registry="Registry"/>
                     
