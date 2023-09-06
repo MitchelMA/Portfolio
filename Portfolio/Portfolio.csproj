@@ -14,7 +14,9 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\CarouselData\Projects.json" />
+
   </ItemGroup>
+
 
 
 

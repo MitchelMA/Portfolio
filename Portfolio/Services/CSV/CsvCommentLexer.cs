@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Portfolio.Services;
+namespace Portfolio.Services.CSV;
 
 public static class CsvCommentLexer
 {

@@ -4,9 +4,9 @@ namespace Portfolio.Model.Text;
 
 public struct LanguageTableManifestModel
 {
-   [JsonPropertyName("LanguageIndexTable")]
+   [JsonPropertyName("language_index-table")]
    public string[] LanguageIndexTable { get; init; }
    
-   [JsonPropertyName("HeaderFileNamePrefix")]
-   public string HeaderFileNamePrefix { get; init; }
+   [JsonPropertyName("header_filename")]
+   public string HeaderFileName { get; init; }
 }

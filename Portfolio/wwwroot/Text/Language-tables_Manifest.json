@@ -1,8 +1,8 @@
 {
-  "LanguageIndexTable":
+  "language_index-table":
   [
     "nl",
     "en"
   ],
-  "HeaderFileNamePrefix": "HeCo__"
+  "header_filename": "header-content.csv"
 }
