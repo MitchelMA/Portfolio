@@ -77,7 +77,7 @@ public class ColourMapperFactory
     private static Dictionary<T, Color>? ToDict<T>(string fileText, int lowerBound = 0, int upperBound = 0)
         where T : Enum
     {
-        string[][]? values = CsvCommentLexer.LexValues(fileText, lowerBound, upperBound);
+        string[][]? values = ColourMapLexer.LexValues(fileText, lowerBound, upperBound);
         int l = values?.Length ?? 0;
         if (l == 0)
             return null;

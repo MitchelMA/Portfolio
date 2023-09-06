@@ -2,7 +2,7 @@ using System.Text;
 
 namespace Portfolio.Services.CSV;
 
-public static class CsvCommentLexer
+public static class ColourMapLexer
 {
     public static char CommentStarter = '#';
     public static char CsvSplitter = ',';
