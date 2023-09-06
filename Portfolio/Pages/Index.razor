@@ -1,6 +1,7 @@
 ﻿@page "/"
 
 @using Portfolio.Client
+@using Portfolio.Model.Text
 
 @inject AppState AppState
 @inject LightboxRegistry LightboxRegistry
@@ -126,20 +127,54 @@
 
     private static readonly LinkTag PageIcon = new PageIcon("image/webp", "./images/AboutMeCroppedHead.webp");
 
-    private readonly HeaderData _headerData = new()
+    private HeaderData _headerData = new()
     {
         ImagePath = StaticData.MainHeaderImgPath,
-        Title = "Portfolio",
-        UnderTitle = "Mitchel Vonk",
     };
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         AppState.PageTitleExtension = string.Empty;
         AppState.Links = Links;
         AppState.MinNonStackedSize = 650;
         AppState.PageIcon = PageIcon;
+        
+        await LoadContent();
+    }
+
+    private async Task LoadContent()
+    {
+        if (LanguageTable.IsLoaded)
+        {
+            await SetLangData();
+            return;
+        }
+
+        LanguageTable.ManifestLoadedAsync += OnManifestLoaded;
+    }
+
+    private async Task SetLangData()
+    {
+        var currentData = await LanguageTable.LoadCurrentPageData();
+        if (currentData is null)
+        {
+            await Console.Error.WriteLineAsync("Couldn't get Page Data in specified language!");
+            return;
+        }
+        
+        SetPageContent(currentData.Value);
+        LanguageTable.ManifestLoadedAsync -= OnManifestLoaded;
+    }
+
+    private void SetPageContent(LangPageData langPageData)
+    {
+        _headerData.Title = langPageData.HeaderData.Title;
+        _headerData.UnderTitle = langPageData.HeaderData.UnderTitle;
+        _headerData.Description = langPageData.HeaderData.Description;
         AppState.HeaderData = _headerData;
     }
+
+    private async Task OnManifestLoaded(object? sender) =>
+        await SetLangData();
 
 }

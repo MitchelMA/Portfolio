@@ -10,7 +10,7 @@ public class AppState
     private PageDetails _pageDetails = new();
     private HeaderData _headerData = new();
     private readonly List<object> _scrollLocks = new();
-    private string _currentLanguage = StaticData.DefaultLangCode;
+    private int _currentLanguage = StaticData.DefaultLangCode;
 
     public event Action? StateChanged;
     public event Func<Task>? StateChangedAsync;
@@ -21,7 +21,7 @@ public class AppState
         StateChanged?.Invoke();
     }
 
-    public string CurrentLanguage
+    public int CurrentLanguage
     {
         get => _currentLanguage;
         set
@@ -150,6 +150,19 @@ public class AppState
                 return;
 
             HeaderData.UnderTitle = value;
+            NotifyStateChanged();
+        }
+    }
+
+    public string? HeaderDescription
+    {
+        get => HeaderData.Description;
+        set
+        {
+            if (value == HeaderData.Description)
+                return;
+
+            HeaderData.Description = value;
             NotifyStateChanged();
         }
     }

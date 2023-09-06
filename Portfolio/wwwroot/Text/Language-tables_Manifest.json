@@ -4,5 +4,7 @@
     "nl",
     "en"
   ],
-  "header_filename": "header-content.csv"
+  "header_filename": "header-content.csv",
+  "link-data_filename": "link-data.csv",
+  "page-contents_prefix": "page-contents_"
 }

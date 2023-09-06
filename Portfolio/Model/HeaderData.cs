@@ -5,6 +5,7 @@ public class HeaderData : IComparable<HeaderData>
     public string? ImagePath;
     public string? Title;
     public string? UnderTitle;
+    public string? Description;
     public string? ExtraStyles;
 
     public int CompareTo(HeaderData? other)
@@ -17,6 +18,8 @@ public class HeaderData : IComparable<HeaderData>
         if (titleComparison != 0) return titleComparison;
         var underTitleComparison = string.Compare(UnderTitle, other.UnderTitle, StringComparison.Ordinal);
         if (underTitleComparison != 0) return underTitleComparison;
+        var descriptionComparison = string.Compare(Description, other.Description, StringComparison.Ordinal);
+        if (descriptionComparison != 0) return descriptionComparison;
         return string.Compare(ExtraStyles, other.ExtraStyles, StringComparison.Ordinal);
     }
 }
