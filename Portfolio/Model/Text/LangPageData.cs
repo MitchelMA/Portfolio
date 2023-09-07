@@ -3,4 +3,5 @@
 public struct LangPageData
 {
     public LangHeaderModel HeaderData;
+    public LangLinksModel LinksData;
 }

@@ -113,13 +113,7 @@
 
 @code {
 
-    private static readonly NavLinkData[]? Links =
-    {
-        new("#projects", "Projects"),
-        new("#about", "About Me"),
-        new("#contact", "Contact Me"),
-        new(@".\cv.pdf", "CV", true),
-    };
+    private static NavLinkData[]? _links;
 
     private static readonly LinkTag PageIcon = new PageIcon("image/webp", "./images/AboutMeCroppedHead.webp");
 
@@ -131,8 +125,6 @@
     protected override async Task OnInitializedAsync()
     {
         AppState.PageTitleExtension = string.Empty;
-        AppState.Links = Links;
-        AppState.MinNonStackedSize = 650;
         AppState.PageIcon = PageIcon;
         
         await LoadContent();
@@ -151,7 +143,7 @@
 
     private async Task SetLangData()
     {
-        var currentData = await LanguageTable.LoadCurrentPageData();
+        var currentData = await LanguageTable.LoadAllCurrentPageData();
         if (currentData is null)
         {
             AppState.HeaderData = _headerData;
@@ -165,10 +157,29 @@
 
     private void SetPageContent(LangPageData langPageData)
     {
-        _headerData.Title = langPageData.HeaderData.Title;
-        _headerData.UnderTitle = langPageData.HeaderData.UnderTitle;
-        _headerData.Description = langPageData.HeaderData.Description;
+        SetHeaderData(langPageData.HeaderData);
+        SetLinksData(langPageData.LinksData); 
+    }
+
+    private void SetHeaderData(LangHeaderModel headerData)
+    {
+        _headerData.Title = headerData.Title;
+        _headerData.UnderTitle = headerData.UnderTitle;
+        _headerData.Description = headerData.Description;
         AppState.HeaderData = _headerData;
+    }
+
+    private void SetLinksData(LangLinksModel linksData)
+    {
+        _links = new NavLinkData[linksData.Links.Length];
+        for (var i = 0; i < linksData.Links.Length; i++)
+        {
+            var cur = linksData.Links[i];
+            _links[i] = new NavLinkData(cur.Href, cur.DisplayText, cur.OpensNew);
+        }
+
+        AppState.Links = _links;
+        AppState.MinNonStackedSize = linksData.MinWidth;
     }
 
     private async Task OnManifestLoaded(object? sender) =>

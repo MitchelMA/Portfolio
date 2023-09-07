@@ -5,6 +5,6 @@
     "en"
   ],
   "header_filename": "header-content.csv",
-  "link-data_filename": "link-data.csv",
+  "link-data_filename": "link-data.json",
   "page-contents_prefix": "page-contents_"
 }

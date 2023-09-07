@@ -9,6 +9,7 @@ namespace Portfolio.Services;
 
 public sealed class LanguageTable
 {
+    private const string DefaultEmptyUri = "index";
     private const string LocationBase = "./Text";
     private static readonly string ManifestFileName = Path.Combine(LocationBase, "Language-tables_Manifest.json");
     private bool _isLoaded;
@@ -26,6 +27,7 @@ public sealed class LanguageTable
 
     private LanguageTableManifestModel _manifestContent;
 
+    private string CurrentRelUri => _navManager.ToBaseRelativePath(_navManager.Uri);
     public IReadOnlyList<string> SupportedFileNames => _manifestContent.LanguageIndexTable;
     public bool IsLoaded => _isLoaded;
     
@@ -60,42 +62,57 @@ public sealed class LanguageTable
         await ManifestLoadedAsync?.Invoke(this)!;
     }
 
-    public async Task<LangPageData?> LoadCurrentPageData()
+    public async Task<LangHeaderModel?> LoadCurrentHeaderData()
+    {
+        if (!_isLoaded)
+            return default;
+        
+        var langIdx = _appState.CurrentLanguage;
+        var curUri = CurrentRelUri == string.Empty ? DefaultEmptyUri : CurrentRelUri;
+        
+        var headerFilePath = Path.Combine(LocationBase, curUri, _manifestContent.HeaderFileName);
+        var headerFileContent = await _httpClient.GetStringAsync(headerFilePath);
+
+        using var headerFileLexer = new CsvLexer(headerFileContent, CsvSettings);
+        var headerContentDeserialized = await headerFileLexer.DeserializeAsync<LangHeaderModel>();
+
+        if (langIdx >= headerContentDeserialized.Length)
+            return default;
+        return headerContentDeserialized[langIdx];
+    }
+
+    public async Task<LangLinksModel?> LoadCurrentLinksData()
+    {
+        if (!_isLoaded)
+            return default;
+        
+        var langIdx = _appState.CurrentLanguage;
+        var curUri = CurrentRelUri == string.Empty ? DefaultEmptyUri : CurrentRelUri;
+
+        var linksFilePath = Path.Combine(LocationBase, curUri, _manifestContent.LinkDataFileName);
+        var linksContentDeserialized = await _httpClient.GetFromJsonAsync<LangLinksModel[]>(linksFilePath);
+
+        if (langIdx >= linksContentDeserialized!.Length)
+            return default;
+        return linksContentDeserialized[langIdx];
+    }
+
+    public async Task<LangPageData?> LoadAllCurrentPageData()
     {
         if (!_isLoaded)
             return default;
 
-        var langIdx = _appState.CurrentLanguage;
-        var curUri = _navManager.ToBaseRelativePath(_navManager.Uri);
-        curUri = curUri == string.Empty ? "index" : curUri;
-        var headerFilepath = Path.Combine(LocationBase, curUri, _manifestContent.HeaderFileName);
-        var linksFilepath = Path.Combine(LocationBase, curUri, _manifestContent.LinkDataFileName);
-        var contentsFilepath = Path.Combine(LocationBase, curUri,
-            _manifestContent.PageContentsPrefix + _manifestContent.LanguageIndexTable[langIdx] +
-            ".json");
-
-        string headerFileContent;
-        string linksFileContent;
-        string contentsFileContent;
-
-        try
-        {
-            headerFileContent = await _httpClient.GetStringAsync(headerFilepath);
-        }
-        catch (Exception e)
-        {
-            await Console.Error.WriteLineAsync($"Something went wrong trying to read data for the current page: {e}");
-            return default;
-        }
-
-        LangPageData data = new();
-
-        using var headerFileLexer = new CsvLexer(headerFileContent, CsvSettings);
-        var headerContentDeserialized = await headerFileLexer.DeserializeAsync<LangHeaderModel>();
-        if (langIdx >= headerContentDeserialized.Length)
+        var headerData = await LoadCurrentHeaderData();
+        var linksData = await LoadCurrentLinksData();
+        if (headerData is null || linksData is null)
             return default;
 
-        data.HeaderData = headerContentDeserialized[langIdx];
+        LangPageData data = new()
+        {
+            HeaderData = headerData.Value,
+            LinksData = linksData.Value
+        };
+
         return data;
     }
 }
