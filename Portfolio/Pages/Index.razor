@@ -151,14 +151,14 @@
             return;
         }
         
-        SetPageContent(currentData.Value);
+        SetPageContent(currentData);
         LanguageTable.ManifestLoadedAsync -= OnManifestLoaded;
     }
 
     private void SetPageContent(LangPageData langPageData)
     {
-        SetHeaderData(langPageData.HeaderData);
-        SetLinksData(langPageData.LinksData); 
+        SetHeaderData(langPageData.HeaderData!.Value);
+        SetLinksData(langPageData!.LinksData!.Value); 
     }
 
     private void SetHeaderData(LangHeaderModel headerData)
@@ -166,6 +166,7 @@
         _headerData.Title = headerData.Title;
         _headerData.UnderTitle = headerData.UnderTitle;
         _headerData.Description = headerData.Description;
+        AppState.PageTitleExtension = " " + headerData.PageTitleExtension;
         AppState.HeaderData = _headerData;
     }
 

@@ -17,6 +17,10 @@ public sealed class LanguageTable
     private readonly AppState _appState;
     private readonly HttpClient _httpClient;
 
+    // A nested Dictionary where the outer is for the page uri and the inner for the specified language:
+    // _cachedData[RelativeUriString][LanguageCode]
+    private readonly Dictionary<string, Dictionary<int, LangPageData>> _cachedData = new();
+
     private static readonly CsvSettings CsvSettings = new()
     {
         FirstIsHeader = true,
@@ -62,39 +66,128 @@ public sealed class LanguageTable
         await ManifestLoadedAsync?.Invoke(this)!;
     }
 
-    public async Task<LangHeaderModel?> LoadCurrentHeaderData()
+    private (bool exists, LangHeaderModel? langData) HeaderCacheExists(string relativeUri, int langCode)
+    {
+        if (!_cachedData.TryGetValue(relativeUri, out var pageCache)) return (false, default);
+        if (!pageCache.TryGetValue(langCode, out var langData)) return (false, default);
+        return (langData.HeaderData is not null, langData.HeaderData);
+    }
+
+    private (bool exists, LangLinksModel? langData) LinksCacheExists(string relativeUri, int langCode)
+    {
+        if (!_cachedData.TryGetValue(relativeUri, out var pageCache)) return (false, default);
+        if (!pageCache.TryGetValue(langCode, out var langData)) return (false, default);
+        return (langData.LinksData is not null, langData.LinksData);
+    }
+
+    private Dictionary<int, LangPageData> GetPageSpecificCache(string relativeUri)
+    {
+        if (_cachedData.TryGetValue(relativeUri, out var pageCache)) return pageCache;
+        
+        pageCache = new Dictionary<int, LangPageData>();
+        _cachedData[relativeUri] = pageCache;
+
+        return pageCache;
+    }
+
+    private bool CacheHeaderDataForPage(string relativeUri, IReadOnlyList<LangHeaderModel> headerContent)
+    {
+        // All header-content is saved in one file. If lang-code 0 exists, all the other should as well.
+        if (HeaderCacheExists(relativeUri, 0).exists) return false;
+
+        for (var langCode = 0; langCode < headerContent.Count; langCode++)
+        {
+            var pageData = GetPageSpecificCache(relativeUri);
+            if (pageData.TryGetValue(langCode, out var langData))
+            {
+                langData.HeaderData = headerContent[langCode];
+            }
+            else
+            {
+                pageData.TryAdd(langCode, new LangPageData { HeaderData = headerContent[langCode] });
+            }
+
+        }
+
+        return true;
+    }
+
+    private bool CacheLinksDataForPage(string relativeUri, IReadOnlyList<LangLinksModel> linksContent)
+    {
+        // all links-content is saved in one file. If lang-code 0 exists, all the other should as well.
+        if (LinksCacheExists(relativeUri, 0).exists) return false;
+
+        for (var langcode = 0; langcode < linksContent.Count; langcode++)
+        {
+            var pageData = GetPageSpecificCache(relativeUri);
+            if (pageData.TryGetValue(langcode, out var langData))
+            {
+                langData.LinksData = linksContent[langcode];
+            }
+            else
+            {
+                pageData.TryAdd(langcode, new LangPageData { LinksData = linksContent[langcode] });
+            }
+        }
+
+        return true;
+    }
+
+    public async Task<LangHeaderModel?> LoadHeaderForPage(string relativeUri, int langCode)
     {
         if (!_isLoaded)
             return default;
+
+        if (HeaderCacheExists(relativeUri, langCode).exists)
+            return GetPageSpecificCache(relativeUri)[langCode].HeaderData;
         
-        var langIdx = _appState.CurrentLanguage;
-        var curUri = CurrentRelUri == string.Empty ? DefaultEmptyUri : CurrentRelUri;
-        
-        var headerFilePath = Path.Combine(LocationBase, curUri, _manifestContent.HeaderFileName);
+        var headerFilePath = Path.Combine(LocationBase, relativeUri, _manifestContent.HeaderFileName);
         var headerFileContent = await _httpClient.GetStringAsync(headerFilePath);
 
         using var headerFileLexer = new CsvLexer(headerFileContent, CsvSettings);
         var headerContentDeserialized = await headerFileLexer.DeserializeAsync<LangHeaderModel>();
 
-        if (langIdx >= headerContentDeserialized.Length)
+        CacheHeaderDataForPage(relativeUri, headerContentDeserialized);
+
+        if (langCode >= headerContentDeserialized.Length)
             return default;
-        return headerContentDeserialized[langIdx];
+
+        return headerContentDeserialized[langCode];
+    }
+
+    public async Task<LangLinksModel?> LoadLinksForPage(string relativeUri, int langCode)
+    {
+        if (!_isLoaded)
+            return default;
+
+        if (LinksCacheExists(relativeUri, langCode).exists)
+            return GetPageSpecificCache(relativeUri)[langCode].LinksData;
+
+        var linksFilePath = Path.Combine(LocationBase, relativeUri, _manifestContent.LinkDataFileName);
+        var linksContentDeserialized = await _httpClient.GetFromJsonAsync<LangLinksModel[]>(linksFilePath);
+
+        CacheLinksDataForPage(relativeUri, linksContentDeserialized!);
+
+        if (langCode >= linksContentDeserialized!.Length)
+            return default;
+
+        return linksContentDeserialized[langCode];
+    }
+
+    public async Task<LangHeaderModel?> LoadCurrentHeaderData()
+    {
+        var langCode = _appState.CurrentLanguage;
+        var curUri = CurrentRelUri == string.Empty ? DefaultEmptyUri : CurrentRelUri;
+
+        return await LoadHeaderForPage(curUri, langCode);
     }
 
     public async Task<LangLinksModel?> LoadCurrentLinksData()
     {
-        if (!_isLoaded)
-            return default;
-        
-        var langIdx = _appState.CurrentLanguage;
+        var langCode = _appState.CurrentLanguage;
         var curUri = CurrentRelUri == string.Empty ? DefaultEmptyUri : CurrentRelUri;
 
-        var linksFilePath = Path.Combine(LocationBase, curUri, _manifestContent.LinkDataFileName);
-        var linksContentDeserialized = await _httpClient.GetFromJsonAsync<LangLinksModel[]>(linksFilePath);
-
-        if (langIdx >= linksContentDeserialized!.Length)
-            return default;
-        return linksContentDeserialized[langIdx];
+        return await LoadLinksForPage(curUri, langCode);
     }
 
     public async Task<LangPageData?> LoadAllCurrentPageData()

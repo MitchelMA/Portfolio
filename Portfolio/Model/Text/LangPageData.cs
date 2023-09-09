@@ -1,7 +1,7 @@
 ﻿namespace Portfolio.Model.Text;
 
-public struct LangPageData
+public class LangPageData
 {
-    public LangHeaderModel HeaderData;
-    public LangLinksModel LinksData;
+    public LangHeaderModel? HeaderData;
+    public LangLinksModel? LinksData;
 }

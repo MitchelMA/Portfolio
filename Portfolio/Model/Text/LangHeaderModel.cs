@@ -10,4 +10,6 @@ public struct LangHeaderModel
     public string UnderTitle { get; init; }
     [CsvPropertyName("description")]
     public string Description { get; init; }
+    [CsvPropertyName("page-title-extension")]
+    public string PageTitleExtension { get; init; }
 }
