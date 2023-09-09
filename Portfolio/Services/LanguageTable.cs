@@ -66,8 +66,15 @@ public sealed class LanguageTable
         await ManifestLoadedAsync?.Invoke(this)!;
     }
 
+    private string UriEscaper(string relativeUri)
+    {
+        if (relativeUri.StartsWith("./")) return relativeUri;
+        return "./" + relativeUri;
+    }
+
     private (bool exists, LangHeaderModel? langData) HeaderCacheExists(string relativeUri, int langCode)
     {
+        relativeUri = UriEscaper(relativeUri);
         if (!_cachedData.TryGetValue(relativeUri, out var pageCache)) return (false, default);
         if (!pageCache.TryGetValue(langCode, out var langData)) return (false, default);
         return (langData.HeaderData is not null, langData.HeaderData);
@@ -75,6 +82,7 @@ public sealed class LanguageTable
 
     private (bool exists, LangLinksModel? langData) LinksCacheExists(string relativeUri, int langCode)
     {
+        relativeUri = UriEscaper(relativeUri);
         if (!_cachedData.TryGetValue(relativeUri, out var pageCache)) return (false, default);
         if (!pageCache.TryGetValue(langCode, out var langData)) return (false, default);
         return (langData.LinksData is not null, langData.LinksData);
@@ -82,6 +90,7 @@ public sealed class LanguageTable
 
     private Dictionary<int, LangPageData> GetPageSpecificCache(string relativeUri)
     {
+        relativeUri = UriEscaper(relativeUri);
         if (_cachedData.TryGetValue(relativeUri, out var pageCache)) return pageCache;
         
         pageCache = new Dictionary<int, LangPageData>();
@@ -92,6 +101,7 @@ public sealed class LanguageTable
 
     private bool CacheHeaderDataForPage(string relativeUri, IReadOnlyList<LangHeaderModel> headerContent)
     {
+        relativeUri = UriEscaper(relativeUri);
         // All header-content is saved in one file. If lang-code 0 exists, all the other should as well.
         if (HeaderCacheExists(relativeUri, 0).exists) return false;
 
@@ -114,6 +124,7 @@ public sealed class LanguageTable
 
     private bool CacheLinksDataForPage(string relativeUri, IReadOnlyList<LangLinksModel> linksContent)
     {
+        relativeUri = UriEscaper(relativeUri);
         // all links-content is saved in one file. If lang-code 0 exists, all the other should as well.
         if (LinksCacheExists(relativeUri, 0).exists) return false;
 
@@ -137,6 +148,8 @@ public sealed class LanguageTable
     {
         if (!_isLoaded)
             return default;
+        
+        relativeUri = UriEscaper(relativeUri);
 
         if (HeaderCacheExists(relativeUri, langCode).exists)
             return GetPageSpecificCache(relativeUri)[langCode].HeaderData;
@@ -159,6 +172,8 @@ public sealed class LanguageTable
     {
         if (!_isLoaded)
             return default;
+        
+        relativeUri = UriEscaper(relativeUri);
 
         if (LinksCacheExists(relativeUri, langCode).exists)
             return GetPageSpecificCache(relativeUri)[langCode].LinksData;

@@ -1,6 +1,9 @@
 ﻿@using System.Text.Json
+@using Portfolio.Mappers
 @using Portfolio.Model.Project
 @inject HttpClient HttpClient
+@inject LanguageTable LanguageTable
+@inject AppState AppState
 
 @implements IDisposable
 
@@ -24,7 +27,7 @@
             {
                 var idx = i;
                 <input type="radio" checked="@(idx == CurrentIdx)"
-                       title="@_models[idx].Header"
+                       title="@_models[idx].HeaderData.Title"
                        @onclick="() => { RadioClick(idx); }"/>
             }
         }
@@ -38,12 +41,12 @@
         }
         <button class="btn btn-prev"
                 @onclick="() => { RadioClick(CurrentIdx - 1); }"
-                title="@_models?[prevIdx].Header">
+                title="@_models?[prevIdx].HeaderData.Title">
             <i class="bi bi-arrow-left-circle-fill"></i>
         </button>
         <button class="btn btn-next"
                 @onclick="() => { RadioClick(CurrentIdx + 1); }"
-                title="@_models?[nextIdx].Header">
+                title="@_models?[nextIdx].HeaderData.Title">
             <i class="bi bi-arrow-right-circle-fill"></i>
         </button>
     </div>
@@ -148,11 +151,6 @@
     protected override async Task OnInitializedAsync()
     {
         await GetCarouselModels();
-
-        ScrollThrough(CurrentIdx);
-
-        if (_delay != 0 && _models?.Length > 1)
-            await AutoLoop(_cts.Token);
     }
 
     private void ScrollThrough(int nextIdx)
@@ -162,8 +160,8 @@
         bool noChanges = prevIdx == nextIdx;
 
         int toToggleIdx = Convert.ToInt32(noChanges ? _toggle : !_toggle);
-        _togglesHeader[toToggleIdx] = CurrentModel?.Header!;
-        _togglesText[toToggleIdx] = CurrentModel?.Text!;
+        _togglesHeader[toToggleIdx] = CurrentModel?.HeaderData.Title!;
+        _togglesText[toToggleIdx] = CurrentModel?.HeaderData.Description!;
 
         if (!noChanges)
             _toggle = !_toggle;
@@ -197,28 +195,42 @@
         if (_fromJsonFile is null)
             return;
 
-        List<CarouselModel> data = new();
-        var tmp = await HttpClient.GetFromJsonAsync<ProjectDataModel[]>(_fromJsonFile);
-
-        int l = tmp?.Length ?? 0;
-        for (int i = 0; i < l; i++)
+        if (LanguageTable.IsLoaded)
         {
-            var cur = tmp![i];
-            data.Add(FromProjectDataModel(cur));
+            await SetLangData();
+            return;
         }
 
+        LanguageTable.ManifestLoadedAsync += OnManifestLoaded;
+    }
+    
+    private async Task SetLangData()
+    {
+        List<CarouselModel> data = new();
+        var tmp = await HttpClient.GetFromJsonAsync<ProjectDataModel[]>(_fromJsonFile);
+        var langCode = AppState.CurrentLanguage;
+
+        var l = tmp?.Length ?? 0;
+        for (var i = 0; i < l; i++)
+        {
+            var cur = tmp![i];
+            var model = ToCarouselModelMapper.MapTo(cur);
+            model.HeaderData = (await LanguageTable.LoadHeaderForPage(model.Href!, langCode))!.Value;
+            data.Add(model);
+        }
         _models = data.ToArray();
+        
+        ScrollThrough(CurrentIdx);
+
+        if (_delay != 0 && _models?.Length > 1)
+            await AutoLoop(_cts.Token);
     }
 
-    private CarouselModel FromProjectDataModel(ProjectDataModel model) =>
-        new()
-        {
-            Header = model.Header.HeaderTitle,
-            Background = model.Header.HeaderImage,
-            Href = model.LocalHref,
-            SetHeight = model.CardInfo.SetHeight,
-            Text = model.Header.Text ?? string.Empty,
-        };
+    private async Task OnManifestLoaded(object? sender)
+    {
+        LanguageTable.ManifestLoadedAsync -= OnManifestLoaded;
+        await SetLangData(); 
+    }
 
     public void Dispose()
     {
