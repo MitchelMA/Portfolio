@@ -1,11 +1,13 @@
 @page "/line-collisions"
 @using Portfolio.Model.Project
+@using Portfolio.Model.Text
 @layout ProjectLayout
 
 @inject LightboxRegistry Registry
 @inject AppState AppState
 @inject ProjectState ProjectState
 @inject ProjectInfoGetter Getter
+@inject LanguageTable LanguageTable
 
 <PageIsland IslandTitle="Introductie" id="iductie">
     <ChildContent>
@@ -142,38 +144,84 @@
 @code {
 
     private static ProjectDataModel? _model;
-    private static readonly HeaderData HeaderData = new();
-    private static readonly PageDetails PageDetails = new();
-
-    private static readonly NavLinkData[] Links =
-    {
-        new("#iductie", "Introductie"),
-        new("#uit", "Uitwerking"),
-        new("#systeem", "Achterliggend"),
-    };
+    private static NavLinkData[]? _links; 
 
     protected override async Task OnInitializedAsync()
     {
         _model = await Getter.GetCorrespondingToUri();
         
-        // page details
-        PageDetails.Links = Links;
-        PageDetails.Icon = new PageIcon("image/png", "./images/Unity_AmCJ2pY4oC.png");
-        PageDetails.ShowFooter = true;
-        PageDetails.TitleExtension = _model?.TitleExtension;
-        PageDetails.MinNonStackedSize = 640;
-        
-        // header data
-        HeaderData.Title = _model?.Header.HeaderTitle;
-        HeaderData.ImagePath = _model?.Header.HeaderImage;
-        HeaderData.UnderTitle = _model?.Header.UnderTitle;
-
-        AppState.PageDetails = PageDetails;
-        AppState.HeaderData = HeaderData;
-
         // project data
         ProjectState.PageEndGithub = _model?.GitHub;
         ProjectState.ProjectStatus = _model?.Status ?? ProjectStatus.Finished;
+
+        await LoadLanguageContent();
+        
+        // page details
+        AppState.PageIcon = new PageIcon("image/png", "./images/Unity_AmCJ2pY4oC.png");
+        AppState.ShowFooter = true;
+    }
+
+    private async Task LoadLanguageContent()
+    {
+        if (LanguageTable.IsLoaded)
+        {
+            await SetLangData();
+            return;
+        }
+
+        LanguageTable.ManifestLoadedAsync += OnManifestLoaded;
+    }
+
+    private async Task SetLangData()
+    {
+        var currentData = await LanguageTable.LoadAllCurrentPageData();
+        if (currentData is null)
+        {
+            await Console.Error.WriteLineAsync("Couldn't get Page Data in specified language!");
+            return;
+        }
+
+        SetPageContent(currentData);
+    }
+
+    private void SetPageContent(LangPageData langPageData)
+    {
+        SetHeaderData(langPageData.HeaderData!.Value);
+        SetLinksData(langPageData.LinksData!.Value);
+    }
+
+    private void SetHeaderData(LangHeaderModel headerData)
+    {
+        var header = new HeaderData()
+        {
+            Title = headerData.Title,
+            UnderTitle = headerData.UnderTitle,
+            Description = headerData.Description,
+            ImagePath = _model!.Value.Header.HeaderImage,
+            ExtraStyles = null
+        };
+        AppState.HeaderData = header;
+        AppState.PageTitleExtension = " " + headerData.PageTitleExtension;
+    }
+
+    private void SetLinksData(LangLinksModel linksData)
+    {
+        var l = linksData.Links.Length;
+        _links = new NavLinkData[l];
+        for (var i = 0; i < l; i++)
+        {
+            var cur = linksData.Links[i];
+            _links[i] = new NavLinkData(cur.Href, cur.DisplayText, cur.OpensNew);
+        }
+
+        AppState.Links = _links;
+        AppState.MinNonStackedSize = linksData.MinWidth;
+    }
+
+    private async Task OnManifestLoaded(object? sender)
+    {
+        LanguageTable.ManifestLoadedAsync -= OnManifestLoaded;
+        await SetLangData();
     }
 
 }
