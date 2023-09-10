@@ -10,6 +10,8 @@
 @inject ProjectInfoGetter Getter
 @inject LanguageTable LanguageTable
 
+@implements IDisposable
+
 <PageIsland IslandTitle="Project Aandeel" id="aandeel">
     <ChildContent>
         <p style="padding: 0.7rem;">
@@ -128,24 +130,13 @@
         AppState.PageIcon = StaticData.DefaultPageIcon;
         AppState.ShowFooter = true;
 
-        await LoadLanguageContent();
-
+        await LanguageTable.AwaitLanguageContentAsync(SetLangData);
+        
         ProjectState.ProjectStatus = _model?.Status ?? ProjectStatus.Finished;
         ProjectState.PageEndGithub = _model?.GitHub;
     }
 
-    private async Task LoadLanguageContent()
-    {
-        if (LanguageTable.IsLoaded)
-        {
-            await SetLangData();
-            return;
-        }
-
-        LanguageTable.ManifestLoadedAsync += OnManifestLoaded;
-    }
-
-    private async Task SetLangData()
+    private async Task SetLangData(object? sender)
     {
         var currentData = await LanguageTable.LoadAllCurrentPageData();
         if (currentData is null)
@@ -192,10 +183,9 @@
         AppState.MinNonStackedSize = linksData.MinWidth;
     }
 
-    private async Task OnManifestLoaded(object? sender)
+    public void Dispose()
     {
-        LanguageTable.ManifestLoadedAsync -= OnManifestLoaded;
-        await SetLangData();
+        LanguageTable.ManifestLoadedAsync -= SetLangData;
     }
-
+    
 }

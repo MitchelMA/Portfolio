@@ -7,11 +7,13 @@
 @inject LightboxRegistry LightboxRegistry
 @inject LanguageTable LanguageTable
 
+@implements IDisposable
+
 <PageIsland IslandTitle="Projects" id="projects">
     <ChildContent>
         <Carousel FromJsonFile="./ProjectData/Projects.json"
                   DelayAmount="7000"
-                  StartIdx="1"/>
+                  StartIdx="2"/>
     </ChildContent>
 </PageIsland>
 
@@ -126,22 +128,10 @@
     {
         AppState.PageTitleExtension = string.Empty;
         AppState.PageIcon = PageIcon;
-        
-        await LoadContent();
+        await LanguageTable.AwaitLanguageContentAsync(SetLangData);
     }
 
-    private async Task LoadContent()
-    {
-        if (LanguageTable.IsLoaded)
-        {
-            await SetLangData();
-            return;
-        }
-
-        LanguageTable.ManifestLoadedAsync += OnManifestLoaded;
-    }
-
-    private async Task SetLangData()
+    private async Task SetLangData(object? sender)
     {
         var currentData = await LanguageTable.LoadAllCurrentPageData();
         if (currentData is null)
@@ -152,7 +142,6 @@
         }
         
         SetPageContent(currentData);
-        LanguageTable.ManifestLoadedAsync -= OnManifestLoaded;
     }
 
     private void SetPageContent(LangPageData langPageData)
@@ -183,7 +172,8 @@
         AppState.MinNonStackedSize = linksData.MinWidth;
     }
 
-    private async Task OnManifestLoaded(object? sender) =>
-        await SetLangData();
-
+    public void Dispose()
+    {
+        LanguageTable.ManifestLoadedAsync -= SetLangData;
+    }
 }

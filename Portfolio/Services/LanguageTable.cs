@@ -223,4 +223,27 @@ public sealed class LanguageTable
 
         return data;
     }
+
+    public void AwaitLanguageContent(ManifestLoadedDelegate onReady)
+    {
+        if (_isLoaded)
+        {
+            onReady.Invoke(this);
+            return;
+        }
+
+        ManifestLoaded += onReady;
+    }
+
+    public async Task AwaitLanguageContentAsync(ManifestLoadedDelegateAsync onReady)
+    {
+        if (_isLoaded)
+        {
+            await onReady.Invoke(this);
+            return;
+        }
+
+        ManifestLoadedAsync += onReady;
+
+    }
 }

@@ -9,6 +9,8 @@
 @inject ProjectInfoGetter Getter
 @inject LanguageTable LanguageTable
 
+@implements IDisposable
+
 <PageIsland IslandTitle="Introductie" id="iductie">
     <ChildContent>
         <TwoView FlexValues="@(new("3 260px", "1 460px"))">
@@ -154,25 +156,14 @@
         ProjectState.PageEndGithub = _model?.GitHub;
         ProjectState.ProjectStatus = _model?.Status ?? ProjectStatus.Finished;
 
-        await LoadLanguageContent();
+        await LanguageTable.AwaitLanguageContentAsync(SetLangData);
         
         // page details
         AppState.PageIcon = new PageIcon("image/png", "./images/Unity_AmCJ2pY4oC.png");
         AppState.ShowFooter = true;
     }
 
-    private async Task LoadLanguageContent()
-    {
-        if (LanguageTable.IsLoaded)
-        {
-            await SetLangData();
-            return;
-        }
-
-        LanguageTable.ManifestLoadedAsync += OnManifestLoaded;
-    }
-
-    private async Task SetLangData()
+    private async Task SetLangData(object? sender)
     {
         var currentData = await LanguageTable.LoadAllCurrentPageData();
         if (currentData is null)
@@ -218,10 +209,9 @@
         AppState.MinNonStackedSize = linksData.MinWidth;
     }
 
-    private async Task OnManifestLoaded(object? sender)
+    public void Dispose()
     {
-        LanguageTable.ManifestLoadedAsync -= OnManifestLoaded;
-        await SetLangData();
+        LanguageTable.ManifestLoadedAsync -= SetLangData;
     }
-
+    
 }
