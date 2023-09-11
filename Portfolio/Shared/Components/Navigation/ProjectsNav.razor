@@ -50,10 +50,6 @@
         await Getter.RetrieveData();
         NavManager.LocationChanged += OnLocationChanged;
         _models = Getter.Data;
-        foreach (var pair in _models)
-        {
-            Console.WriteLine(pair.Value.Header.HeaderTitle);
-        }
         GetProjIdx();
         StateHasChanged();
     }
