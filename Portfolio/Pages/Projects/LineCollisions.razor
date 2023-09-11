@@ -150,6 +150,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        LanguageTable.LanguageChangedAsync += OnLanguageChanged;
+        
         _model = await Getter.GetCorrespondingToUri();
         
         // project data
@@ -162,6 +164,8 @@
         AppState.PageIcon = new PageIcon("image/png", "./images/Unity_AmCJ2pY4oC.png");
         AppState.ShowFooter = true;
     }
+    
+    private async Task OnLanguageChanged(object sender, int newCultureIdx) => await SetLangData(sender);
 
     private async Task SetLangData(object? sender)
     {
@@ -212,6 +216,7 @@
     public void Dispose()
     {
         LanguageTable.ManifestLoadedAsync -= SetLangData;
+        LanguageTable.LanguageChangedAsync -= OnLanguageChanged;
     }
     
 }

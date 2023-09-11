@@ -1,6 +1,9 @@
+using System.Globalization;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
+using Portfolio.Client;
 using Portfolio.Configuration;
+using Portfolio.Extensions;
 using Portfolio.Model.Text;
 using Portfolio.Services.CSV;
 
@@ -31,13 +34,17 @@ public sealed class LanguageTable
     private LanguageTableManifestModel _manifestContent;
 
     private string CurrentRelUri => _navManager.ToBaseRelativePath(_navManager.Uri);
-    public IReadOnlyList<string> SupportedFileNames => _manifestContent.LanguageIndexTable;
+    public IReadOnlyList<string> SupportedCultures => _manifestContent.LanguageIndexTable;
     public bool IsLoaded => _isLoaded;
     
     public delegate void ManifestLoadedDelegate(object sender);
     public delegate Task ManifestLoadedDelegateAsync(object sender);
+    public delegate void LanguageChangedDelegate(object sender, int newCultureIdx);
+    public delegate Task LanguageChangedDelegateAsync(object sender, int newCultureIdx);
     public event ManifestLoadedDelegate? ManifestLoaded;
     public event ManifestLoadedDelegateAsync? ManifestLoadedAsync;
+    public event LanguageChangedDelegate? LanguageChanged;
+    public event LanguageChangedDelegateAsync? LanguageChangedAsync;
 
     public LanguageTable(NavigationManager navMan, AppState appState)
     {
@@ -63,6 +70,13 @@ public sealed class LanguageTable
         _isLoaded = true;
         ManifestLoaded?.Invoke(this);
         await ManifestLoadedAsync?.Invoke(this)!;
+    }
+
+    private async Task OnLanguageChanged(int newIdx)
+    {
+        _appState.CurrentLanguage = newIdx;
+        LanguageChanged?.Invoke(this, newIdx);
+        await LanguageChangedAsync?.Invoke(this, newIdx)!;
     }
 
     private string UriEscaper(string relativeUri)
@@ -246,5 +260,59 @@ public sealed class LanguageTable
 
         ManifestLoadedAsync += onReady;
 
+    }
+
+    public bool SetLanguage(string cultureName)
+    {
+        var targetCulture = CultureInfo.GetCultureInfo(cultureName);
+        var supportedCultures = SupportedCultures.Select(CultureInfo.GetCultureInfo);
+        var nextLang = StaticData.DefaultLangCode;
+
+        var idx = supportedCultures.BestGreedyEquivalent(targetCulture);
+        if (idx != -1) nextLang = idx;
+        if (nextLang == _appState.CurrentLanguage)
+            return false;
+        
+        Task.Run(async () => await OnLanguageChanged(nextLang));
+        return true;
+    }
+
+    public bool SetLanguage(int cultureIdx)
+    {
+        if (cultureIdx < 0 || cultureIdx >= SupportedCultures.Count)
+            return false;
+
+        if (cultureIdx == _appState.CurrentLanguage)
+            return false;
+
+        Task.Run(async () => await OnLanguageChanged(cultureIdx));
+        return true;
+    }
+
+    public async Task<bool> SetLanguageAsync(string cultureName)
+    {
+        var targetCulture = CultureInfo.GetCultureInfo(cultureName);
+        var supportedCultures = SupportedCultures.Select(CultureInfo.GetCultureInfo);
+        var nextLang = StaticData.DefaultLangCode;
+
+        var idx = supportedCultures.BestGreedyEquivalent(targetCulture);
+        if (idx != -1) nextLang = idx;
+        if (nextLang == _appState.CurrentLanguage)
+            return false;
+        
+        await OnLanguageChanged(nextLang);
+        return true;
+    }
+
+    public async Task<bool> SetLanguageAsync(int cultureIdx)
+    {
+        if (cultureIdx < 0 || cultureIdx >= SupportedCultures.Count)
+            return false;
+
+        if (cultureIdx == _appState.CurrentLanguage)
+            return false;
+
+        await OnLanguageChanged(cultureIdx);
+        return true;
     }
 }

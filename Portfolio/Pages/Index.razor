@@ -126,10 +126,14 @@
 
     protected override async Task OnInitializedAsync()
     {
+        LanguageTable.LanguageChangedAsync += OnLanguageChanged;
+        
         AppState.PageTitleExtension = string.Empty;
         AppState.PageIcon = PageIcon;
         await LanguageTable.AwaitLanguageContentAsync(SetLangData);
     }
+    
+    private async Task OnLanguageChanged(object sender, int cultureIdx) => await SetLangData(sender);
 
     private async Task SetLangData(object? sender)
     {
@@ -175,5 +179,6 @@
     public void Dispose()
     {
         LanguageTable.ManifestLoadedAsync -= SetLangData;
+        LanguageTable.LanguageChangedAsync -= OnLanguageChanged;
     }
 }

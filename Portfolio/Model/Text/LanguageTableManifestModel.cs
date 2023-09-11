@@ -4,6 +4,9 @@ namespace Portfolio.Model.Text;
 
 public struct LanguageTableManifestModel
 {
+   /// <summary>
+   /// This field contains the Names of the specified cultures: "en-GB" or "nl-NL"
+   /// </summary>
    [JsonPropertyName("language_index-table")]
    public string[] LanguageIndexTable { get; init; }
    
