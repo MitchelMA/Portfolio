@@ -87,19 +87,19 @@ public class CsvLexer : IDisposable
         return deserializer.Deserialize();
     }
 
-    public Task<string[][]> LexAsync()
+    public async Task<string[][]> LexAsync()
     {
-        return Task.Run(Lex);
+        return await Task.Run(Lex);
     }
 
-    public Task<T[]> DeserializeAsync<T>() where T : new()
+    public async Task<T[]> DeserializeAsync<T>() where T : new()
     {
-        return Task.Run(Deserialize<T>);
+        return await Task.Run(Deserialize<T>);
     }
 
-    public Task<T[]> DeserializeAsync<T>(string[] headers, bool ignoreFirst = false) where T : new()
+    public async Task<T[]> DeserializeAsync<T>(string[] headers, bool ignoreFirst = false) where T : new()
     {
-        return Task.Run(() => Deserialize<T>(headers, ignoreFirst));
+        return await Task.Run(() => Deserialize<T>(headers, ignoreFirst));
     }
 
     #region IDisposable pattern
