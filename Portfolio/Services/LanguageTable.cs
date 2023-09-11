@@ -1,5 +1,4 @@
 using System.Net.Http.Json;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Portfolio.Configuration;
 using Portfolio.Model.Text;
@@ -19,7 +18,7 @@ public sealed class LanguageTable
 
     // A nested Dictionary where the outer is for the page uri and the inner for the specified language:
     // _cachedData[RelativeUriString][LanguageCode]
-    private readonly Dictionary<string, Dictionary<int, LangPageData>> _cachedData = new();
+    private readonly Dictionary<string, Dictionary<int, LangPageData>> _cachedPageData = new();
 
     private static readonly CsvSettings CsvSettings = new()
     {
@@ -75,7 +74,7 @@ public sealed class LanguageTable
     private (bool exists, LangHeaderModel? langData) HeaderCacheExists(string relativeUri, int langCode)
     {
         relativeUri = UriEscaper(relativeUri);
-        if (!_cachedData.TryGetValue(relativeUri, out var pageCache)) return (false, default);
+        if (!_cachedPageData.TryGetValue(relativeUri, out var pageCache)) return (false, default);
         if (!pageCache.TryGetValue(langCode, out var langData)) return (false, default);
         return (langData.HeaderData is not null, langData.HeaderData);
     }
@@ -83,7 +82,7 @@ public sealed class LanguageTable
     private (bool exists, LangLinksModel? langData) LinksCacheExists(string relativeUri, int langCode)
     {
         relativeUri = UriEscaper(relativeUri);
-        if (!_cachedData.TryGetValue(relativeUri, out var pageCache)) return (false, default);
+        if (!_cachedPageData.TryGetValue(relativeUri, out var pageCache)) return (false, default);
         if (!pageCache.TryGetValue(langCode, out var langData)) return (false, default);
         return (langData.LinksData is not null, langData.LinksData);
     }
@@ -91,10 +90,10 @@ public sealed class LanguageTable
     private Dictionary<int, LangPageData> GetPageSpecificCache(string relativeUri)
     {
         relativeUri = UriEscaper(relativeUri);
-        if (_cachedData.TryGetValue(relativeUri, out var pageCache)) return pageCache;
+        if (_cachedPageData.TryGetValue(relativeUri, out var pageCache)) return pageCache;
         
         pageCache = new Dictionary<int, LangPageData>();
-        _cachedData[relativeUri] = pageCache;
+        _cachedPageData[relativeUri] = pageCache;
 
         return pageCache;
     }
@@ -151,8 +150,9 @@ public sealed class LanguageTable
         
         relativeUri = UriEscaper(relativeUri);
 
-        if (HeaderCacheExists(relativeUri, langCode).exists)
-            return GetPageSpecificCache(relativeUri)[langCode].HeaderData;
+        var (exists, langHeaderData) = HeaderCacheExists(relativeUri, langCode);
+        if (exists)
+            return langHeaderData;
         
         var headerFilePath = Path.Combine(LocationBase, relativeUri, _manifestContent.HeaderFileName);
         var headerFileContent = await _httpClient.GetStringAsync(headerFilePath);
@@ -175,8 +175,9 @@ public sealed class LanguageTable
         
         relativeUri = UriEscaper(relativeUri);
 
-        if (LinksCacheExists(relativeUri, langCode).exists)
-            return GetPageSpecificCache(relativeUri)[langCode].LinksData;
+        var (exists, langLinksData) = LinksCacheExists(relativeUri, langCode);
+        if (exists)
+            return langLinksData;
 
         var linksFilePath = Path.Combine(LocationBase, relativeUri, _manifestContent.LinkDataFileName);
         var linksContentDeserialized = await _httpClient.GetFromJsonAsync<LangLinksModel[]>(linksFilePath);
