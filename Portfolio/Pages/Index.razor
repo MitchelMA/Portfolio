@@ -17,52 +17,46 @@
     </ChildContent>
 </PageIsland>
 
-<PageIsland IslandTitle="About Me" id="about">
-    <ChildContent>
-        <TwoView FlexValues="@(new ValueTuple<string, string>("2 2 300px", "1 0"))">
-            <FirstView>
-                <section style="font-size: 1.1rem;">
-                    <p>
-                        Ik ben Mitchel Vonk, geboren te Beverwijk en wonend in Heemskerk. Ik vind programmeren in C#
-                        erg leuk
-                        en fijn (deze portfolio is gemaakt in blazor pages)! Ik leer er dagelijks nieuwe dingen in.
-                    </p>
-                    <hr/>
-                    <p>
-                        Ik programmeer al sinds begin 2019 met JavaScript in de browser. Ik was voornamelijk begonnen om
-                        wiskundige formules uit te werken (ik heb alijd al van wiskunde gehouden).
-                        Ook heb ik kleine spelletjes gemaakt in JavaScript in de browser, en was ik begonnen met het
-                        maken van Console-applications in Python
-                    </p>
-                    <hr/>
-                    <p>
-                        Toen ik in 2021 mijn Havo met succes afrondde, begon ik aan mijn vervolg-opleiding: Software Developer
-                        aan het Mediacollege Amsterdam. In het eerste halfjaar van jaar één hebben we daar met Python gewerkt.
-                        Aan het einde van dit halve jaar, kregen we de keuze of we Media-Developer wilde worden of Game-Developer.
-                        Toen heb ik de keuze gemaakt voor Game-Developer.
-                    </p>
-                    <hr/>
-                    <p>
-                        Naast programmeren ga ik graag om met vrienden, welke voort zijn gekomen uit een hechte groep die was
-                        gevormd aan het begin van mijn middelbare school periode. Ook sport ik erg graag en heb ik ook al redelijk
-                        wat beoefend: skiën, schaatsen en snowboarden. En ga ik wekelijks naar de sportschool.
-                    </p>
-                </section>
-            </FirstView>
-            <SecondView>
-                <article class="two-view__img-article sticky">
-                    <LightboxImg
-                        BoundLightboxName="Welkom Lightbox"
-                        Registry="LightboxRegistry"
-                        class="hover-scale sc075"
-                        src="./images/AboutMeCropped.webp"
-                        alt="Foto van mij op wintersport"
-                        height="465" />
-                </article>
-            </SecondView>
-        </TwoView>
-    </ChildContent>
-</PageIsland>
+@if (_islandsData is not null)
+{
+    foreach (var island in _islandsData)
+    {
+        <PageIsland IslandTitle="@island.Title" id="@island.Id" Inverse="@island.Inverted">
+            @if (island.Images is null)
+            {
+                <div style="padding: 0 0.7rem;">
+                    @((MarkupString)island.HtmlContentString)
+                </div>
+            }
+            else
+            {
+                <TwoView FlexValues="@(new ValueTuple<string, string>(island.FlexValues[0], island.FlexValues[1]))">
+                    <FirstView>@((MarkupString)island.HtmlContentString)</FirstView>
+                    <SecondView>
+                        @{
+                            var articleClassName = "two-view__img-article";
+                            if (island.StickyImages) articleClassName += " sticky";
+                        }
+                        <article class="@articleClassName">
+                            @foreach (var image in island.Images)
+                            {
+                                <LightboxImg
+                                    BoundLightboxName="Welkom Lightbox"
+                                    Registry="LightboxRegistry"
+                                    class="hover-scale sc075"
+                                    src="@image.Src"
+                                    alt="@image.Atl"
+                                    width="@image.Width"
+                                    height="@image.Height"
+                                    style="@image.ExtraCssStyles"/>
+                            }
+                        </article>
+                    </SecondView>
+                </TwoView>
+            }
+        </PageIsland>
+    }
+}
 
 <PageIsland IslandTitle="Contact Me" id="contact">
     <ChildContent>
@@ -124,13 +118,15 @@
         ImagePath = StaticData.MainHeaderImgPath,
     };
 
+    private PageIslandModel[]? _islandsData;
+
     protected override async Task OnInitializedAsync()
     {
+        await LanguageTable.AwaitLanguageContentAsync(SetLangData);
         LanguageTable.LanguageChangedAsync += OnLanguageChanged;
         
         AppState.PageTitleExtension = string.Empty;
         AppState.PageIcon = PageIcon;
-        await LanguageTable.AwaitLanguageContentAsync(SetLangData);
     }
     
     private async Task OnLanguageChanged(object sender, int cultureIdx) => await SetLangData(sender);
@@ -151,7 +147,8 @@
     private void SetPageContent(LangPageData langPageData)
     {
         SetHeaderData(langPageData.HeaderData!.Value);
-        SetLinksData(langPageData!.LinksData!.Value); 
+        SetLinksData(langPageData.LinksData!.Value); 
+        SetIslandsData(langPageData.PageIslandsData!);
     }
 
     private void SetHeaderData(LangHeaderModel headerData)
@@ -174,6 +171,12 @@
 
         AppState.Links = _links;
         AppState.MinNonStackedSize = linksData.MinWidth;
+    }
+
+    private void SetIslandsData(PageIslandModel[] islands)
+    {
+        _islandsData = islands;
+        StateHasChanged();
     }
 
     public void Dispose()

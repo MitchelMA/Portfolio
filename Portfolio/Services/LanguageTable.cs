@@ -116,6 +116,14 @@ public sealed class LanguageTable
         return (langData.LinksData is not null, langData.LinksData);
     }
 
+    private (bool exists, PageIslandModel[]? langData) PageIslandsCacheExists(string relativeUri, int langCode)
+    {
+        relativeUri = UriEscaper(relativeUri);
+        if (!_pageContentCachedData.TryGetValue(relativeUri, out var pageCache)) return (false, default);
+        if (!pageCache.TryGetValue(langCode, out var langData)) return (false, default);
+        return (langData.PageIslandsData is not null, langData.PageIslandsData);
+    }
+
     private (bool exits, InfoTableHeaderModel? langData) InfoTableCacheExists(int langCode)
     {
         if (!_pageInfoTableCachedData.TryGetValue(langCode, out var cache)) return (false, default);
@@ -193,23 +201,41 @@ public sealed class LanguageTable
         return true;
     }
 
-    private bool CacheInfoTable(InfoTableHeaderModel[] infoTableContent)
+    private bool CachePageIslandsDataForPage(string relativeUri, int langCode, PageIslandModel[] islandsContent)
+    {
+        relativeUri = UriEscaper(relativeUri);
+        if (PageIslandsCacheExists(relativeUri, langCode).exists) return false;
+
+        var pageData = GetPageSpecificCache(relativeUri);
+        if (pageData.TryGetValue(langCode, out var langData))
+        {
+            langData.PageIslandsData = islandsContent;
+        }
+        else
+        {
+            pageData.TryAdd(langCode, new LangPageData { PageIslandsData = islandsContent });
+        }
+
+        return true;
+    }
+
+    private bool CacheInfoTable(IReadOnlyList<InfoTableHeaderModel> infoTableContent)
     {
         // all info-table text contents are in one file. If lang-code 0 exists, all the other should as well.
         if (InfoTableCacheExists(0).exits) return false;
 
-        for (var langCode = 0; langCode < infoTableContent.Length; langCode++)
+        for (var langCode = 0; langCode < infoTableContent.Count; langCode++)
             _pageInfoTableCachedData.TryAdd(langCode, infoTableContent[langCode]);
 
         return true;
     }
 
-    private bool CacheDurationTexts(DurationTextsModel[] durationTextsContent)
+    private bool CacheDurationTexts(IReadOnlyList<DurationTextsModel> durationTextsContent)
     {
         // all duration-type text contents are in one file. If lang-code 0 exists, all the other should as well.
         if (DurationTextsCacheExists(0).exits) return false;
 
-        for (var langCode = 0; langCode < durationTextsContent.Length; langCode++)
+        for (var langCode = 0; langCode < durationTextsContent.Count; langCode++)
             _durationTextsCachedData.TryAdd(langCode, durationTextsContent[langCode]);
 
         return true;
@@ -264,6 +290,39 @@ public sealed class LanguageTable
             return default;
 
         return linksContentDeserialized[langCode];
+    }
+
+    public async Task<PageIslandModel[]?> LoadIslandsForPage(string relativeUri, int langCode)
+    {
+        if (!_isLoaded)
+            return default;
+
+        relativeUri = UriEscaper(relativeUri);
+        
+
+        var (exists, langIslandData) = PageIslandsCacheExists(relativeUri, langCode);
+        if (exists)
+            return langIslandData;
+
+        var filePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName, 
+            relativeUri, _manifestContent.PageContentsPrefix + SupportedCultures[langCode] + ".json");
+        
+        PageIslandModel[]? contentDeserialized = null;
+        try
+        {
+            contentDeserialized = await _httpClient.GetFromJsonAsync<PageIslandModel[]>(filePath);
+        }
+        catch(Exception e)
+        {
+            await Console.Error.WriteLineAsync($"Failed to deserialize content from island-json file: {e}");
+        }
+
+        if (contentDeserialized is null)
+            return default;
+
+        CachePageIslandsDataForPage(relativeUri, langCode, contentDeserialized);
+
+        return contentDeserialized;
     }
 
     public async Task<InfoTableHeaderModel?> LoadInfoTableHeaderData(int langCode)
@@ -328,6 +387,14 @@ public sealed class LanguageTable
         return await LoadLinksForPage(curUri, langCode);
     }
 
+    public async Task<PageIslandModel[]?> LoadCurrentIslandsData()
+    {
+        var langCode = _appState.CurrentLanguage;
+        var curUri = CurrentRelUri == string.Empty ? DefaultEmptyUri : CurrentRelUri;
+
+        return await LoadIslandsForPage(curUri, langCode);
+    }
+
     public async Task<InfoTableHeaderModel?> LoadCurrentInfoTableData()
     {
         var langCode = _appState.CurrentLanguage;
@@ -347,13 +414,15 @@ public sealed class LanguageTable
 
         var headerData = await LoadCurrentHeaderData();
         var linksData = await LoadCurrentLinksData();
-        if (headerData is null || linksData is null)
+        var islandsData = await LoadCurrentIslandsData();
+        if (headerData is null || linksData is null || islandsData is null)
             return default;
 
         LangPageData data = new()
         {
             HeaderData = headerData.Value,
-            LinksData = linksData.Value
+            LinksData = linksData.Value,
+            PageIslandsData = islandsData,
         };
 
         return data;
