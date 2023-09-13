@@ -1,8 +1,11 @@
 @inject HttpClient HttpClient
 @inject NavigationManager NavManager
 @inject ProjectInfoGetter Getter
+@inject LanguageTable LangTable;
+@inject AppState AppState;
 
 @using Portfolio.Model.Project
+@using Portfolio.Model.Text
 @implements IDisposable
 
 <div class="proj-nav">
@@ -16,7 +19,7 @@
     <ul class="proj-nav__projects">
         @{
             int idx = 0;
-            if (_models is not null)
+            if (_models is not null && _titles is not null)
             {
                 foreach (var pair in _models)
                 {
@@ -26,7 +29,7 @@
                     string? href = isCur ? null : model.LocalHref;
 
                     <li class="projects__proj @active">
-                        <a class="hover-scale sc075" href="@href">@(model.Header.HeaderTitle)</a>
+                        <a class="hover-scale sc075" href="@href">@(_titles[idx])</a>
                     </li>
 
                     idx++;
@@ -44,6 +47,7 @@
 
     private int _projectIdx;
     private IReadOnlyDictionary<string, ProjectDataModel>? _models;
+    private string[]? _titles;
 
     protected override async Task OnInitializedAsync()
     {
@@ -51,6 +55,8 @@
         NavManager.LocationChanged += OnLocationChanged;
         _models = Getter.Data;
         GetProjIdx();
+        await LangTable.AwaitLanguageContentAsync(OnManifestLoaded);
+        LangTable.LanguageChangedAsync += OnLanguageChanged;
         StateHasChanged();
     }
 
@@ -59,6 +65,36 @@
         string path = "./" + NavManager.ToBaseRelativePath(NavManager.Uri).Split('#')[0];
         _projectIdx = _models!.Keys.ToList().IndexOf(path);
     }
+
+    private async Task<string[]?> GetProjectTitles()
+    {
+        var uris = Getter.Data.Keys.ToArray();
+        var length = uris.Length;
+        var titles = new string[uris.Length];
+
+        for (var i = 0; i < length; i++)
+        {
+            var headerData = await LangTable.LoadHeaderForPage(uris[i], AppState.CurrentLanguage);
+            if (headerData is null)
+                return default;
+            titles[i] = headerData.Value.Title;
+        }
+
+        return titles;
+    }
+
+    private async Task OnManifestLoaded(object? sender)
+    {
+        _titles = await GetProjectTitles();
+        StateHasChanged();
+    }
+
+    private async Task OnLanguageChanged(object? sender, int newLangIdx)
+    {
+        _titles = await GetProjectTitles();
+        StateHasChanged();
+    }
+    
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
@@ -70,6 +106,8 @@
     public void Dispose()
     {
         NavManager.LocationChanged -= OnLocationChanged;
+        LangTable.ManifestLoadedAsync -= OnManifestLoaded;
+        LangTable.LanguageChangedAsync -= OnLanguageChanged;
     }
 
 }
