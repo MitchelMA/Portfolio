@@ -1,7 +1,8 @@
 [
   {
     "Planning": {
-      "Duration": "10 weken",
+      "Duration": 10,
+      "DurationType": 1,
       "PeopleCount": 1,
       "Software": "C#, Unity"
     },
@@ -19,10 +20,10 @@
       "SetHeight": "21rem"
     }
   },
-  
   {
     "Planning": {
-      "Duration": "5 dagen",
+      "Duration": 5,
+      "DurationType": 0,
       "PeopleCount": 1,
       "Software": "C#, Unity"
     },
@@ -40,10 +41,10 @@
       "SetHeight": "21rem"
     }
   },
-
   {
     "Planning": {
-      "Duration": "10 weken",
+      "Duration": 10,
+      "DurationType": 1,
       "PeopleCount": 8,
       "Software": "C#, Unity, Photoshop"
     },
@@ -63,7 +64,8 @@
   },
   {
     "Planning": {
-      "Duration": "10 dagen",
+      "Duration": 10,
+      "DurationType": 0,
       "PeopleCount": 1,
       "Software": "C#"
     },

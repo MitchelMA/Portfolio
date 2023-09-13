@@ -21,4 +21,6 @@ public struct LanguageTableManifestModel
    public string OtherContentDirName { get; init; }
    [JsonPropertyName("info_table-filename")]
    public string InfoTableFileName { get; init; }
+   [JsonPropertyName("duration-type-filename")]
+   public string DurationTypeFilename { get; init; }
 }

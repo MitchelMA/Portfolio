@@ -27,6 +27,9 @@ public sealed class LanguageTable
     // Cached text-contents for the page-info-table headers 
     private readonly Dictionary<int, InfoTableHeaderModel> _pageInfoTableCachedData = new();
     
+    // Cached text-contents for the duration-type texts
+    private readonly Dictionary<int, DurationTextsModel> _durationTextsCachedData = new();
+    
     #endregion
 
     private static readonly CsvSettings CsvSettings = new()
@@ -119,6 +122,12 @@ public sealed class LanguageTable
         return (true, cache);
 
     }
+
+    private (bool exits, DurationTextsModel? langData) DurationTextsCacheExists(int langCode)
+    {
+        if (!_durationTextsCachedData.TryGetValue(langCode, out var cache)) return (false, default);
+        return (true, cache);
+    }
     
     #endregion
     
@@ -191,6 +200,17 @@ public sealed class LanguageTable
 
         for (var langCode = 0; langCode < infoTableContent.Length; langCode++)
             _pageInfoTableCachedData.TryAdd(langCode, infoTableContent[langCode]);
+
+        return true;
+    }
+
+    private bool CacheDurationTexts(DurationTextsModel[] durationTextsContent)
+    {
+        // all duration-type text contents are in one file. If lang-code 0 exists, all the other should as well.
+        if (DurationTextsCacheExists(0).exits) return false;
+
+        for (var langCode = 0; langCode < durationTextsContent.Length; langCode++)
+            _durationTextsCachedData.TryAdd(langCode, durationTextsContent[langCode]);
 
         return true;
     }
@@ -269,6 +289,27 @@ public sealed class LanguageTable
 
         return contentDeserialized[langCode];
     }
+
+    public async Task<DurationTextsModel?> LoadDurationTexts(int langCode)
+    {
+        if (!_isLoaded)
+            return default;
+
+        var (exists, langData) = DurationTextsCacheExists(langCode);
+        if (exists)
+            return langData;
+
+        var filePath = Path.Combine(LocationBase, _manifestContent.OtherContentDirName,
+            _manifestContent.DurationTypeFilename);
+        var content = await _httpClient.GetFromJsonAsync<DurationTextsModel[]>(filePath);
+
+        CacheDurationTexts(content!);
+
+        if (langCode >= content!.Length)
+            return default;
+
+        return content[langCode];
+    }
     
 
     public async Task<LangHeaderModel?> LoadCurrentHeaderData()
@@ -291,6 +332,12 @@ public sealed class LanguageTable
     {
         var langCode = _appState.CurrentLanguage;
         return await LoadInfoTableHeaderData(langCode);
+    }
+
+    public async Task<DurationTextsModel?> LoadCurrentDurationTexts()
+    {
+        var langCode = _appState.CurrentLanguage;
+        return await LoadDurationTexts(langCode);
     }
 
     public async Task<LangPageData?> LoadAllCurrentPageData()

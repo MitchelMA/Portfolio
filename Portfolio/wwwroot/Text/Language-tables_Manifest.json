@@ -9,5 +9,6 @@
   "link-data_filename": "link-data.json",
   "page-contents_prefix": "page-contents_",
   "other-content-directory": "./Other",
-  "info_table-filename": "info-table-texts.csv"
+  "info_table-filename": "info-table-texts.csv",
+  "duration-type-filename": "duration-types.json"
 }
