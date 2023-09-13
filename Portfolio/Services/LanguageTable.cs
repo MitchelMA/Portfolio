@@ -19,9 +19,15 @@ public sealed class LanguageTable
     private readonly AppState _appState;
     private readonly HttpClient _httpClient;
 
+    #region CacheData contents
     // A nested Dictionary where the outer is for the page uri and the inner for the specified language:
     // _cachedData[RelativeUriString][LanguageCode]
-    private readonly Dictionary<string, Dictionary<int, LangPageData>> _cachedPageData = new();
+    private readonly Dictionary<string, Dictionary<int, LangPageData>> _pageContentCachedData = new();
+    
+    // Cached text-contents for the page-info-table headers 
+    private readonly Dictionary<int, InfoTableHeaderModel> _pageInfoTableCachedData = new();
+    
+    #endregion
 
     private static readonly CsvSettings CsvSettings = new()
     {
@@ -64,6 +70,8 @@ public sealed class LanguageTable
         _manifestContent = await _httpClient.GetFromJsonAsync<LanguageTableManifestModel>(ManifestFileName);
         await OnManifestLoaded();
     }
+    
+    #region Event Callers
 
     private async Task OnManifestLoaded()
     {
@@ -78,17 +86,21 @@ public sealed class LanguageTable
         LanguageChanged?.Invoke(this, newIdx);
         await LanguageChangedAsync?.Invoke(this, newIdx)!;
     }
+    
+    #endregion
 
     private string UriEscaper(string relativeUri)
     {
         if (relativeUri.StartsWith("./")) return relativeUri;
         return "./" + relativeUri;
     }
+    
+    #region Cache Exist Checkers
 
     private (bool exists, LangHeaderModel? langData) HeaderCacheExists(string relativeUri, int langCode)
     {
         relativeUri = UriEscaper(relativeUri);
-        if (!_cachedPageData.TryGetValue(relativeUri, out var pageCache)) return (false, default);
+        if (!_pageContentCachedData.TryGetValue(relativeUri, out var pageCache)) return (false, default);
         if (!pageCache.TryGetValue(langCode, out var langData)) return (false, default);
         return (langData.HeaderData is not null, langData.HeaderData);
     }
@@ -96,21 +108,36 @@ public sealed class LanguageTable
     private (bool exists, LangLinksModel? langData) LinksCacheExists(string relativeUri, int langCode)
     {
         relativeUri = UriEscaper(relativeUri);
-        if (!_cachedPageData.TryGetValue(relativeUri, out var pageCache)) return (false, default);
+        if (!_pageContentCachedData.TryGetValue(relativeUri, out var pageCache)) return (false, default);
         if (!pageCache.TryGetValue(langCode, out var langData)) return (false, default);
         return (langData.LinksData is not null, langData.LinksData);
     }
 
+    private (bool exits, InfoTableHeaderModel? langData) InfoTableCacheExists(int langCode)
+    {
+        if (!_pageInfoTableCachedData.TryGetValue(langCode, out var cache)) return (false, default);
+        return (true, cache);
+
+    }
+    
+    #endregion
+    
+    #region Cache Getters
+
     private Dictionary<int, LangPageData> GetPageSpecificCache(string relativeUri)
     {
         relativeUri = UriEscaper(relativeUri);
-        if (_cachedPageData.TryGetValue(relativeUri, out var pageCache)) return pageCache;
+        if (_pageContentCachedData.TryGetValue(relativeUri, out var pageCache)) return pageCache;
         
         pageCache = new Dictionary<int, LangPageData>();
-        _cachedPageData[relativeUri] = pageCache;
+        _pageContentCachedData[relativeUri] = pageCache;
 
         return pageCache;
     }
+    
+    #endregion
+    
+    #region Cache Setters
 
     private bool CacheHeaderDataForPage(string relativeUri, IReadOnlyList<LangHeaderModel> headerContent)
     {
@@ -157,6 +184,21 @@ public sealed class LanguageTable
         return true;
     }
 
+    private bool CacheInfoTable(InfoTableHeaderModel[] infoTableContent)
+    {
+        // all info-table text contents are in one file. If lang-code 0 exists, all the other should as well.
+        if (InfoTableCacheExists(0).exits) return false;
+
+        for (var langCode = 0; langCode < infoTableContent.Length; langCode++)
+            _pageInfoTableCachedData.TryAdd(langCode, infoTableContent[langCode]);
+
+        return true;
+    }
+    
+    #endregion
+
+    #region Language Content Getters
+    
     public async Task<LangHeaderModel?> LoadHeaderForPage(string relativeUri, int langCode)
     {
         if (!_isLoaded)
@@ -168,7 +210,7 @@ public sealed class LanguageTable
         if (exists)
             return langHeaderData;
         
-        var headerFilePath = Path.Combine(LocationBase, relativeUri, _manifestContent.HeaderFileName);
+        var headerFilePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName, relativeUri, _manifestContent.HeaderFileName);
         var headerFileContent = await _httpClient.GetStringAsync(headerFilePath);
 
         using var headerFileLexer = new CsvLexer(headerFileContent, CsvSettings);
@@ -193,7 +235,7 @@ public sealed class LanguageTable
         if (exists)
             return langLinksData;
 
-        var linksFilePath = Path.Combine(LocationBase, relativeUri, _manifestContent.LinkDataFileName);
+        var linksFilePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName, relativeUri, _manifestContent.LinkDataFileName);
         var linksContentDeserialized = await _httpClient.GetFromJsonAsync<LangLinksModel[]>(linksFilePath);
 
         CacheLinksDataForPage(relativeUri, linksContentDeserialized!);
@@ -203,6 +245,31 @@ public sealed class LanguageTable
 
         return linksContentDeserialized[langCode];
     }
+
+    public async Task<InfoTableHeaderModel?> LoadInfoTableHeaderData(int langCode)
+    {
+        if (!_isLoaded)
+            return default;
+
+        var (exists, langData) = InfoTableCacheExists(langCode);
+        if (exists)
+            return langData;
+
+        var filePath = Path.Combine(LocationBase, _manifestContent.OtherContentDirName,
+            _manifestContent.InfoTableFileName);
+        var fileContent = await _httpClient.GetStringAsync(filePath);
+
+        using var fileLexer = new CsvLexer(fileContent, CsvSettings);
+        var contentDeserialized = await fileLexer.DeserializeAsync<InfoTableHeaderModel>();
+
+        CacheInfoTable(contentDeserialized);
+
+        if (langCode >= contentDeserialized.Length)
+            return default;
+
+        return contentDeserialized[langCode];
+    }
+    
 
     public async Task<LangHeaderModel?> LoadCurrentHeaderData()
     {
@@ -218,6 +285,12 @@ public sealed class LanguageTable
         var curUri = CurrentRelUri == string.Empty ? DefaultEmptyUri : CurrentRelUri;
 
         return await LoadLinksForPage(curUri, langCode);
+    }
+
+    public async Task<InfoTableHeaderModel?> LoadCurrentInfoTableData()
+    {
+        var langCode = _appState.CurrentLanguage;
+        return await LoadInfoTableHeaderData(langCode);
     }
 
     public async Task<LangPageData?> LoadAllCurrentPageData()
@@ -261,7 +334,11 @@ public sealed class LanguageTable
         ManifestLoadedAsync += onReady;
 
     }
+    
+    #endregion
 
+    #region Language Setters
+    
     public bool SetLanguage(string cultureName)
     {
         var targetCulture = CultureInfo.GetCultureInfo(cultureName);
@@ -315,4 +392,6 @@ public sealed class LanguageTable
         await OnLanguageChanged(cultureIdx);
         return true;
     }
+    
+    #endregion
 }

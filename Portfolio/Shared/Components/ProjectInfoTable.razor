@@ -1,0 +1,55 @@
+@using Portfolio.Model.Project
+@using Portfolio.Model.Text
+
+@inject LanguageTable LangTable;
+
+@implements IDisposable
+
+<table class="proj-info-table">
+    <thead>
+    <tr>
+        <th>@_headerModel?.DurationText</th>
+        <th>@_headerModel?.GroupSizeText</th>
+        <th>@_headerModel?.SoftwareText</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>@Model?.Planning.Duration</td>
+        <td>@Model?.Planning.PeopleCount</td>
+        <td>@Model?.Planning.Software</td>
+    </tr>
+    </tbody>
+</table>
+
+@code {
+    
+    [Parameter]
+    public ProjectDataModel? Model { get; set; }
+
+    private InfoTableHeaderModel? _headerModel;
+
+    protected override async Task OnInitializedAsync()
+    {
+        LangTable.LanguageChangedAsync += OnLanguageChanged;
+        await LangTable.AwaitLanguageContentAsync(SetLangData);
+    }
+
+    private async Task SetLangData(object? sender)
+    {
+        _headerModel = await LangTable.LoadCurrentInfoTableData();
+        if (_headerModel is null)
+            await Console.Error.WriteLineAsync("Couldn't load the language content for the project-info-table");
+    }
+
+    private async Task OnLanguageChanged(object? sender, int newLangCode) =>
+        await SetLangData(sender);
+
+
+    public void Dispose()
+    {
+        LangTable.ManifestLoadedAsync -= SetLangData;
+        LangTable.LanguageChangedAsync -= OnLanguageChanged;
+    }
+
+}

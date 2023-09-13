@@ -4,7 +4,10 @@
     "nl",
     "en"
   ],
+  "page-content-directory": "./Pages",
   "header_filename": "header-content.csv",
   "link-data_filename": "link-data.json",
-  "page-contents_prefix": "page-contents_"
+  "page-contents_prefix": "page-contents_",
+  "other-content-directory": "./Other",
+  "info_table-filename": "info-table-texts.csv"
 }

@@ -27,22 +27,23 @@
                 <Main>
                     <PageIsland IslandTitle="Info">
                         <article style="display: flex; justify-content: center;">
-                            <table class="styled-table">
-                                <thead>
-                                <tr>
-                                    <th>Duur</th>
-                                    <th>Groep grootte</th>
-                                    <th>Talen/Software</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>@_model?.Planning.Duration</td>
-                                    <td>@_model?.Planning.PeopleCount</td>
-                                    <td>@_model?.Planning.Software</td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            @* <table class="styled-table"> *@
+                            @*     <thead> *@
+                            @*     <tr> *@
+                            @*         <th>Duur</th> *@
+                            @*         <th>Groep grootte</th> *@
+                            @*         <th>Talen/Software</th> *@
+                            @*     </tr> *@
+                            @*     </thead> *@
+                            @*     <tbody> *@
+                            @*     <tr> *@
+                            @*         <td>@_model?.Planning.Duration</td> *@
+                            @*         <td>@_model?.Planning.PeopleCount</td> *@
+                            @*         <td>@_model?.Planning.Software</td> *@
+                            @*     </tr> *@
+                            @*     </tbody> *@
+                            @* </table> *@
+                            <ProjectInfoTable Model="@_model" />
                         </article>
                     </PageIsland>
                     @Body
