@@ -42,7 +42,16 @@ public sealed class LanguageTable
 
     private LanguageTableManifestModel _manifestContent;
 
-    private string CurrentRelUri => _navManager.ToBaseRelativePath(_navManager.Uri);
+    private string CurrentRelUri
+    {
+        get
+        {
+            var basePath = UriEscaper(_navManager.ToBaseRelativePath(_navManager.Uri));
+            if (basePath == "./") return "./" + DefaultEmptyUri;
+            return basePath;
+        }
+    }
+
     public IReadOnlyList<string> SupportedCultures => _manifestContent.LanguageIndexTable;
     public bool IsLoaded => _isLoaded;
     
@@ -94,8 +103,9 @@ public sealed class LanguageTable
 
     private string UriEscaper(string relativeUri)
     {
-        if (relativeUri.StartsWith("./")) return relativeUri;
-        return "./" + relativeUri;
+        var text = relativeUri.Split('?')[0];
+        if (text.StartsWith("./")) return text;
+        return "./" + text;
     }
     
     #region Cache Exist Checkers
@@ -298,7 +308,6 @@ public sealed class LanguageTable
             return default;
 
         relativeUri = UriEscaper(relativeUri);
-        
 
         var (exists, langIslandData) = PageIslandsCacheExists(relativeUri, langCode);
         if (exists)
@@ -315,10 +324,19 @@ public sealed class LanguageTable
         catch(Exception e)
         {
             await Console.Error.WriteLineAsync($"Failed to deserialize content from island-json file: {e}");
+            return default;
         }
 
         if (contentDeserialized is null)
             return default;
+
+        var modelCount = contentDeserialized.Length;
+        for (var i = 0; i < modelCount; i++)
+        {
+            var itemPath = Path.Combine(LocationBase, _manifestContent.PageContentDirName,
+                relativeUri, _manifestContent.PageIslandsTextLocation, SupportedCultures[langCode], $"_{i}.html");
+            contentDeserialized[i].HtmlContentString = await _httpClient.GetStringAsync(itemPath);
+        }
 
         CachePageIslandsDataForPage(relativeUri, langCode, contentDeserialized);
 
@@ -374,7 +392,7 @@ public sealed class LanguageTable
     public async Task<LangHeaderModel?> LoadCurrentHeaderData()
     {
         var langCode = _appState.CurrentLanguage;
-        var curUri = CurrentRelUri == string.Empty ? DefaultEmptyUri : CurrentRelUri;
+        var curUri = CurrentRelUri;
 
         return await LoadHeaderForPage(curUri, langCode);
     }
@@ -382,7 +400,7 @@ public sealed class LanguageTable
     public async Task<LangLinksModel?> LoadCurrentLinksData()
     {
         var langCode = _appState.CurrentLanguage;
-        var curUri = CurrentRelUri == string.Empty ? DefaultEmptyUri : CurrentRelUri;
+        var curUri = CurrentRelUri;
 
         return await LoadLinksForPage(curUri, langCode);
     }
@@ -390,7 +408,7 @@ public sealed class LanguageTable
     public async Task<PageIslandModel[]?> LoadCurrentIslandsData()
     {
         var langCode = _appState.CurrentLanguage;
-        var curUri = CurrentRelUri == string.Empty ? DefaultEmptyUri : CurrentRelUri;
+        var curUri = CurrentRelUri;
 
         return await LoadIslandsForPage(curUri, langCode);
     }

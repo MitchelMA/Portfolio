@@ -17,6 +17,8 @@ public struct LanguageTableManifestModel
    public string LinkDataFileName { get; init; }
    [JsonPropertyName("page-contents_prefix")]
    public string PageContentsPrefix { get; init; }
+   [JsonPropertyName("page-islands-text-location")]
+   public string PageIslandsTextLocation { get; init; }
    [JsonPropertyName("other-content-directory")]
    public string OtherContentDirName { get; init; }
    [JsonPropertyName("info_table-filename")]

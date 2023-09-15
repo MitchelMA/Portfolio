@@ -3,7 +3,6 @@
     "Inverted": false,
     "Flex-Values": ["2 2 300px", "1 0"],
     "Title": "About Me",
-    "Content": "Content coming soon",
     "ImagesSticky": true,
     "Id": "about",
     "Images": [

@@ -10,8 +10,7 @@ public struct PageIslandModel
     public string[] FlexValues { get; init; }
     [JsonPropertyName("Title")]
     public string Title { get; init; }
-    [JsonPropertyName("Content")]
-    public string HtmlContentString { get; init; }
+    public string HtmlContentString { get; set; }
     [JsonPropertyName("ImagesSticky")]
     public bool StickyImages { get; init; }
     [JsonPropertyName("Id")]

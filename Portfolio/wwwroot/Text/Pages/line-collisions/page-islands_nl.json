@@ -1,0 +1,49 @@
+﻿[
+  {
+    "Flex-Values": ["3 260px", "1 460px"],
+    "Title": "Introductie",
+    "ImagesSticky": true,
+    "Id": "iductie",
+    "Images": [
+      {
+        "Src": "./images/circle-line-2.png",
+        "Alt": "Hoek van inval, is hoek van uitval",
+        "Height": 250
+      },
+      {
+        "Src": "./images/vector-resolution.png",
+        "Alt": "Simpele uitwerking van Vector Resolution",
+        "Height": 250
+      }
+    ]
+  },
+
+  {
+    "Inverted": true,
+    "Flex-Values": ["2 300px", "1 350px"],
+    "Title": "Voorbeeld uitwerking",
+    "ImagesSticky": true,
+    "Id": "uit",
+    "Images": [
+      {
+        "Src": "./images/resolution-process.png",
+        "Alt": "Resolution process",
+        "ExtraCSSStyles": "max-width: 100%;" 
+      }
+    ]
+  },
+
+  {
+    "Flex-Values": ["2 450px", "1 450px"],
+    "Title": "Achterliggend Systeem",
+    "ImagesSticky": true,
+    "Id": "systeem",
+    "Images": [
+      {
+        "Src": "./images/rider64_SUVtMKrW1o.png",
+        "Alt": "De add method in de singleton",
+        "ExtraCSSStyles": "max-width: 100%;" 
+      }
+    ]
+  }
+]

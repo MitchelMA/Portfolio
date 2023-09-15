@@ -8,6 +8,7 @@
   "header_filename": "header-content.csv",
   "link-data_filename": "link-data.json",
   "page-contents_prefix": "page-islands_",
+  "page-islands-text-location": "./island-texts",
   "other-content-directory": "./Other",
   "info_table-filename": "info-table-texts.csv",
   "duration-type-filename": "duration-types.json"

@@ -195,6 +195,7 @@
         if (_fromJsonFile is null)
             return;
 
+        LanguageTable.LanguageChangedAsync += OnLanguageChanged;
         await LanguageTable.AwaitLanguageContentAsync(SetLangData);
     }
     
@@ -220,12 +221,15 @@
             await AutoLoop(_cts.Token);
     }
 
+    private async Task OnLanguageChanged(object? sender, int nextLangIdx) => await SetLangData(sender);
+
     public void Dispose()
     {
         _disposed = true;
         _cts.Cancel();
         _cts.Dispose();
         LanguageTable.ManifestLoadedAsync -= SetLangData;
+        LanguageTable.LanguageChangedAsync -= OnLanguageChanged;
     }
 
 }

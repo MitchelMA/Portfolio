@@ -46,7 +46,7 @@ public class ProjectInfoGetter
     public async Task<ProjectDataModel?> GetCorrespondingToUri()
     {
         await RetrieveData();
-        string path = "./" + _navigationManager.ToBaseRelativePath(_navigationManager.Uri).Split('#')[0];
+        string path = "./" + _navigationManager.ToBaseRelativePath(_navigationManager.Uri).Split('#')[0].Split('?')[0];
         if (_data.TryGetValue(path, out var value))
             return value;
 
