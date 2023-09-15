@@ -13,74 +13,46 @@
 
 @implements IDisposable
 
-<PageIsland IslandTitle="Introductie" id="iductie">
-    <ChildContent>
-        <TwoView 
-            style="flex-wrap: wrap;"
-            FlexValues="@(new("1 300px", "3 450px"))">
-            <FirstView>
-                <p>
-                    In de eerste periode van het tweede jaar op deze studie, hadden wij
-                    10 weken de tijd gekregen om aan een 
-                    <a href="https://en.wikipedia.org/wiki/Tower_defense" target="_blank">tower defense</a>
-                    spel te werken. <br/>
-                    Het doel van deze opdracht was niet om een mooi uitziend spel te maken,
-                    maar eerder het leren van implementeren van 
-                    <a href="https://en.wikipedia.org/wiki/Game_mechanics" target="_blank">game mechanics</a>
-                    (i.e. enemy-wave systeem; schieten van projectielen; etc..)
-                </p>
-            </FirstView>
-
-            <SecondView>
-                <article class="two-view__img-article">
-                <LightboxImg src="./images/Unity_4xajzJxaDR.jpg"
-                             alt="De map van het spel"
-                             class="hover-scale sc05"
-                             style="max-width: 100%;"
-                             BoundLightboxName="@nameof(TowerDefense)"
-                             Registry="Registry"/>
-                </article>
-            </SecondView>
-        </TwoView>
-
-    </ChildContent>
-</PageIsland>
-
-<PageIsland IslandTitle="Path Finding" id="path" Inverse="true">
-    <ChildContent>
-        <TwoView
-            style="flex-wrap: wrap;"
-            FlexValues="@(new("2 300px", "2 300px"))">
-            
-            <FirstView>
-                Om enemies een pad af te kunnen laten lopen, is er een systeem nodig
-                om aan te geven waar het pad is. <br/>
-                Volgorde is alvolgt: een enemy wordt ingespawned; deze krijgt zijn eerste "target"
-                doorgegeven. Wanneer deze bij zijn target is, vraagt de enemy aan zijn target wat
-                de volgende target is. Het pad vormt op deze manier iets genaamd een
-                <a href="https://en.wikipedia.org/wiki/Linked_list" target="_blank">Linked List</a>.
-                <br/><br/>
-                Het allermooiste van dit systeem is, is dat ik het ook voor de camera kan gebruiken.
-                Meestal zie je wel wanneer je in een level komt; dat er een korte "cutscene" is waar
-                het hele level wordt laten zien.
-                Het pad van de cutscene kan ik maken middels het zelfde systeem wat ik gebruik voor
-                de enemies.
-            </FirstView>
-            
-            <SecondView>
-                <article class="two-view__img-article">
-                    <LightboxImg src="./images/PathFinding.png"
-                                 alt="Visual sheet van path finding mechanic"
-                                 class="hover-scale sc05"
-                                 style="max-width: 100%;"
-                                 BoundLightboxName="@nameof(TowerDefense)"
-                                 Registry="Registry"/>
-                </article>
-            </SecondView>
-            
-        </TwoView>
-    </ChildContent> 
-</PageIsland>
+@if (_islandsData is not null)
+{
+    foreach (var island in _islandsData)
+    {
+        <PageIsland IslandTitle="@island.Title" id="@island.Id" Inverse="@island.Inverted">
+            @if (island.Images is null)
+            {
+                <div style="padding: 0 0.7rem;">
+                    @((MarkupString)island.HtmlContentString)
+                </div>
+            }
+            else
+            {
+                <TwoView FlexValues="@(new ValueTuple<string, string>(island.FlexValues[0], island.FlexValues[1]))">
+                    <FirstView>@((MarkupString)island.HtmlContentString)</FirstView>
+                    <SecondView>
+                        @{
+                            var articleClassName = "two-view__img-article";
+                            if (island.StickyImages) articleClassName += " sticky";
+                        }
+                        <article class="@articleClassName">
+                            @foreach (var image in island.Images)
+                            {
+                                <LightboxImg
+                                    BoundLightboxName="@nameof(TowerDefense)"
+                                    Registry="Registry"
+                                    class="hover-scale sc075"
+                                    src="@image.Src"
+                                    alt="@image.Atl"
+                                    width="@image.Width"
+                                    height="@image.Height"
+                                    style="@image.ExtraCssStyles"/>
+                            }
+                        </article>
+                    </SecondView>
+                </TwoView>
+            }
+        </PageIsland>
+    }
+}
 
 <Lightbox LightboxName="@nameof(TowerDefense)"
           Registry="Registry"/>
@@ -89,6 +61,7 @@
 
     private static NavLinkData[]? _links;
     private static ProjectDataModel? _model;
+    private static PageIslandModel[]? _islandsData;
 
     protected override async Task OnInitializedAsync()
     {
@@ -125,6 +98,7 @@
     {
         SetHeaderData(langPageData.HeaderData!.Value);
         SetLinksData(langPageData.LinksData!.Value);
+        SetIslandsData(langPageData.PageIslandsData!);
     }
 
     private void SetHeaderData(LangHeaderModel headerData)
@@ -154,6 +128,12 @@
 
         AppState.Links = _links;
         AppState.MinNonStackedSize = linksData.MinWidth;
+    }
+
+    private void SetIslandsData(PageIslandModel[] islandsData)
+    {
+        _islandsData = islandsData;
+        StateHasChanged();
     }
 
     public void Dispose()
