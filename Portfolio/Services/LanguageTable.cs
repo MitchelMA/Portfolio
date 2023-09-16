@@ -473,14 +473,20 @@ public sealed class LanguageTable
 
     #region Language Setters
     
-    public bool SetLanguage(string cultureName)
+    public int GetLanguageIdx(string cultureName)
     {
         var targetCulture = CultureInfo.GetCultureInfo(cultureName);
         var supportedCultures = SupportedCultures.Select(CultureInfo.GetCultureInfo);
-        var nextLang = StaticData.DefaultLangCode;
+        var langIdx = StaticData.DefaultLangCode;
 
-        var idx = supportedCultures.BestGreedyEquivalent(targetCulture);
-        if (idx != -1) nextLang = idx;
+        var best = supportedCultures.BestGreedyEquivalent(targetCulture);
+        if (best != -1) langIdx = best;
+        return langIdx;
+    }
+    
+    public bool SetLanguage(string cultureName)
+    {
+        var nextLang = GetLanguageIdx(cultureName);
         if (nextLang == _appState.CurrentLanguage)
             return false;
         
@@ -502,12 +508,7 @@ public sealed class LanguageTable
 
     public async Task<bool> SetLanguageAsync(string cultureName)
     {
-        var targetCulture = CultureInfo.GetCultureInfo(cultureName);
-        var supportedCultures = SupportedCultures.Select(CultureInfo.GetCultureInfo);
-        var nextLang = StaticData.DefaultLangCode;
-
-        var idx = supportedCultures.BestGreedyEquivalent(targetCulture);
-        if (idx != -1) nextLang = idx;
+        var nextLang = GetLanguageIdx(cultureName);
         if (nextLang == _appState.CurrentLanguage)
             return false;
         
@@ -526,6 +527,8 @@ public sealed class LanguageTable
         await OnLanguageChanged(cultureIdx);
         return true;
     }
+
+    
     
     #endregion
 }
