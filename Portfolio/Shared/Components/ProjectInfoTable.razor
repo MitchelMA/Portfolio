@@ -56,7 +56,11 @@
         _headerModel = await LangTable.LoadCurrentInfoTableData();
         _durationTexts = await LangTable.LoadCurrentDurationTexts();
         if (_headerModel is null || _durationTexts is null)
+        {
             await Console.Error.WriteLineAsync("Couldn't load the language content for the project-info-table");
+            return;
+        }
+        StateHasChanged();
     }
 
     private async Task OnLanguageChanged(object? sender, int newLangCode) =>

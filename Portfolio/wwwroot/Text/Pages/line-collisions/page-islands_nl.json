@@ -1,48 +1,48 @@
 ﻿[
   {
-    "Flex-Values": ["3 260px", "1 460px"],
-    "Title": "Introductie",
-    "ImagesSticky": true,
-    "Id": "iductie",
-    "Images": [
+    "flex-values": ["3 260px", "1 460px"],
+    "title": "Introductie",
+    "sticky-images": true,
+    "id": "iductie",
+    "images": [
       {
-        "Src": "./images/circle-line-2.png",
-        "Alt": "Hoek van inval, is hoek van uitval",
-        "Height": 250
+        "src": "./images/circle-line-2.png",
+        "alt": "Hoek van inval, is hoek van uitval",
+        "height": 250
       },
       {
-        "Src": "./images/vector-resolution.png",
-        "Alt": "Simpele uitwerking van Vector Resolution",
-        "Height": 250
+        "src": "./images/vector-resolution.png",
+        "alt": "Simpele uitwerking van Vector Resolution",
+        "height": 250
       }
     ]
   },
 
   {
-    "Inverted": true,
-    "Flex-Values": ["2 300px", "1 350px"],
-    "Title": "Voorbeeld uitwerking",
-    "ImagesSticky": true,
-    "Id": "uit",
-    "Images": [
+    "inverted": true,
+    "flex-values": ["2 300px", "1 350px"],
+    "title": "Voorbeeld uitwerking",
+    "sticky-images": true,
+    "id": "uit",
+    "images": [
       {
-        "Src": "./images/resolution-process.png",
-        "Alt": "Resolution process",
-        "ExtraCSSStyles": "max-width: 100%;" 
+        "src": "./images/resolution-process.png",
+        "alt": "Resolution process",
+        "extra-css-styles": "max-width: 100%;" 
       }
     ]
   },
 
   {
-    "Flex-Values": ["2 450px", "1 450px"],
-    "Title": "Achterliggend Systeem",
-    "ImagesSticky": true,
-    "Id": "systeem",
-    "Images": [
+    "flex-values": ["2 450px", "1 450px"],
+    "title": "Achterliggend Systeem",
+    "sticky-images": true,
+    "id": "systeem",
+    "images": [
       {
-        "Src": "./images/rider64_SUVtMKrW1o.png",
-        "Alt": "De add method in de singleton",
-        "ExtraCSSStyles": "max-width: 100%;" 
+        "src": "./images/rider64_SUVtMKrW1o.png",
+        "alt": "De add method in de singleton",
+        "extra-css-styles": "max-width: 100%;" 
       }
     ]
   }

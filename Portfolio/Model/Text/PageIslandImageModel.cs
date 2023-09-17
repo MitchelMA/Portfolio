@@ -4,15 +4,15 @@ namespace Portfolio.Model.Text;
 
 public struct PageIslandImageModel
 {
-    [JsonPropertyName("Src")]
+    [JsonPropertyName("src")]
     public string Src { get; init; }
-    [JsonPropertyName("Alt")]
+    [JsonPropertyName("alt")]
     public string Atl { get; init; }
-    [JsonPropertyName("Width")]
+    [JsonPropertyName("width")]
     public int? Width { get; init; }
-    [JsonPropertyName("Height")]
+    [JsonPropertyName("height")]
     public int? Height { get; init; }
-    [JsonPropertyName("ExtraCSSStyles")]
+    [JsonPropertyName("extra-css-styles")]
     public string? ExtraCssStyles { get; init; }
     
 }

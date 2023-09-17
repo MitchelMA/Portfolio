@@ -4,17 +4,17 @@ namespace Portfolio.Model.Text;
 
 public struct PageIslandModel
 {
-    [JsonPropertyName("Inverted")]
+    [JsonPropertyName("inverted")]
     public bool Inverted { get; init; }
-    [JsonPropertyName("Flex-Values")]
+    [JsonPropertyName("flex-values")]
     public string[] FlexValues { get; init; }
-    [JsonPropertyName("Title")]
+    [JsonPropertyName("title")]
     public string Title { get; init; }
     public string HtmlContentString { get; set; }
-    [JsonPropertyName("ImagesSticky")]
+    [JsonPropertyName("sticky-images")]
     public bool StickyImages { get; init; }
-    [JsonPropertyName("Id")]
+    [JsonPropertyName("id")]
     public string Id { get; init; }
-    [JsonPropertyName("Images")]
+    [JsonPropertyName("images")]
     public PageIslandImageModel[]? Images { get; init; }
 }

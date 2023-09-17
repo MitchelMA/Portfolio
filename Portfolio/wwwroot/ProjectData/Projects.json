@@ -67,5 +67,23 @@
     "CardInfo": {
       "SetHeight": "21rem"
     }
+  },
+  
+  {
+    "Planning": {
+      "Duration": 2,
+      "DurationType": 1,
+      "PeopleCount": 1,
+      "Software": "C++, CMake"
+    },
+    "Header": {
+      "HeaderImage": "./images/minesweeper/WindowsTerminal_Go2DqqA6XS.png"
+    },
+    "Status": 0,
+    "LocalHref": "./minesweeper",
+    "GitHub": "Minesweeper-cpp",
+    "CardInfo": {
+      "SetHeight": "21rem"
+    }
   }
 ]
