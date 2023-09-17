@@ -9,6 +9,7 @@
 @inject ProjectState ProjectState
 @inject ProjectInfoGetter Getter
 @inject LanguageTable LanguageTable
+@inject LangTablePreCacher PreCacher
 
 @implements IDisposable
 
@@ -64,6 +65,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        PreCacher.Extra = new[] { "./index" };
+        
         _model = await Getter.GetCorrespondingToUri();
         AppState.PageIcon = StaticData.DefaultPageIcon;
         AppState.ShowFooter = true;
@@ -88,7 +91,7 @@
         }
         
         SetPageContent(currentData);
-        await LanguageTable.PreCacheAll(Getter.Data.Keys, AppState.CurrentLanguage);
+        await PreCacher.PreCache(AppState.CurrentLanguage);
     }
 
     private void SetPageContent(LangPageData langPageData)

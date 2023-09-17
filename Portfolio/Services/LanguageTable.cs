@@ -57,10 +57,14 @@ public sealed class LanguageTable
     
     public delegate void ManifestLoadedDelegate(object sender);
     public delegate Task ManifestLoadedDelegateAsync(object sender);
+    public delegate void LanguageChangingDelegate(object? sender, int oldCultureIdx, int newCultureIdx);
+    public delegate Task LanguageChangingDelegateAsync(object? sender, int oldCultureIdx, int newCultureIdx);
     public delegate void LanguageChangedDelegate(object sender, int newCultureIdx);
     public delegate Task LanguageChangedDelegateAsync(object sender, int newCultureIdx);
     public event ManifestLoadedDelegate? ManifestLoaded;
     public event ManifestLoadedDelegateAsync? ManifestLoadedAsync;
+    public event LanguageChangingDelegate? LanguageChanging;
+    public event LanguageChangingDelegateAsync? LanguageChangingAsync;
     public event LanguageChangedDelegate? LanguageChanged;
     public event LanguageChangedDelegateAsync? LanguageChangedAsync;
 
@@ -80,23 +84,30 @@ public sealed class LanguageTable
         if (_isLoaded)
             return;
         _manifestContent = await _httpClient.GetFromJsonAsync<LanguageTableManifestModel>(ManifestFileName);
-        await OnManifestLoaded();
+        OnManifestLoaded();
     }
     
     #region Event Callers
 
-    private async Task OnManifestLoaded()
+    private void OnManifestLoaded()
     {
         _isLoaded = true;
         ManifestLoaded?.Invoke(this);
-        await ManifestLoadedAsync?.Invoke(this)!;
+        ManifestLoadedAsync?.Invoke(this);
     }
 
-    private async Task OnLanguageChanged(int newIdx)
+    private void OnLanguageChanging(int newIdx)
+    {
+        LanguageChanging?.Invoke(this, _appState.CurrentLanguage, newIdx);
+        LanguageChangingAsync?.Invoke(this, _appState.CurrentLanguage, newIdx);
+        OnLanguageChanged(newIdx);
+    }
+
+    private void OnLanguageChanged(int newIdx)
     {
         _appState.CurrentLanguage = newIdx;
         LanguageChanged?.Invoke(this, newIdx);
-        await LanguageChangedAsync?.Invoke(this, newIdx)!;
+        LanguageChangedAsync?.Invoke(this, newIdx);
     }
     
     #endregion
@@ -513,7 +524,7 @@ public sealed class LanguageTable
         if (nextLang == _appState.CurrentLanguage)
             return false;
         
-        Task.Run(async () => await OnLanguageChanged(nextLang));
+        OnLanguageChanging(nextLang);
         return true;
     }
 
@@ -525,33 +536,9 @@ public sealed class LanguageTable
         if (cultureIdx == _appState.CurrentLanguage)
             return false;
 
-        Task.Run(async () => await OnLanguageChanged(cultureIdx));
+        OnLanguageChanging(cultureIdx);
         return true;
     }
 
-    public async Task<bool> SetLanguageAsync(string cultureName)
-    {
-        var nextLang = GetLanguageIdx(cultureName);
-        if (nextLang == _appState.CurrentLanguage)
-            return false;
-        
-        await OnLanguageChanged(nextLang);
-        return true;
-    }
-
-    public async Task<bool> SetLanguageAsync(int cultureIdx)
-    {
-        if (cultureIdx < 0 || cultureIdx >= SupportedCultures.Count)
-            return false;
-
-        if (cultureIdx == _appState.CurrentLanguage)
-            return false;
-
-        await OnLanguageChanged(cultureIdx);
-        return true;
-    }
-
-    
-    
     #endregion
 }

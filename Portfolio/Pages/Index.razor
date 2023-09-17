@@ -124,10 +124,10 @@
 
     protected override async Task OnInitializedAsync()
     {
+        AppState.PageIcon = PageIcon;
+        
         await LanguageTable.AwaitLanguageContentAsync(SetLangData);
         LanguageTable.LanguageChangedAsync += OnLanguageChanged;
-        
-        AppState.PageIcon = PageIcon;
     }
     
     private async Task OnLanguageChanged(object sender, int cultureIdx) => await SetLangData(sender);

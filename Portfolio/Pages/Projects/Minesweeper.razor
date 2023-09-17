@@ -9,6 +9,7 @@
 @inject ProjectState ProjectState
 @inject ProjectInfoGetter InfoGetter
 @inject LanguageTable LangTable
+@inject LangTablePreCacher PreCacher
 
 @implements IDisposable
 
@@ -65,15 +66,17 @@
 
     protected override async Task OnInitializedAsync()
     {
+        PreCacher.Extra = new[] { "./index" };
+        
         _model = await InfoGetter.GetCorrespondingToUri();
         ProjectState.PageEndGithub = _model?.GitHub;
         ProjectState.ProjectStatus = _model?.Status ?? ProjectStatus.Finished;
 
-        LangTable.LanguageChangedAsync += OnLanguageChanged;
-        await LangTable.AwaitLanguageContentAsync(SetLangData);
-
         AppState.PageIcon = new PageIcon("image/png", "./images/minesweeper/minesweepericon.png");
         AppState.ShowFooter = true;
+
+        LangTable.LanguageChangedAsync += OnLanguageChanged;
+        await LangTable.AwaitLanguageContentAsync(SetLangData);
     }
 
     private async Task OnLanguageChanged(object? sender, int newCultureIdx) => await SetLangData(sender);
@@ -88,7 +91,7 @@
         }
 
         SetPageContent(currentData);
-        await LangTable.PreCacheAll(InfoGetter.Data.Keys, AppState.CurrentLanguage);
+        await PreCacher.PreCache(AppState.CurrentLanguage);
     }
 
     private void SetPageContent(LangPageData langPageData)
