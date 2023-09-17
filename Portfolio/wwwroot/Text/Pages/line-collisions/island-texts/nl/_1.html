@@ -1,0 +1,26 @@
+﻿<p>
+    Een voorbeelduitwerking van hoe ik dit toegepast heb,
+    lijkt enorm op vector resolution. Alleen in mijn geval houdt het rekening met de hoek waronder
+    de lijn staat.
+</p>
+<hr/>
+<p>
+    Laten we beginnen met een lijn die onder een hoek van 45° staat, en
+    een bal die deze tegemoet komt met een richting van
+    <img src="images/math/line-collisions/vector_v.svg" alt="Vector v = [0.89; -0.44]" height="18" />.
+    De normal van de lijn is als volgt:
+    <img src="images/math/line-collisions/vector_n.svg" alt="Vector n = [-0.71; 0.71]" height="18" />,
+    ook hebben we een vector nodig
+    die de lijn navolgt:
+    <img src="images/math/line-collisions/vector_a.svg" alt="Vector a = [0.71; 0.71]" height="18" />.
+    Om met deze twee vectoren een "bounding-box"
+    te vormen, vermenigvuldigen we deze met de dotproduct. hieruit volgt weer een scalair,
+    dus vermenigvuldigen we hiervan de uitkomst weer met de corresponderende vector. Als voorbeeld de normal: <br/>
+    nieuwe normal (nn): <br/>
+    <img src="images/math/line-collisions/vector_nn_equation.svg" alt="Vector nn = [0.67, -0.67]" height="18" /> <br/>
+    nieuwe along (na): <br/>
+    <img src="images/math/line-collisions/vector_na_equation.svg" alt="Vector na = [0.23, 0.23]" height="18"/> <br/>
+    Nu hebben we een resolutie-vector van `v`, die rekening houdt met de normal van de lijn.
+    De nieuwe velocity `v` na impact wordt als volgt berekent: <br/>
+    <img src="images/math/line-collisions/vector_nv_equation.svg" alt="Vector nv = [-0.44, 0.89]" height="18"/>.
+</p>

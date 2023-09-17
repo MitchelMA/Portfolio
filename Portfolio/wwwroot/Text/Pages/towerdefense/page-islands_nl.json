@@ -1,0 +1,30 @@
+﻿[
+  {
+    "flex-values": ["1 300px", "3 450px"],
+    "title": "Introductie",
+    "sticky-images": true,
+    "id": "iductie",
+    "images": [
+      {
+        "src": "./images/Unity_4xajzJxaDR.jpg",
+        "alt": "De map van het spel",
+        "extra-css-styles": "max-width: 100%;" 
+      }
+    ]
+  },
+
+  {
+    "inverted": true,
+    "flex-values": ["3 450px", "2 300px"],
+    "title": "Path Finding",
+    "sticky-images": true,
+    "id": "path",
+    "images": [
+      {
+        "src": "./images/PathFinding.png",
+        "alt": "Visual sheet van path finding mechanic",
+        "extra-css-styles": "max-width: 100%;" 
+      }
+    ]
+  }
+]

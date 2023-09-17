@@ -1,0 +1,18 @@
+﻿[
+  {
+    "inverted": false,
+    "flex-Values": ["2 2 300px", "1 0"],
+    "title": "About Me",
+    "sticky-images": true,
+    "id": "about",
+    "images": [
+      {
+        "src": "./Images/AboutMeCropped.webp",
+        "alt": "Picture of me on winter-vacation",
+        "width": null,
+        "height": 465,
+        "extra-css-styles": null
+      }
+    ]
+  }
+]

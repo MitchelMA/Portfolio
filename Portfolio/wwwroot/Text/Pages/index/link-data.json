@@ -1,0 +1,52 @@
+﻿[
+  {
+    "min-width": 650,
+    "links": [
+      {
+        "href": "#projects",
+        "display-text": "Projects",
+        "opens-new": false
+      },
+      {
+        "href": "#about",
+        "display-text": "About Me",
+        "opens-new": false
+      },
+      {
+        "href": "#contact",
+        "display-text": "Contact Me",
+        "opens-new": false
+      },
+      {
+        "href": "./cv.pdf",
+        "display-text": "CV",
+        "opens-new": true
+      }
+    ]
+  },
+  {
+    "min-width": 650,
+    "links": [
+      {
+        "href": "#projects",
+        "display-text": "Projects",
+        "opens-new": false
+      },
+      {
+        "href": "#about",
+        "display-text": "About Me",
+        "opens-new": false
+      },
+      {
+        "href": "#contact",
+        "display-text": "Contact Me",
+        "opens-new": false
+      },
+      {
+        "href": "./cv.pdf",
+        "display-text": "CV",
+        "opens-new": true
+      }
+    ]
+  }
+]

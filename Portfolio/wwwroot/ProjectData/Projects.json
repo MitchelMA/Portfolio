@@ -1,60 +1,49 @@
 [
   {
     "Planning": {
-      "Duration": "10 weken",
+      "Duration": 10,
+      "DurationType": 1,
       "PeopleCount": 1,
       "Software": "C#, Unity"
     },
     "Header": {
-      "HeaderTitle": "Tower Defense",
-      "HeaderImage": "./images/Unity_4xajzJxaDR.jpg",
-      "UnderTitle": "Eerste game helemaal zelf",
-      "Text": "Het eerste project van het tweede jaar waar ik in mijn eentje aan heb gewerkt"
+      "HeaderImage": "./images/Unity_4xajzJxaDR.jpg"
     },
     "Status": 0,
-    "TitleExtension": " - Tower Defense",
     "LocalHref": "./towerdefense",
     "GitHub": "towerdefense",
     "CardInfo": {
       "SetHeight": "21rem"
     }
   },
-  
   {
     "Planning": {
-      "Duration": "5 dagen",
+      "Duration": 5,
+      "DurationType": 0,
       "PeopleCount": 1,
       "Software": "C#, Unity"
     },
     "Header": {
-      "HeaderTitle": "Line Collisions",
-      "HeaderImage": "./images/Unity_OfLfkoIeGj.png",
-      "UnderTitle": "Line collisions middels vector-resolution",
-      "Text": "Een simpel voorbeeld van line collisions met behulp van Vector Resolution"
+      "HeaderImage": "./images/Unity_OfLfkoIeGj.png"
     },
     "Status": 2,
-    "TitleExtension": " - Line Collision",
     "LocalHref": "./line-collisions",
     "GitHub": "Line-collision",
     "CardInfo": {
       "SetHeight": "21rem"
     }
   },
-
   {
     "Planning": {
-      "Duration": "10 weken",
+      "Duration": 10,
+      "DurationType": 1,
       "PeopleCount": 8,
       "Software": "C#, Unity, Photoshop"
     },
     "Header": {
-      "HeaderTitle": "Vertical Slice",
-      "HeaderImage": "./images/Unity_KFo5HjMIzQ.png",
-      "UnderTitle": "Dodgeball Academia",
-      "Text": "De vertical slice waar ik aan heb gewerkt in de tweede periode van het tweede jaar aan het MA"
+      "HeaderImage": "./images/Unity_KFo5HjMIzQ.png"
     },
     "Status": 0,
-    "TitleExtension": " - Vertical Slice",
     "LocalHref": "./vertical-slice",
     "GitHub": "Vertical-Slice-P2",
     "CardInfo": {
@@ -63,21 +52,36 @@
   },
   {
     "Planning": {
-      "Duration": "10 dagen",
+      "Duration": 10,
+      "DurationType": 0,
       "PeopleCount": 1,
       "Software": "C#"
     },
     "Header":
     {
-      "HeaderTitle": "Csv Lexer",
-      "HeaderImage": "./images/CsvDelimited001.svg",
-      "UnderTitle": "Uitlezen van csv bestanden",
-      "Text": "Een project waarin ik bezig ben met het maken van een programma dat csv bestanden kan uitlezen/deserialiseren"
+      "HeaderImage": "./images/CsvDelimited001.svg"
     },
     "Status": 0,
-    "TitleExtension": " - Csv Lexer",
     "LocalHref": "./csv-lexer",
     "GitHub": "Csv-lexer",
+    "CardInfo": {
+      "SetHeight": "21rem"
+    }
+  },
+  
+  {
+    "Planning": {
+      "Duration": 2,
+      "DurationType": 1,
+      "PeopleCount": 1,
+      "Software": "C++, CMake"
+    },
+    "Header": {
+      "HeaderImage": "./images/minesweeper/WindowsTerminal_Go2DqqA6XS.png"
+    },
+    "Status": 0,
+    "LocalHref": "./minesweeper",
+    "GitHub": "Minesweeper-cpp",
     "CardInfo": {
       "SetHeight": "21rem"
     }

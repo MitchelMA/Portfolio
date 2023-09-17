@@ -1,8 +1,8 @@
-﻿@using Portfolio.Shared.Layouts
-@using Portfolio.Services
-@using Portfolio.Client
+﻿@using Portfolio.Client
 @inject AppState AppState
 @inject ProjectInfoGetter InfoGetter
+@inject LanguageTable LangTable
+
 @implements IDisposable
 
 <HeadContent>
@@ -25,12 +25,14 @@
 
     protected override void OnInitialized()
     {
+        LangTable.AwaitLanguageContent(OnManifestReady);
         AppState.StateChanged += StateChanged;
     }
     
 
     public void Dispose()
     {
+        LangTable.ManifestLoaded -= OnManifestReady;
         AppState.StateChanged -= StateChanged;
     }
 
@@ -38,6 +40,12 @@
     private void StateChanged()
     {
         StateHasChanged();
+    }
+
+    // Todo! Engelse vertalingen maken, staat nu op geforceerd Nederlands
+    private void OnManifestReady(object? sender)
+    {
+        // LangTable.SetLanguage(Thread.CurrentThread.CurrentCulture.Name);
     }
     
 }
