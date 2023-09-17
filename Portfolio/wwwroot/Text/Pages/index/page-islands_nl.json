@@ -1,0 +1,15 @@
+[
+  {
+    "Flex-Values": ["2 2 300px", "1 0"],
+    "Title": "About Me",
+    "ImagesSticky": true,
+    "Id": "about",
+    "Images": [
+      {
+        "Src": "./images/AboutMeCropped.webp",
+        "Alt": "Foto van mij op wintersport",
+        "Height": 465
+      }
+    ]
+  }
+]

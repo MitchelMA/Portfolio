@@ -1,0 +1,33 @@
+﻿<p>
+    Er is op het moment wel een idee voor een "officiële"
+    <a href="https://datatracker.ietf.org/doc/html/rfc4180">definitie (RFC 4180)</a>
+    voor .csv bestanden, maar over het algemeen wordt hier vaak van afgeweken.
+</p>
+<hr/>
+<p>
+    De standaarden zijn als volgt:
+</p>
+<ul>
+    <li>Csv is gewone tekst, net zoals .txt bestandjes op computers</li>
+    <li>Het bestaat uit aantekeningen (1 per regel is gebruikelijk)</li>
+    <li>
+        De aantekening van een regel zijn opgesplits in stukjes middels een scheidingsteken (dit is gebruikelijk
+        één teken als een komma)
+    </li>
+    <li>Elke aantekening heeft de zelfde volgorde van soort gegevens per stukje</li>
+    <li>
+        Een
+        `<a href="https://developer.mozilla.org/en-US/docs/Glossary/String" target="_blank">string</a>`
+        wordt geöpend en gesloten met een aanhalingsteken, en mag voorbij het einde van een regel lopen
+    </li>
+    <li>
+        In het geval dat je een aanhalingsteken wilt opnemen in een string, gebruik je er twee achter elkaar:
+        "John ""Doe""" = John "Doe". Dit heet een
+        <a href="https://en.wikipedia.org/wiki/Escape_sequence" target="_blank">escape sequence</a>
+    </li>
+</ul>
+<hr/>
+<p>
+    Op het moment wijk ik ook af van deze standaard. Ik heb iets toegevoegd als `Comments`, kleine stukjes tekst
+    die bedoelt zijn om de code te verduidelijken.
+</p>

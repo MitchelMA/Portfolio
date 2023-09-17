@@ -1,68 +1,62 @@
 ﻿@page "/"
 
 @using Portfolio.Client
+@using Portfolio.Model.Text
 
 @inject AppState AppState
 @inject LightboxRegistry LightboxRegistry
+@inject LanguageTable LanguageTable
+
+@implements IDisposable
 
 <PageIsland IslandTitle="Projects" id="projects">
     <ChildContent>
         <Carousel FromJsonFile="./ProjectData/Projects.json"
                   DelayAmount="7000"
-                  StartIdx="1"/>
+                  StartIdx="2"/>
     </ChildContent>
 </PageIsland>
 
-<PageIsland IslandTitle="About Me" id="about">
-    <ChildContent>
-        @* <p>Dit is de content van de About Me Island</p> *@
-        <TwoView
-            style="padding: 0 0.8rem; align-items: center; flex-wrap:  wrap;"
-            FlexValues="@(new ValueTuple<string, string>("2 2 300px", "1 0"))">
-            <FirstView>
-                <section style="font-size: 1.1rem;">
-                    <p>
-                        Ik ben Mitchel Vonk, geboren te Beverwijk en wonend in Heemskerk. Ik vind programmeren in C#
-                        erg leuk
-                        en fijn (deze portfolio is gemaakt in blazor pages)! Ik leer er dagelijks nieuwe dingen in.
-                    </p>
-                    <hr/>
-                    <p>
-                        Ik programmeer al sinds begin 2019 met JavaScript in de browser. Ik was voornamelijk begonnen om
-                        wiskundige formules uit te werken (ik heb alijd al van wiskunde gehouden).
-                        Ook heb ik kleine spelletjes gemaakt in JavaScript in de browser, en was ik begonnen met het
-                        maken van Console-applications in Python
-                    </p>
-                    <hr/>
-                    <p>
-                        Toen ik in 2021 mijn Havo met succes afrondde, begon ik aan mijn vervolg-opleiding: Software Developer
-                        aan het Mediacollege Amsterdam. In het eerste halfjaar van jaar één hebben we daar met Python gewerkt.
-                        Aan het einde van dit halve jaar, kregen we de keuze of we Media-Developer wilde worden of Game-Developer.
-                        Toen heb ik de keuze gemaakt voor Game-Developer.
-                    </p>
-                    <hr/>
-                    <p>
-                        Naast programmeren ga ik graag om met vrienden, welke voort zijn gekomen uit een hechte groep die was
-                        gevormd aan het begin van mijn middelbare school periode. Ook sport ik erg graag en heb ik ook al redelijk
-                        wat beoefend: skiën, schaatsen en snowboarden. En ga ik wekelijks naar de sportschool.
-                    </p>
-                </section>
-            </FirstView>
-            <SecondView>
-                <article style="display: flex; justify-content: center;">
-                    <LightboxImg
-                        BoundLightboxName="Welkom Lightbox"
-                        Registry="LightboxRegistry"
-                        class="hover-scale sc075"
-                        src="./images/AboutMeCropped.webp"
-                        alt="Foto van mij op wintersport"
-                        height="500"
-                        style="border-radius: var(--border-radius-small);"/>
-                </article>
-            </SecondView>
-        </TwoView>
-    </ChildContent>
-</PageIsland>
+@if (_islandsData is not null)
+{
+    foreach (var island in _islandsData)
+    {
+        <PageIsland IslandTitle="@island.Title" id="@island.Id" Inverse="@island.Inverted">
+            @if (island.Images is null)
+            {
+                <div style="padding: 0 0.7rem;">
+                    @((MarkupString)island.HtmlContentString)
+                </div>
+            }
+            else
+            {
+                <TwoView FlexValues="@(new ValueTuple<string, string>(island.FlexValues[0], island.FlexValues[1]))">
+                    <FirstView>@((MarkupString)island.HtmlContentString)</FirstView>
+                    <SecondView>
+                        @{
+                            var articleClassName = "two-view__img-article";
+                            if (island.StickyImages) articleClassName += " sticky";
+                        }
+                        <article class="@articleClassName">
+                            @foreach (var image in island.Images)
+                            {
+                                <LightboxImg
+                                    BoundLightboxName="Welkom Lightbox"
+                                    Registry="LightboxRegistry"
+                                    class="hover-scale sc075"
+                                    src="@image.Src"
+                                    alt="@image.Atl"
+                                    width="@image.Width"
+                                    height="@image.Height"
+                                    style="@image.ExtraCssStyles"/>
+                            }
+                        </article>
+                    </SecondView>
+                </TwoView>
+            }
+        </PageIsland>
+    }
+}
 
 <PageIsland IslandTitle="Contact Me" id="contact">
     <ChildContent>
@@ -115,30 +109,79 @@
 
 @code {
 
-    private static readonly NavLinkData[]? Links =
-    {
-        new("#projects", "Projects"),
-        new("#about", "About Me"),
-        new("#contact", "Contact Me"),
-        new(@".\cv.pdf", "CV", true),
-    };
+    private static NavLinkData[]? _links;
 
     private static readonly LinkTag PageIcon = new PageIcon("image/webp", "./images/AboutMeCroppedHead.webp");
 
-    private readonly HeaderData _headerData = new()
+    private static HeaderData _headerData = new()
     {
         ImagePath = StaticData.MainHeaderImgPath,
-        Title = "Portfolio",
-        UnderTitle = "Mitchel Vonk",
     };
 
-    protected override void OnInitialized()
+    private PageIslandModel[]? _islandsData;
+
+    protected override async Task OnInitializedAsync()
     {
+        await LanguageTable.AwaitLanguageContentAsync(SetLangData);
+        LanguageTable.LanguageChangedAsync += OnLanguageChanged;
+        
         AppState.PageTitleExtension = string.Empty;
-        AppState.Links = Links;
-        AppState.MinNonStackedSize = 650;
         AppState.PageIcon = PageIcon;
+    }
+    
+    private async Task OnLanguageChanged(object sender, int cultureIdx) => await SetLangData(sender);
+
+    private async Task SetLangData(object? sender)
+    {
+        var currentData = await LanguageTable.LoadAllCurrentPageData();
+        if (currentData is null)
+        {
+            AppState.HeaderData = _headerData;
+            await Console.Error.WriteLineAsync("Couldn't get Page Data in specified language!");
+            return;
+        }
+        
+        SetPageContent(currentData);
+    }
+
+    private void SetPageContent(LangPageData langPageData)
+    {
+        SetHeaderData(langPageData.HeaderData!.Value);
+        SetLinksData(langPageData.LinksData!.Value); 
+        SetIslandsData(langPageData.PageIslandsData!);
+    }
+
+    private void SetHeaderData(LangHeaderModel headerData)
+    {
+        _headerData.Title = headerData.Title;
+        _headerData.UnderTitle = headerData.UnderTitle;
+        _headerData.Description = headerData.Description;
+        AppState.PageTitleExtension = " " + headerData.PageTitleExtension;
         AppState.HeaderData = _headerData;
     }
 
+    private void SetLinksData(LangLinksModel linksData)
+    {
+        _links = new NavLinkData[linksData.Links.Length];
+        for (var i = 0; i < linksData.Links.Length; i++)
+        {
+            var cur = linksData.Links[i];
+            _links[i] = new NavLinkData(cur.Href, cur.DisplayText, cur.OpensNew);
+        }
+
+        AppState.Links = _links;
+        AppState.MinNonStackedSize = linksData.MinWidth;
+    }
+
+    private void SetIslandsData(PageIslandModel[] islands)
+    {
+        _islandsData = islands;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        LanguageTable.ManifestLoadedAsync -= SetLangData;
+        LanguageTable.LanguageChangedAsync -= OnLanguageChanged;
+    }
 }

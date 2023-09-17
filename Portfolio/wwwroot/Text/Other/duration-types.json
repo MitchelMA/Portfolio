@@ -1,0 +1,10 @@
+[
+  {
+    "singular": ["dag", "week", "maand", "jaar", "decennium"],
+    "plural": ["dagen", "weken", "maanden", "jaren", "decennia"]
+  },
+  {
+    "singular": ["day", "week", "month", "year", "decade"],
+    "plural": ["days", "weeks", "months", "years", "decades"]
+  }
+]

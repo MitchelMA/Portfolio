@@ -1,153 +1,143 @@
 @page "/vertical-slice"
 @using Portfolio.Model.Project
 @using Portfolio.Client
+@using Portfolio.Model.Text
 @layout ProjectLayout
 
 @inject AppState AppState
 @inject ProjectState ProjectState
 @inject LightboxRegistry Registry
-@inject ProjectInfoGetter Getter;
+@inject ProjectInfoGetter Getter
+@inject LanguageTable LanguageTable
 
-<PageIsland IslandTitle="Project Aandeel" id="aandeel">
-    <ChildContent>
-        <p style="padding: 0.7rem;">
-            Mijn aandeel in dit project bestond uit het maken van de boundaries, de camera en de enemy ai.
-            We hadden eigen boundaries gebruikt omdat die van Unity niet helemaal lekker werkte, we hadden
-            en de camera zo geschreven dat hij mooi onder een hoek stond en focust op een bepaald punt en
-            de enemy-ai logischerwijs zodat je tegenstanders had om tegen te spelen.
-        </p> 
-        
-    </ChildContent>
-</PageIsland>
+@implements IDisposable
 
-<PageIsland IslandTitle="Showreel" id="reel">
-    <ChildContent>
-        <div style="padding: 0.7rem;">
-            <p>Dit is een showreel van tijdens development:</p>
-            <video controls
-                   poster="./images/Unity_KFo5HjMIzQ.png"
-                   width="100%"
-                   style="border-radius: var(--border-radius-small)">
-
-                <source
-                    src="./videos/DAReel.mp4"
-                    type="video/mp4"/>
-            </video>
-        </div>
-    </ChildContent>
-</PageIsland>
-
-<PageIsland IslandTitle="Camera Instellen" id="camera" Inverse="true">
-    <ChildContent>
-        <TwoView
-            style="flex-wrap: wrap;"
-            FlexValues="@(new("1 350px", "3 450px"))">
-
-            <FirstView>
-                <p>
-                    Bij het instellen van de camera, heb ik het zo geschreven dat de character-sprites automatisch naar
-                    de camera toe draaien.
-                </p>
-                <p>
-                    Bij het instellen van de camera hoef je namelijk alleen maar een hoek door tegeven, en dan staat
-                    de camera automatisch gedraaid, kijkend naar het goede punt.
-                    Daarom is het ook makkelijk als de sprites ook gedraaid zijn naar de camera.
-                </p>
-                <p>
-                    Omdat ik hiermee de hoek bereken tussen sprite en camera, kan ik ook tegelijkertijd corrigeren
-                    voor de hoogte, waardoor de sprite nogsteeds op de grond staat.
-                </p>
-            </FirstView>
-
-            <SecondView>
-                <LightboxImg src="./images/FaceCam.png"
-                             alt="Visual sheet van het naar de camera toe draaien"
-                             style="max-width: 100%; position: sticky; top: 7rem; border-radius: var(--border-radius-small);"
-                             class="hover-scale sc05"
-                             BoundLightboxName="@nameof(VerticalSlice)"
-                             Registry="Registry"/>
-
-            </SecondView>
-
-        </TwoView>
-    </ChildContent>
-</PageIsland>
-
-<PageIsland IslandTitle="Boundaries" id="bounds">
-    <ChildContent>
-        <TwoView
-            style="flex-wrap: wrap;"
-            FlexValues="@(new("2 350px", "1 450px"))">
-            
-            <FirstView>
-                <p>
-                    Dit spel maakt ook gebruik van "bounds".<br/>
-                    We hadden er namelijk voor gekozen om geen ingebouwde colliders te gebruiken van Unity.
-                    Deze werkte namelijk niet goed voor wat wij deden waardoor de bal raar begon te doen.
-                </p>
-                <p>
-                    Hier zie je een visual sheet van hoe het instellen van deze bounds eruit ziet.
-                    Je hebt de outline die blauw is en de middelijn die rood is. Ook kan je hem verplaatsen door 
-                    "Centre" te veranderen, wat een 2 dimensionale vector is.
-                </p>
-                <p>
-                    Ook zijn er dingen toegevoegd om te zorgen dat alle dingen die bewegen automatisch rekening
-                    houden met deze ingestelde bounds.
-                    En ook kan je de bounds ophalen van aan welke kant je staat (rechts of links).
-                    Dit omdat de middelijn ook ingesteld kan worden.
-                </p>
-            </FirstView>
-            <SecondView>
-                <LightboxImg src="./images/Bounds.png"
-                             alt="Visual sheet van het instellen van de boundaries"
-                             style="max-width: 100%; position: sticky; top: 7rem; border-radius: var(--border-radius-small);"
-                             class="hover-scale sc05"
-                             BoundLightboxName="@nameof(VerticalSlice)"
-                             Registry="Registry"/>
-
-            </SecondView>
-        </TwoView>
-    </ChildContent> 
-</PageIsland>
+@if (_islandsData is not null)
+{
+    foreach (var island in _islandsData)
+    {
+        <PageIsland IslandTitle="@island.Title" id="@island.Id" Inverse="@island.Inverted">
+            @if (island.Images is null)
+            {
+                <div style="padding: 0 0.7rem;">
+                    @((MarkupString)island.HtmlContentString)
+                </div>
+            }
+            else
+            {
+                <TwoView FlexValues="@(new ValueTuple<string, string>(island.FlexValues[0], island.FlexValues[1]))">
+                    <FirstView>@((MarkupString)island.HtmlContentString)</FirstView>
+                    <SecondView>
+                        @{
+                            var articleClassName = "two-view__img-article";
+                            if (island.StickyImages) articleClassName += " sticky";
+                        }
+                        <article class="@articleClassName">
+                            @foreach (var image in island.Images)
+                            {
+                                <LightboxImg
+                                    BoundLightboxName="@nameof(VerticalSlice)"
+                                    Registry="Registry"
+                                    class="hover-scale sc075"
+                                    src="@image.Src"
+                                    alt="@image.Atl"
+                                    width="@image.Width"
+                                    height="@image.Height"
+                                    style="@image.ExtraCssStyles"/>
+                            }
+                        </article>
+                    </SecondView>
+                </TwoView>
+            }
+        </PageIsland>
+    }
+}
 
 <Lightbox LightboxName="@nameof(VerticalSlice)"
           Registry="Registry"/>
 
 @code {
 
-    private static readonly NavLinkData[] Links =
-    {
-        new("#aandeel", "Aandeel"),
-        new("#reel", "Showreel"),
-        new("#camera", "Camera"),
-        new("#bounds", "Boundaries"),
-    };
-
+    private static NavLinkData[]? _links;
     private static ProjectDataModel? _model;
-    private static readonly PageDetails PageDetails = new();
-    private static readonly HeaderData HeaderData = new();
+    private static PageIslandModel[]? _islandsData;
 
     protected override async Task OnInitializedAsync()
     {
+        LanguageTable.LanguageChangedAsync += OnLanguageChanged;
+        
         _model = await Getter.GetCorrespondingToUri();
 
     // setup of page-details
-        PageDetails.Links = Links;
-        PageDetails.Icon = StaticData.DefaultPageIcon;
-        PageDetails.ShowFooter = true;
-        PageDetails.TitleExtension = _model?.TitleExtension;
-        PageDetails.MinNonStackedSize = 700;
+        AppState.PageIcon = StaticData.DefaultPageIcon;
+        AppState.ShowFooter = true;
 
-    // setup of header data
-        HeaderData.Title = _model?.Header.HeaderTitle;
-        HeaderData.ImagePath = _model?.Header.HeaderImage;
-        HeaderData.UnderTitle = _model?.Header.UnderTitle;
-
-        AppState.PageDetails = PageDetails;
-        AppState.HeaderData = HeaderData;
-
+        await LanguageTable.AwaitLanguageContentAsync(SetLangData);
+        
         ProjectState.ProjectStatus = _model?.Status ?? ProjectStatus.Finished;
         ProjectState.PageEndGithub = _model?.GitHub;
     }
+    
+    private async Task OnLanguageChanged(object sender, int newCultureIdx) => await SetLangData(sender);
 
+    private async Task SetLangData(object? sender)
+    {
+        var currentData = await LanguageTable.LoadAllCurrentPageData();
+        if (currentData is null)
+        {
+            await Console.Error.WriteLineAsync("Couldn't get Page Data in specified language!");
+            return;
+        }
+
+        SetPageContent(currentData);
+    }
+
+    private void SetPageContent(LangPageData langPageData)
+    {
+        SetHeaderData(langPageData.HeaderData!.Value);
+        SetLinksData(langPageData.LinksData!.Value);
+        SetIslandsData(langPageData.PageIslandsData!);
+    }
+
+    private void SetHeaderData(LangHeaderModel headerData)
+    {
+        var header = new HeaderData
+        {
+            Title = headerData.Title,
+            UnderTitle = headerData.UnderTitle,
+            Description = headerData.Description,
+            ImagePath = _model!.Value.Header.HeaderImage,
+            ExtraStyles = null
+        };
+
+        AppState.HeaderData = header;
+        AppState.PageTitleExtension = " " + headerData.PageTitleExtension;
+    }
+
+    private void SetLinksData(LangLinksModel linksData)
+    {
+        var l = linksData.Links.Length;
+        _links = new NavLinkData[l];
+        for (var i = 0; i < l; i++)
+        {
+            var cur = linksData.Links[i];
+            _links[i] = new NavLinkData(cur.Href, cur.DisplayText, cur.OpensNew);
+        }
+
+        AppState.Links = _links;
+        AppState.MinNonStackedSize = linksData.MinWidth;
+    }
+
+    private void SetIslandsData(PageIslandModel[] islandsData)
+    {
+        _islandsData = islandsData;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        LanguageTable.ManifestLoadedAsync -= SetLangData;
+        LanguageTable.LanguageChangedAsync -= OnLanguageChanged;
+    }
+    
 }

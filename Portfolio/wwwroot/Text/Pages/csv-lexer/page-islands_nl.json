@@ -1,0 +1,40 @@
+﻿[
+  {
+    "Flex-values": ["3 350px", "1 350px"],
+    "Title": "Introductie",
+    "ImagesSticky": true,
+    "Id": "iductie",
+    "Images": [
+      {
+        "Src": "./images/rider64_6CXTNg5dUr.png",
+        "Alt": "Voorbeeld van een .csv bestand",
+        "ExtraCSSStyles": "max-width: 100%;"
+      }
+    ]
+  },
+  
+  {
+    "Title": "Standaard",
+    "Id": "stand"
+  },
+
+  {
+    "Inverted": true,
+    "Flex-values": ["2 300px", "3 400px"],
+    "Title": "Voorbeeld",
+    "ImagesSticky": true,
+    "Id": "ex",
+    "Images": [
+      {
+        "Src": "./images/rider64_6CXTNg5dUr.png",
+        "Alt": "Voorbeeld van een .csv bestand",
+        "ExtraCSSStyles": "max-width: 100%;" 
+      },
+      {
+        "Src": "./images/rider64_DgcDDkJOS9.png",
+        "Alt": "Voorbeeld van een model in code",
+        "ExtraCSSStyles": "max-width: 100%;"
+      }
+    ]
+  }
+]
