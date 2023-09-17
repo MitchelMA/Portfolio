@@ -5,11 +5,12 @@
 </p>
 <hr/>
 <p>
-    Voor een Windows-systeem is er een ingebouwde API uit de 
-    <a href="https://en.wikipedia.org/wiki/Conio.h">
+    Voor een Windows-systeem is er een ingebouwde API uit de
+    <a href="https://en.wikipedia.org/wiki/Conio.h" target="_blank">
         <span style="font-style: italic">conio.h</span>
     </a> header. Deze API,
-    <a href="https://en.wikipedia.org/wiki/Conio.h">
+    <a href="https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/getch-getwch?view=msvc-170"
+       target="_blank">
         <span style="font-style: italic">_getch</span>
     </a>, bied een mogelijkheid om directe keyboard input uit te lezen
     zonder dat dit te zien is in de console zelf.
@@ -21,6 +22,6 @@
     Op een Linux-systeem werkt dit net wat anders.
     Ten eerste moet input mode op Non-Canonical staan en moet de ECHO
     naar de terminal uit staan. En om de input uit te lezen, lees
-    ik 8 bytes uit de file-descriptor van stdin (dit is zodat ik non-blocking kan uitlezen). Ook return ik hoe hoog de 
+    ik 8 bytes uit de file-descriptor van stdin (dit is zodat ik non-blocking kan uitlezen). Ook return ik hoe hoog de
     "degree" is die ik heb uitgelezen, welke de hoeveelheid aan uitgelezen bytes aangeeft.
 </p>
