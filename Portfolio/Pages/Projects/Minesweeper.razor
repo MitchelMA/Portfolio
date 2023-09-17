@@ -65,13 +65,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        LangTable.LanguageChangedAsync += OnLanguageChanged;
-
         _model = await InfoGetter.GetCorrespondingToUri();
-
         ProjectState.PageEndGithub = _model?.GitHub;
         ProjectState.ProjectStatus = _model?.Status ?? ProjectStatus.Finished;
 
+        LangTable.LanguageChangedAsync += OnLanguageChanged;
         await LangTable.AwaitLanguageContentAsync(SetLangData);
 
         AppState.PageIcon = new PageIcon("image/png", "./images/minesweeper/minesweepericon.png");
@@ -90,6 +88,7 @@
         }
 
         SetPageContent(currentData);
+        await LangTable.PreCacheAll(InfoGetter.Data.Keys, AppState.CurrentLanguage);
     }
 
     private void SetPageContent(LangPageData langPageData)

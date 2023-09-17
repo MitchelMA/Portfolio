@@ -1,11 +1,13 @@
 ﻿@page "/"
 
 @using Portfolio.Client
+@using Portfolio.Model.Project
 @using Portfolio.Model.Text
 
 @inject AppState AppState
 @inject LightboxRegistry LightboxRegistry
 @inject LanguageTable LanguageTable
+@inject LangTablePreCacher PreCacher;
 
 @implements IDisposable
 
@@ -125,7 +127,6 @@
         await LanguageTable.AwaitLanguageContentAsync(SetLangData);
         LanguageTable.LanguageChangedAsync += OnLanguageChanged;
         
-        AppState.PageTitleExtension = string.Empty;
         AppState.PageIcon = PageIcon;
     }
     
@@ -142,6 +143,7 @@
         }
         
         SetPageContent(currentData);
+        await PreCacher.PreCache(AppState.CurrentLanguage);
     }
 
     private void SetPageContent(LangPageData langPageData)

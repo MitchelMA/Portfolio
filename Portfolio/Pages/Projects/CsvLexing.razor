@@ -64,18 +64,16 @@
 
     protected override async Task OnInitializedAsync()
     {
-        LanguageTable.LanguageChangedAsync += OnLanguageChanged;
-        
         _model = await Getter.GetCorrespondingToUri();
+        AppState.PageIcon = StaticData.DefaultPageIcon;
+        AppState.ShowFooter = true;
         
     // project data
         ProjectState.PageEndGithub = _model?.GitHub;
         ProjectState.ProjectStatus = _model?.Status ?? ProjectStatus.Finished;
         
+        LanguageTable.LanguageChangedAsync += OnLanguageChanged;
         await LanguageTable.AwaitLanguageContentAsync(SetLangData);
-
-        AppState.PageIcon = StaticData.DefaultPageIcon;
-        AppState.ShowFooter = true;
     }
 
     private async Task OnLanguageChanged(object sender, int newCultureIdx) => await SetLangData(sender);
@@ -90,6 +88,7 @@
         }
         
         SetPageContent(currentData);
+        await LanguageTable.PreCacheAll(Getter.Data.Keys, AppState.CurrentLanguage);
     }
 
     private void SetPageContent(LangPageData langPageData)

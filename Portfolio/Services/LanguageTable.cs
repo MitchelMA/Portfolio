@@ -446,6 +446,29 @@ public sealed class LanguageTable
         return data;
     }
 
+    public async Task<bool> PreCacheAll(IEnumerable<string> uris, int langCode)
+    {
+        if (!_isLoaded)
+            return false;
+
+        var enumerated = uris as string[] ?? uris.ToArray();
+        var escaped = enumerated.Select(UriEscaper).ToArray();
+
+        var uriCount = escaped.Length;
+        for (var i = 0; i < uriCount; i++)
+        {
+            var currentUri = escaped[i];
+            if (await LoadHeaderForPage(currentUri, langCode) is null)
+                return false;
+            if (await LoadLinksForPage(currentUri, langCode) is null)
+                return false;
+            if (await LoadIslandsForPage(currentUri, langCode) is null)
+                return false;
+        }
+
+        return true;
+    }
+
     public void AwaitLanguageContent(ManifestLoadedDelegate onReady)
     {
         if (_isLoaded)
