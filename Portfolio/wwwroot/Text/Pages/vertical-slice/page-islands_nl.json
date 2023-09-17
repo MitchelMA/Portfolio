@@ -1,39 +1,39 @@
 ﻿[
   {
-    "Title": "Project Aandeel",
-    "Id": "aandeel"
+    "title": "Project Aandeel",
+    "id": "aandeel"
   },
 
   {
-    "Title": "Showreel",
-    "Id": "reel"
+    "title": "Showreel",
+    "id": "reel"
   },
 
   {
-    "Inverted": true,
-    "Flex-Values": ["1 350px", "3 450px"],
-    "Title": "Camera Instellen",
-    "ImagesSticky": true,
-    "Id": "camera",
-    "Images": [
+    "inverted": true,
+    "flex-values": ["1 350px", "3 450px"],
+    "title": "Camera Instellen",
+    "sticky-images": true,
+    "id": "camera",
+    "images": [
       {
-        "Src": "./images/FaceCam.png",
-        "Alt": "Visual sheet van het naar de camera toe draaien",
-        "ExtraCSSStyles": "max-width: 100%;" 
+        "src": "./images/FaceCam.png",
+        "alt": "Visual sheet van het naar de camera toe draaien",
+        "extra-css-styles": "max-width: 100%;" 
       }
     ]
   },
 
   {
-    "Flex-Values": ["2 350px", "1 450px"],
-    "Title": "Boundaries",
-    "ImagesSticky": true,
-    "Id": "bounds",
-    "Images": [
+    "flex-values": ["2 350px", "1 450px"],
+    "title": "Boundaries",
+    "sticky-images": true,
+    "id": "bounds",
+    "images": [
       {
-        "Src": "./images/Bounds.png",
-        "Alt": "Visual sheet van het instellen van de boundaries",
-        "ExtraCSSStyles": "max-width: 100%;" 
+        "src": "./images/Bounds.png",
+        "alt": "Visual sheet van het instellen van de boundaries",
+        "extra-css-styles": "max-width: 100%;" 
       }
     ]
   }
