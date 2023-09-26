@@ -15,6 +15,7 @@ public static class CultureInfoExtensions
     [Pure]
     public static bool IsDirectChildOf(this CultureInfo a, CultureInfo b) => a.Parent.Equals(b);
 
+    [Pure]
     public static CultureInfoComparisonOutcome GreedyComparison(this CultureInfo a, CultureInfo b)
     {
         if (a.Equals(b)) return CultureInfoComparisonOutcome.ExactMatch;
@@ -23,7 +24,8 @@ public static class CultureInfoExtensions
         if (a.HasParent() && b.HasParent() && a.Parent.Equals(b.Parent)) return CultureInfoComparisonOutcome.HasSharedParent;
         return CultureInfoComparisonOutcome.None;
     }
-
+    
+    [Pure]
     public static int BestGreedyEquivalent(this IEnumerable<CultureInfo> cultures, CultureInfo target)
     {
         var outcomes = cultures.Select(culture => culture.GreedyComparison(target)).ToList();

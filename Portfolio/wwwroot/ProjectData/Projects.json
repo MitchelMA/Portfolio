@@ -2,14 +2,14 @@
   {
     "Planning": {
       "Duration": 10,
-      "DurationType": 1,
+      "DurationType": "week",
       "PeopleCount": 1,
       "Software": "C#, Unity"
     },
     "Header": {
       "HeaderImage": "./images/Unity_4xajzJxaDR.jpg"
     },
-    "Status": 0,
+    "Status": "finished",
     "LocalHref": "./towerdefense",
     "GitHub": "towerdefense",
     "CardInfo": {
@@ -19,14 +19,14 @@
   {
     "Planning": {
       "Duration": 5,
-      "DurationType": 0,
+      "DurationType": "day",
       "PeopleCount": 1,
       "Software": "C#, Unity"
     },
     "Header": {
       "HeaderImage": "./images/Unity_OfLfkoIeGj.png"
     },
-    "Status": 2,
+    "Status": "prototype",
     "LocalHref": "./line-collisions",
     "GitHub": "Line-collision",
     "CardInfo": {
@@ -36,14 +36,14 @@
   {
     "Planning": {
       "Duration": 10,
-      "DurationType": 1,
+      "DurationType": "week",
       "PeopleCount": 8,
       "Software": "C#, Unity, Photoshop"
     },
     "Header": {
       "HeaderImage": "./images/Unity_KFo5HjMIzQ.png"
     },
-    "Status": 0,
+    "Status": "finished",
     "LocalHref": "./vertical-slice",
     "GitHub": "Vertical-Slice-P2",
     "CardInfo": {
@@ -53,7 +53,7 @@
   {
     "Planning": {
       "Duration": 10,
-      "DurationType": 0,
+      "DurationType": "day",
       "PeopleCount": 1,
       "Software": "C#"
     },
@@ -61,7 +61,7 @@
     {
       "HeaderImage": "./images/CsvDelimited001.svg"
     },
-    "Status": 0,
+    "Status": "finished",
     "LocalHref": "./csv-lexer",
     "GitHub": "Csv-lexer",
     "CardInfo": {
@@ -72,14 +72,14 @@
   {
     "Planning": {
       "Duration": 2,
-      "DurationType": 1,
+      "DurationType": "week",
       "PeopleCount": 1,
       "Software": "C++, CMake"
     },
     "Header": {
       "HeaderImage": "./images/minesweeper/WindowsTerminal_Go2DqqA6XS.png"
     },
-    "Status": 0,
+    "Status": "finished",
     "LocalHref": "./minesweeper",
     "GitHub": "Minesweeper-cpp",
     "CardInfo": {
