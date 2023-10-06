@@ -70,7 +70,6 @@
         
         _model = await InfoGetter.GetCorrespondingToUri();
         ProjectState.PageEndGithub = _model?.GitHub;
-        ProjectState.ProjectStatus = _model?.Status ?? ProjectStatus.Finished;
 
         AppState.PageIcon = new PageIcon("image/png", "./images/minesweeper/minesweepericon.png");
         AppState.ShowFooter = true;

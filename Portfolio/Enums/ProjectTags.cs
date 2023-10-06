@@ -8,30 +8,33 @@ namespace Portfolio.Enums;
 public enum ProjectTags
 {
     [EnumMember(Value = "Finished")]
-    Finished = 1 << 1,
+    Finished = 1 << 0,
     [EnumMember(Value = "In Development")]
-    InDevelopment = 1 << 2,
+    InDevelopment = 1 << 1,
     [EnumMember(Value = "Prototype")]
-    Prototype = 1 << 3,
+    Prototype = 1 << 2,
     
     [EnumMember(Value = "Unity Engine")]
-    Unity = 1 << 4,
+    Unity = 1 << 3,
     [EnumMember(Value = "Unreal Engine")]
-    Unreal = 1 << 5,
+    Unreal = 1 << 4,
     [EnumMember(Value = ".Net")]
-    DotNet = 1 << 6,
+    DotNet = 1 << 5,
     
     [EnumMember(Value = "CMake")]
-    CMake = 1 << 7,
+    CMake = 1 << 6,
     [EnumMember(Value = "Make Files")]
-    MakeFiles = 1 << 8,
+    MakeFiles = 1 << 7,
     
     [EnumMember(Value = "C")]
-    C = 1 << 9,
+    C = 1 << 8,
     [EnumMember(Value = "C++")]
-    Cxx = 1 << 10,
+    Cxx = 1 << 9,
     [EnumMember(Value = "C#")]
-    CSharp = 1 << 11,
+    CSharp = 1 << 10,
+    
+    [EnumMember(Value = "Library")]
+    Lib = 1 << 11,
     
     UnityProject = Unity | CSharp,
     UnityFinished = Finished | UnityProject,

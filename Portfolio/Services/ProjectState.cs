@@ -5,7 +5,6 @@ namespace Portfolio.Services;
 
 public class ProjectState
 {
-    private ProjectStatus _projectStatus;
     private ProjectPageEnd _projectPageEnd = new();
 
     public event Action? StateChanged;
@@ -15,19 +14,6 @@ public class ProjectState
     {
         StateChangedAsync?.Invoke();
         StateChanged?.Invoke();
-    }
-
-    public ProjectStatus ProjectStatus
-    {
-        get => _projectStatus;
-        set
-        {
-            if (value == _projectStatus)
-                return;
-
-            _projectStatus = value;
-            NotifyStateChanged();
-        }
     }
 
     public ProjectPageEnd ProjectPageEnd

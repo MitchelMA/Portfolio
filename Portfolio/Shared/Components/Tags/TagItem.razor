@@ -1,0 +1,64 @@
+﻿@using Portfolio.ColourMapper
+@using System.Drawing
+@inject ColourMapperFactory MapperFactory
+
+<div class="tag-item @MinimizedClassString" style="@ColourString" size="@SizeModifier">
+    <span class="tag-item__colour"></span>
+    <span class="tag-item__tag-text">@Tag.ToMemberString()</span>
+</div>
+
+@code {
+    private ProjectTags _tag;
+    private Mapper<ProjectTags>? _mapper;
+    private Color? _tagColour;
+
+    [Parameter]
+    public ProjectTags Tag { 
+        get => _tag;
+        set
+        {
+            if (value == _tag)
+                return;
+
+            _tag = value;
+            TagColour = _mapper?.GetColour(_tag);
+        } 
+    }
+    [Parameter]
+    public bool? IsMinimized { get; set; }
+    
+    [Parameter]
+    public string? SizeModifier { get; set; }
+
+    public Color? TagColour
+    {
+        get => _tagColour;
+        private set
+        {
+            if (value == _tagColour)
+                return;
+
+            _tagColour = value;
+            StateHasChanged();
+        }
+    }
+
+    private string? ColourString =>
+        TagColour == null ?
+            null : $"--background-color: {TagColour?.ToCssString()};";
+
+    private string? MinimizedClassString =>
+        IsMinimized switch
+        {
+            null => null,
+            true => "minimized",
+            _ => null
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        _mapper = await MapperFactory.CreateMap<ProjectTags>("./ColourMaps/Tags.csv");
+        TagColour = _mapper?.GetColour(Tag);
+    }
+
+}

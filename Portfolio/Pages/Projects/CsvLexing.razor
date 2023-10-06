@@ -73,7 +73,6 @@
         
     // project data
         ProjectState.PageEndGithub = _model?.GitHub;
-        ProjectState.ProjectStatus = _model?.Status ?? ProjectStatus.Finished;
         
         LanguageTable.LanguageChangedAsync += OnLanguageChanged;
         await LanguageTable.AwaitLanguageContentAsync(SetLangData);

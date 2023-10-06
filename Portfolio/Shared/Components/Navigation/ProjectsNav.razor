@@ -37,6 +37,20 @@
             }
         }
     </ul>
+    <section class="proj-nav__header">
+        <h3 class="proj-nav__head">Tags</h3>
+    </section>
+    <ul class="proj-nav__tags">
+        @if (_individualTags is not null)
+        {
+            foreach (var tag in _individualTags)
+            {
+                <li class="tags__tag">
+                    <TagItem Tag="tag" />
+                </li>
+            }
+        }
+    </ul>
 </div>
 
 
@@ -48,6 +62,7 @@
     private int _projectIdx;
     private IReadOnlyDictionary<string, ProjectDataModel>? _models;
     private string[]? _titles;
+    private ProjectTags[]? _individualTags;
 
     protected override async Task OnInitializedAsync()
     {
@@ -64,6 +79,7 @@
     {
         string path = "./" + NavManager.ToBaseRelativePath(NavManager.Uri).Split('#')[0];
         _projectIdx = _models!.Keys.ToList().IndexOf(path);
+        _individualTags = _models[path].Tags.ExtractFlags().ToArray();
     }
 
     private async Task<string[]?> GetProjectTitles()

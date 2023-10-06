@@ -1,0 +1,36 @@
+﻿<h3>ProjectTagsDisplay</h3>
+<p>value: @_tags.ToMemberStrings()</p>
+<TagItem Tag="ProjectTags.CSharp" />
+@for (var i = 0; i < _indTags?.Length; i++)
+{
+    <TagItem Tag="_indTags[i]" />
+}
+
+<div class="tags-display">
+    <button class="tags-display__toggle-btn">Tags</button>
+    <div class="tags-display__outer-container">
+        
+        <div class="outer-container__inner-container">
+        </div>
+        
+    </div>
+</div>
+
+@code {
+    private ProjectTags _tags;
+    private ProjectTags[]? _indTags;
+
+    [Parameter]
+    public ProjectTags Tags
+    {
+        get => _tags;
+        set
+        {
+            if (value == _tags)
+                return;
+
+            _tags = value;
+            _indTags = _tags.ExtractFlags().ToArray();
+        }
+    }
+}
