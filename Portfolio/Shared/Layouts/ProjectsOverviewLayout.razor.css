@@ -1,0 +1,19 @@
+﻿.top-header {
+    --_font-size: 4rem;
+    --_font-colour: #333;
+    
+    background-color: var(--accent-colour);
+    
+    height: 50dvh;
+    min-height: 300px;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    
+    & h1 {
+        font-size: var(--_font-size);
+        color: var(--_font-colour);
+    }
+}

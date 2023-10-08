@@ -1,0 +1,144 @@
+﻿@using Portfolio.Model.Project
+
+@page "/projects"
+@layout ProjectsOverviewLayout
+
+@inject ProjectInfoGetter PInfoGetter
+@inject LanguageTable LangTable
+@inject AppState AppState
+@inject NavigationManager NavManager
+
+@implements IDisposable
+
+<section class="tags-title">
+    <div class="tags-title__inner">
+        <h2>Filter:</h2>
+        
+        <div class="tags-container">
+            @if (Filter == 0)
+            {
+                <p class="tags-container__tag"></p>
+            }
+            else
+            {
+                @foreach (var flag in Filter.ExtractFlags())
+                {
+                    <p class="tags-container__tag">
+                        @flag.ToMemberString()
+                        <button class="tag__remove" onclick="@(() => { RemoveFlag(flag); })">&times;</button>
+                    </p>
+                }
+            }
+            
+            <button 
+                id="flagOptions_Btn"
+                class="tags-container__add"
+                onclick="@(() => ToggleList())">+</button>
+            
+            <article
+                id="flagOptions"
+                class="tags-container__options @ListOpenClass">
+                
+                @{
+                    var allFlags = Enum.GetValues<ProjectTags>().Where(f => !((_filter & f) > 0)).ToArray();
+                    if (allFlags.Length > 0)
+                    {
+                        <ul class="options__list">
+                            @{
+                                foreach (var flag in allFlags)
+                                {
+                                    <li class="options__list__item"
+                                        onclick="@(() => AddFlag(flag))">
+                                        @flag.ToMemberString()
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    }
+                }
+            </article>
+            
+        </div>
+        
+    </div>
+</section>
+
+@code {
+    private IReadOnlyDictionary<string, ProjectDataModel>? _allModelsRDict;
+    private ProjectDataModel[]? _allModels;
+    private ProjectDataModel[]? _filteredModels;
+    private ProjectTags _filter = 0;
+    private string _queryName = "filter";
+    private bool _listOpen;
+    
+    public ProjectTags Filter
+    {
+        get => _filter;
+        set
+        {
+            if (value == _filter)
+                return;
+            
+            _filter = value;
+            _filteredModels = _allModels?.Where(m => m.Tags.HasFlag(_filter)).ToArray();
+            
+            var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+            NavManager.NavigateTo(uri.SetQuery(_queryName, ((int)_filter).ToString()));
+            
+            StateHasChanged();
+        }
+    }
+
+    private bool ListOpen
+    {
+        get => _listOpen;
+        set
+        {
+            if (_listOpen == value)
+                return;
+
+            _listOpen = value;
+            StateHasChanged();
+        }
+    }
+
+    private string ListOpenClass =>
+        ListOpen ? "open" : string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await PInfoGetter.RetrieveData();
+        _allModelsRDict = PInfoGetter.Data;
+        _allModels = _allModelsRDict?.Values.ToArray();
+        
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        if(uri.ParseQuery()?.TryGetValue(_queryName, out var filter) ?? false)
+        {
+            Filter = Enum.Parse<ProjectTags>(filter);
+        }
+        else
+        {
+            Filter = 0;
+        }
+    }
+
+    private void RemoveFlag(ProjectTags flag)
+    {
+        Filter &= ~flag;
+    }
+
+    private void AddFlag(ProjectTags flag)
+    {
+        Filter |= flag;
+    }
+
+    private void ToggleList()
+    {
+        ListOpen = !ListOpen;
+    }
+
+    public void Dispose()
+    {
+    }
+
+}

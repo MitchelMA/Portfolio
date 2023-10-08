@@ -1,0 +1,113 @@
+﻿.tags-title {
+    --font-size-l: 2.3rem;
+    --font-size-m: 1.5rem;
+}
+
+.tags-title__inner {
+    width: 100%;
+    max-width: var(--content-max-width-m);
+    margin: auto;
+    padding: 1rem;
+    
+    
+     & h2 {
+         margin-top: 0.5rem;
+         font-size: var(--font-size-l);
+     }
+}
+
+.tags-container {
+    --_border-radius: 50px;
+    --_background-color: var(--navbar-back);
+    --_color: var(--navbar-fore);
+    
+    display: flex;
+    flex-wrap: wrap;
+    user-select: none;
+    
+    position: relative;
+}
+
+.tags-container__tag {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    padding: 0.3rem 0.5rem;
+    
+    min-width: 40px;
+    
+    background-color: var(--_background-color);
+    color: var(--_color);
+    
+    margin: 1px;
+}
+
+.tags-container__tag:first-child
+{
+    border-radius: var(--_border-radius) 0 0 var(--_border-radius);
+}
+
+.tag__remove {
+    outline: none;
+    border: none;
+    background-color: transparent;
+    color: indianred;
+    
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    
+    margin-left: 0.5rem;
+    font-size: 1.4rem;
+    line-height: 1;
+}
+
+.tags-container__add {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    outline: none;
+    border: none;
+    margin: 1px;
+    
+    background-color: var(--navbar-back);
+    color: var(--navbar-fore);
+
+    padding: 0 0.5rem 0 0.4rem;
+    font-size: 1.3rem;
+    border-radius: 0 var(--_border-radius) var(--_border-radius) 0;
+}
+
+.tags-container__options {
+    display: none;
+    
+    position: absolute;
+    
+    top: calc(100% + 10px);
+    left: 10px;
+    translate: 0 0;
+    z-index: 1;
+}
+
+.tags-container__options.open {
+    display: block;
+}
+
+.options__list {
+    list-style: none;
+    margin: 0;
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--navbar-fore);
+    
+    background: var(--navbar-back);
+    max-height: 30dvh;
+    overflow: auto;
+}
+
+.options__list__item {
+    min-width: 130px;
+    padding: 0.3rem 0;
+    cursor: pointer;
+}
