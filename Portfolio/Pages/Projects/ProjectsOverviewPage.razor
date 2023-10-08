@@ -105,6 +105,8 @@
     private ProjectTags _filter = 0;
     private string _queryName = "filter";
     private bool _listOpen;
+
+    private static readonly LinkTag PageIcon = new PageIcon("image/webp", "./images/AboutMeCroppedHead.webp");
     
     public ProjectTags Filter
     {
@@ -140,6 +142,9 @@
 
     protected override async Task OnInitializedAsync()
     {
+        AppState.PageTitleExtension = " - Overview";
+        AppState.PageIcon = PageIcon;
+        
         await PInfoGetter.RetrieveData();
         _allModelsRDict = PInfoGetter.Data;
         _allModels = _allModelsRDict?.Values.ToArray();
