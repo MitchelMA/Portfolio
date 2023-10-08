@@ -1,4 +1,5 @@
 ﻿@using Portfolio.Model.Project
+@using Portfolio.Mappers
 
 @page "/projects"
 @layout ProjectsOverviewLayout
@@ -12,7 +13,7 @@
 
 <section class="tags-title">
     <div class="tags-title__inner">
-        <h2>Filter:</h2>
+        <h2>Filter</h2>
         
         <div class="tags-container">
             @if (Filter == 0)
@@ -48,7 +49,7 @@
                                 foreach (var flag in allFlags)
                                 {
                                     <li class="options__list__item"
-                                        onclick="@(() => AddFlag(flag))">
+                                        onclick="@(() => { AddFlag(flag); ListOpen = false; })">
                                         @flag.ToMemberString()
                                     </li>
                                 }
@@ -59,14 +60,48 @@
             </article>
             
         </div>
-        
+        <hr/>
+    </div>
+</section>
+
+<section class="projects-container">
+    <div class="projects-container__inner">
+        @if (_filteredDisplayModels is not null)
+        {
+            @foreach (var model in _filteredDisplayModels)
+            {
+                <a class="project"
+                   href="@(model.Href)"
+                   style="--_background-image: url(@(model.Background))">
+                    <div class="project__overlay"></div>
+                    <div class="project__inner">
+                        <h3 class="project-container__inner__title">
+                            @(model.HeaderData.Title)
+                        </h3>
+                        <p class="project-container__inner__description">
+                            @(model.HeaderData.Description)
+                        </p>
+                        <div class="project__inner__tags">
+                            @foreach (var flag in model.Tags.ExtractFlags())
+                            {
+                                <TagItem Tag="@(flag)" SizeModifier="medium" />
+                            }
+                        </div>
+                    </div>
+                </a>
+            }
+        }
     </div>
 </section>
 
 @code {
     private IReadOnlyDictionary<string, ProjectDataModel>? _allModelsRDict;
+    
     private ProjectDataModel[]? _allModels;
+    private CarouselModel[]? _allDisplayModels;
+    
     private ProjectDataModel[]? _filteredModels;
+    private CarouselModel[]? _filteredDisplayModels;
     private ProjectTags _filter = 0;
     private string _queryName = "filter";
     private bool _listOpen;
@@ -81,9 +116,7 @@
             
             _filter = value;
             _filteredModels = _allModels?.Where(m => m.Tags.HasFlag(_filter)).ToArray();
-            
-            var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
-            NavManager.NavigateTo(uri.SetQuery(_queryName, ((int)_filter).ToString()));
+            _filteredDisplayModels = _allDisplayModels?.Where(m => m.Tags.HasFlag(_filter)).ToArray();
             
             StateHasChanged();
         }
@@ -110,9 +143,16 @@
         await PInfoGetter.RetrieveData();
         _allModelsRDict = PInfoGetter.Data;
         _allModels = _allModelsRDict?.Values.ToArray();
-        
+        await GetDisplayModels();
+
+        NavManager.LocationChanged += SetFilterFromQuery;
+        SetFilterFromQuery();
+    }
+
+    private void SetFilterFromQuery()
+    {
         var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
-        if(uri.ParseQuery()?.TryGetValue(_queryName, out var filter) ?? false)
+        if((uri.ParseQuery()?.TryGetValue(_queryName, out var filter) ?? false) && filter.Length > 0)
         {
             Filter = Enum.Parse<ProjectTags>(filter);
         }
@@ -122,14 +162,57 @@
         }
     }
 
+    private void SetFilterFromQuery(object? sender, LocationChangedEventArgs e)
+    {
+        SetFilterFromQuery();
+    }
+
+    private async Task GetDisplayModels()
+    {
+        LangTable.LanguageChangedAsync += OnLanguageChanged;
+        await LangTable.AwaitLanguageContentAsync(SetLangData);
+    }
+
+    private async Task SetLangData(object? sender)
+    {
+        var langCode = AppState.CurrentLanguage;
+        var dataModelCount = _allModels!.Length;
+
+        var data = new List<CarouselModel>();
+        
+        for (var i = 0; i < dataModelCount; i++)
+        {
+            var cur = _allModels[i];
+            var model = ToCarouselModelMapper.MapTo(cur);
+            model.HeaderData = (await LangTable.LoadHeaderForPage(model.Href!, langCode))!.Value;
+            data.Add(model);
+        }
+
+        _allDisplayModels = data.ToArray();
+        _filteredDisplayModels = _allDisplayModels.Where(m => m.Tags.HasFlag(_filter)).ToArray();
+        
+        StateHasChanged();
+    }
+
+    private async Task OnLanguageChanged(object? sender, int nextLangIdx)
+    {
+        await SetLangData(sender);
+    }
+
     private void RemoveFlag(ProjectTags flag)
     {
-        Filter &= ~flag;
+        var newFilter = Filter;
+        newFilter &= ~flag;
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        NavManager.NavigateTo(uri.SetQuery(_queryName, ((int)newFilter).ToString()));
     }
 
     private void AddFlag(ProjectTags flag)
     {
-        Filter |= flag;
+        var newFilter = Filter;
+        newFilter |= flag;
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        NavManager.NavigateTo(uri.SetQuery(_queryName, ((int)newFilter).ToString()));
     }
 
     private void ToggleList()
@@ -139,6 +222,9 @@
 
     public void Dispose()
     {
+        NavManager.LocationChanged -= SetFilterFromQuery;
+        LangTable.ManifestLoadedAsync -= SetLangData;
+        LangTable.LanguageChangedAsync -= OnLanguageChanged;
     }
 
 }

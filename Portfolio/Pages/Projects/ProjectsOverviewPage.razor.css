@@ -43,8 +43,7 @@
     margin: 1px;
 }
 
-.tags-container__tag:first-child
-{
+.tags-container__tag:first-child {
     border-radius: var(--_border-radius) 0 0 var(--_border-radius);
 }
 
@@ -82,13 +81,15 @@
 
 .tags-container__options {
     display: none;
-    
     position: absolute;
-    
     top: calc(100% + 10px);
     left: 10px;
     translate: 0 0;
     z-index: 1;
+    
+    border-radius: var(--border-radius-medium);
+    overflow: hidden;
+    box-shadow: 7px 4px 7px rgb(34 34 34 / 60%);
 }
 
 .tags-container__options.open {
@@ -99,7 +100,6 @@
     list-style: none;
     margin: 0;
     padding: 0.4rem 0.7rem;
-    border: 1px solid var(--navbar-fore);
     
     background: var(--navbar-back);
     max-height: 30dvh;
@@ -110,4 +110,65 @@
     min-width: 130px;
     padding: 0.3rem 0;
     cursor: pointer;
+}
+
+.projects-container {
+    --_font-size-title: 1.5rem;
+    --_font-size-desc: 1rem;
+    
+    min-height: calc(100dvh - 30dvh - 100px);
+}
+
+.projects-container__inner {
+    width: 100%;
+    max-width: var(--content-max-width-m);
+    margin: auto;
+    padding: 1rem;
+    
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    grid-gap: 0.4rem;
+}
+
+.project {
+    --_radial-outside: rgb(34 34 34 / 80%);
+    --_radial-inside: transparent;
+    --_background-image: ;
+    
+    flex-basis: 300px;
+    min-height: 225px;
+    padding: 1rem;
+    
+    position: relative;
+    
+    color: whitesmoke;
+    background-image: var(--_background-image);
+    background-position: center center;
+    background-size: cover;
+    
+    overflow: hidden;
+    border-radius: var(--border-radius-medium);
+}
+
+.project__overlay {
+    position: absolute;
+    inset: 0;
+
+    background-color: rgb(24 24 24 / 60%);
+    background-image: radial-gradient(closest-corner, var(--_radial-inside), var(--_radial-outside));
+}
+
+.project__overlay ~ * {
+    position: relative;
+}
+
+.project__inner {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.project__inner__tags {
+    margin-top: auto;
 }
