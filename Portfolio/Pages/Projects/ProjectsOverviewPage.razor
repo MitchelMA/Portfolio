@@ -2,6 +2,7 @@
 @using Portfolio.Mappers
 
 @page "/projects"
+@page "/projects/{Filter:int}"
 @layout ProjectsOverviewLayout
 
 @inject ProjectInfoGetter PInfoGetter
@@ -108,6 +109,7 @@
 
     private static readonly LinkTag PageIcon = new PageIcon("image/webp", "./images/AboutMeCroppedHead.webp");
     
+    [Parameter]
     public ProjectTags Filter
     {
         get => _filter;
@@ -150,8 +152,8 @@
         _allModels = _allModelsRDict?.Values.ToArray();
         await GetDisplayModels();
 
-        NavManager.LocationChanged += SetFilterFromQuery;
-        SetFilterFromQuery();
+        // NavManager.LocationChanged += SetFilterFromQuery;
+        // SetFilterFromQuery();
     }
 
     private void SetFilterFromQuery()
@@ -208,8 +210,13 @@
     {
         var newFilter = Filter;
         newFilter &= ~flag;
-        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
-        NavManager.NavigateTo(uri.SetQuery(_queryName, ((int)newFilter).ToString()));
+        var baseRel = NavManager.ToBaseRelativePath($"./{((int) newFilter).ToString()}");
+        Console.WriteLine(baseRel);
+    // var uri = NavManager.ToAbsoluteUri(NavManager.Uri).ToString().Split('/')[..^1];
+    // var uriS = string.Join("/", uri);
+    // Console.WriteLine(NavManager.GetUriWithQueryParameter("cool", ));
+    // // NavManager.NavigateTo($"{uriS}/{(int)newFilter}");
+    // Filter = (ProjectTags)21;
     }
 
     private void AddFlag(ProjectTags flag)
