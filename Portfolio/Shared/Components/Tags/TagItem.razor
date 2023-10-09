@@ -2,7 +2,7 @@
 @using System.Drawing
 @inject ColourMapperFactory MapperFactory
 
-<a href="./projects?filter=@((int)Tag)" class="tag-item @MinimizedClassString" style="@ColourString" size="@SizeModifier">
+<a href="./projects/@((int)Tag)" class="tag-item @MinimizedClassString" style="@ColourString" size="@SizeModifier">
     <span class="tag-item__colour"></span>
     <span class="tag-item__tag-text">@Tag.ToMemberString()</span>
 </a>

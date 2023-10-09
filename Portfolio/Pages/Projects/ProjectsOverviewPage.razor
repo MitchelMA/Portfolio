@@ -101,7 +101,6 @@
     private ProjectDataModel[]? _allModels;
     private CarouselModel[]? _allDisplayModels;
     
-    private ProjectDataModel[]? _filteredModels;
     private CarouselModel[]? _filteredDisplayModels;
     private ProjectTags _filter = 0;
     private string _queryName = "filter";
@@ -119,7 +118,6 @@
                 return;
             
             _filter = value;
-            _filteredModels = _allModels?.Where(m => m.Tags.HasFlag(_filter)).ToArray();
             _filteredDisplayModels = _allDisplayModels?.Where(m => m.Tags.HasFlag(_filter)).ToArray();
             
             StateHasChanged();
@@ -151,27 +149,6 @@
         _allModelsRDict = PInfoGetter.Data;
         _allModels = _allModelsRDict?.Values.ToArray();
         await GetDisplayModels();
-
-        // NavManager.LocationChanged += SetFilterFromQuery;
-        // SetFilterFromQuery();
-    }
-
-    private void SetFilterFromQuery()
-    {
-        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
-        if((uri.ParseQuery()?.TryGetValue(_queryName, out var filter) ?? false) && filter.Length > 0)
-        {
-            Filter = Enum.Parse<ProjectTags>(filter);
-        }
-        else
-        {
-            Filter = 0;
-        }
-    }
-
-    private void SetFilterFromQuery(object? sender, LocationChangedEventArgs e)
-    {
-        SetFilterFromQuery();
     }
 
     private async Task GetDisplayModels()
@@ -210,21 +187,21 @@
     {
         var newFilter = Filter;
         newFilter &= ~flag;
-        var baseRel = NavManager.ToBaseRelativePath($"./{((int) newFilter).ToString()}");
-        Console.WriteLine(baseRel);
-    // var uri = NavManager.ToAbsoluteUri(NavManager.Uri).ToString().Split('/')[..^1];
-    // var uriS = string.Join("/", uri);
-    // Console.WriteLine(NavManager.GetUriWithQueryParameter("cool", ));
-    // // NavManager.NavigateTo($"{uriS}/{(int)newFilter}");
-    // Filter = (ProjectTags)21;
+        var baseRelSplits = NavManager.ToBaseRelativePath(NavManager.Uri).Split('/')[..^1];
+        var baseRel = string.Join("", baseRelSplits);
+        NavManager.NavigateTo($"./{baseRel}/{(int)newFilter}");
     }
 
     private void AddFlag(ProjectTags flag)
     {
         var newFilter = Filter;
         newFilter |= flag;
-        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
-        NavManager.NavigateTo(uri.SetQuery(_queryName, ((int)newFilter).ToString()));
+        var baseRelSplits = NavManager.ToBaseRelativePath(NavManager.Uri).Split('/');
+        if (baseRelSplits.Length > 1)
+            baseRelSplits = baseRelSplits[..^1];
+            
+        var baseRel = string.Join("", baseRelSplits);
+        NavManager.NavigateTo($"./{baseRel}/{(int)newFilter}");
     }
 
     private void ToggleList()
@@ -234,7 +211,6 @@
 
     public void Dispose()
     {
-        NavManager.LocationChanged -= SetFilterFromQuery;
         LangTable.ManifestLoadedAsync -= SetLangData;
         LangTable.LanguageChangedAsync -= OnLanguageChanged;
     }
