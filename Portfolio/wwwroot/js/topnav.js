@@ -1,6 +1,8 @@
 function checkTopNav()
 {
     let topnav = document.querySelector("nav.topnav");
+    if(topnav === null)
+        return;
     let nonStackedSize = Number(topnav.dataset.nonStackedSize);
     let windowWidth = window.innerWidth;
     
