@@ -42,7 +42,7 @@
                 class="tags-container__options @ListOpenClass">
                 
                 @{
-                    var allFlags = Enum.GetValues<ProjectTags>().Where(f => !((_filter & f) > 0)).ToArray();
+                    var allFlags = Enum.GetValues<ProjectTags>().Where(f => !_filter.HasFlag(f)).ToArray();
                     if (allFlags.Length > 0)
                     {
                         <ul class="options__list">
@@ -79,9 +79,9 @@
                         <h3 class="project-container__inner__title">
                             @(model.HeaderData.Title)
                         </h3>
-                        <p class="project-container__inner__description">
-                            @(model.HeaderData.Description)
-                        </p>
+                        @* <p class="project-container__inner__description"> *@
+                        @*     @(model.HeaderData.Description) *@
+                        @* </p> *@
                         <div class="project__inner__tags">
                             @foreach (var flag in model.Tags.ExtractFlags())
                             {
