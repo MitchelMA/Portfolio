@@ -12,6 +12,7 @@ public class ToCarouselModelMapper : IMapper<ProjectDataModel, CarouselModel>
             Href = obj.LocalHref,
             SetHeight = obj.CardInfo.SetHeight,
             Background = obj.Header.HeaderImage,
+            Tags = obj.Tags,
         };
     }
 }

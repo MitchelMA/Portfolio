@@ -55,6 +55,13 @@
     font-size: 1.1rem;
 }
 
+.carousel__tags-display {
+    position: absolute;
+    top: 19px;
+    left: 10px;
+    max-width: min(500px, 50%);
+}
+
 .carousel__dots-holder {
     display: flex;
     justify-content: center;
@@ -135,3 +142,8 @@
     opacity: 1;
 }
 
+@media screen and (max-width: 750px) {
+    .carousel__tags-display {
+        top: 54px;
+    }
+}

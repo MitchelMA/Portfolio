@@ -6,7 +6,7 @@ public struct ProjectDataModel
 {
     public Planning Planning { get; init; }
     public HeaderModel Header { get; init; }
-    public ProjectStatus Status { get; init; }
+    public ProjectTags Tags { get; init; }
     public string LocalHref { get; init; }
     public string? GitHub { get; init; }
     public CardInfo CardInfo { get; init; }

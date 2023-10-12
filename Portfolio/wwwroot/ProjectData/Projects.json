@@ -9,7 +9,7 @@
     "Header": {
       "HeaderImage": "./images/Unity_4xajzJxaDR.jpg"
     },
-    "Status": "finished",
+    "Tags": "UnityFinished",
     "LocalHref": "./towerdefense",
     "GitHub": "towerdefense",
     "CardInfo": {
@@ -26,7 +26,7 @@
     "Header": {
       "HeaderImage": "./images/Unity_OfLfkoIeGj.png"
     },
-    "Status": "prototype",
+    "Tags": "UnityPrototype, Finished",
     "LocalHref": "./line-collisions",
     "GitHub": "Line-collision",
     "CardInfo": {
@@ -43,7 +43,7 @@
     "Header": {
       "HeaderImage": "./images/Unity_KFo5HjMIzQ.png"
     },
-    "Status": "finished",
+    "Tags": "UnityFinished",
     "LocalHref": "./vertical-slice",
     "GitHub": "Vertical-Slice-P2",
     "CardInfo": {
@@ -61,7 +61,7 @@
     {
       "HeaderImage": "./images/CsvDelimited001.svg"
     },
-    "Status": "finished",
+    "Tags": "Finished, DotNet, CSharp, Lib",
     "LocalHref": "./csv-lexer",
     "GitHub": "Csv-lexer",
     "CardInfo": {
@@ -79,7 +79,7 @@
     "Header": {
       "HeaderImage": "./images/minesweeper/WindowsTerminal_Go2DqqA6XS.png"
     },
-    "Status": "finished",
+    "Tags": "CxxFinished",
     "LocalHref": "./minesweeper",
     "GitHub": "Minesweeper-cpp",
     "CardInfo": {

@@ -14,8 +14,8 @@ public class Mapper<T> : IMapper
 
     public Color? GetColour(T value)
     {
-        if (_values.ContainsKey(value))
-            return _values[value];
+        if (_values.TryGetValue(value, out var colour))
+            return colour;
 
         return null;
     }
@@ -23,7 +23,7 @@ public class Mapper<T> : IMapper
     public Color? GetColour(int value)
     {
         // Nice
-        T val = (T)(object)value;
+        var val = (T)(object)value;
         return GetColour(val);
     }
 }

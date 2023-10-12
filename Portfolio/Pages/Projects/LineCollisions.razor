@@ -69,7 +69,6 @@
         _model = await Getter.GetCorrespondingToUri();
         // project data
         ProjectState.PageEndGithub = _model?.GitHub;
-        ProjectState.ProjectStatus = _model?.Status ?? ProjectStatus.Finished;
 
         // page details
         AppState.PageIcon = new PageIcon("image/png", "./images/Unity_AmCJ2pY4oC.png");

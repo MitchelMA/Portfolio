@@ -1,0 +1,64 @@
+﻿@inject ProjectInfoGetter PInfoGetter
+
+@using Portfolio.Model.Project
+
+@inherits LayoutComponentBase
+@implements IDisposable
+
+<div class="page">
+    <header class="top-header" style="--_background-image: url(@ImageUrl)">
+        <div class="top-header__overlay"></div>
+        <a href="../" class="return-home">
+            <i class="bi bi-arrow-left"></i>
+            Home
+        </a>
+        <h1>Projects Overview</h1>
+    </header>
+
+    <main class="main-content" id="main-content">
+        <div class="main-content__inner">
+            @Body
+        </div>
+    </main>
+    <Footer>
+        <MainSection>
+            <h5 style="margin-bottom: 0;">Mitchel Vonk ©</h5>
+        </MainSection>
+    </Footer>
+    <ToTopBtn/>
+</div>
+
+@code {
+    ProjectDataModel[]? _projects;
+    private static int _currentIdx = 0;
+    private CancellationTokenSource _cts = new();
+
+    private string? ImageUrl =>
+        _projects?[_currentIdx].Header.HeaderImage;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await PInfoGetter.RetrieveData();
+        _projects = PInfoGetter.Data.Values.ToArray();
+        await LoopImages(_cts.Token);
+    }
+
+    private async Task LoopImages(CancellationToken cancellationToken)
+    {
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            int next;
+            while ((next = Random.Shared.Next(_projects?.Length ?? 1)) == _currentIdx)
+            { }
+            _currentIdx = next;
+            StateHasChanged();
+            await Task.Delay(7000, cancellationToken);
+        }
+    }
+
+    public void Dispose()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+    }
+}

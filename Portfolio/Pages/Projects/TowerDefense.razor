@@ -69,7 +69,6 @@
         PreCacher.Extra = new[] { "./index" };
         
         _model = await Getter.GetCorrespondingToUri();
-        ProjectState.ProjectStatus = _model?.Status ?? ProjectStatus.Finished;
         ProjectState.PageEndGithub = _model?.GitHub;
 
     // setup of the page details

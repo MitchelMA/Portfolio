@@ -20,6 +20,16 @@
             <p class="text-container__text switch @ActiveClass(_toggle)">@_togglesText[1]</p>
         </article>
     </a>
+    <div class="carousel__tags-display">
+        @if (CurrentModel is not null)
+        {
+            var indTags = CurrentModel.Value.Tags.ExtractFlags();
+            foreach (var tag in indTags)
+            {
+                <TagItem Tag="tag" SizeModifier="medium" />
+            }
+        }
+    </div>
     <div class="carousel__dots-holder">
         @if (_models?.Length > 1)
         {

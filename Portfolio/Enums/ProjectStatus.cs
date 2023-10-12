@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Portfolio.Enums;
 
+[Obsolete("ProjectTags should be used instead")]
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ProjectStatus
 {

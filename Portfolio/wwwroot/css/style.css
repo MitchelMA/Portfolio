@@ -8,6 +8,12 @@
 .main-content .main-content__inner {
     position: relative;
     width: 100%;
+    
+    &::after, &::before {
+        content: '';
+        display: table;
+        clear: both;
+    }
 }
 
 .scroll-locked {

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Drawing;
 using Portfolio.ColourMapper;
 using Portfolio.Services;
@@ -9,6 +10,7 @@ public class ColourMapperFactory
 {
     private readonly HttpClient _httpClient;
     private readonly Dictionary<Type, IMapper> _maps = new();
+    private readonly SemaphoreSlim _semaphore = new(1);
 
     public ColourMapperFactory(HttpClient httpClient)
     {
@@ -28,17 +30,24 @@ public class ColourMapperFactory
     public async Task<Mapper<T>?> CreateMap<T>(string fileHref = "", int lowerBound = 0, int upperBound = 0)
         where T : Enum
     {
+        await _semaphore.WaitAsync();
+        
         if (fileHref.Length == 0 || _maps.ContainsKey(typeof(T)))
+        {
+            _semaphore.Release();
             return _maps[typeof(T)] as Mapper<T>;
+        }
 
         var fileText = await _httpClient.GetStringAsync(fileHref);
         var outcome = ToDict<T>(fileText, lowerBound, upperBound)!;
-
+        
         if (outcome.Count == 0)
             return null;
-
+        
         var mapper = new Mapper<T>(outcome);
         _maps.Add(typeof(T), mapper);
+
+        _semaphore.Release();
         return mapper;
     }
 

@@ -1,0 +1,52 @@
+﻿.top-header {
+    --radial-outside: rgb(34 34 34 / 80%);
+    --radial-inside: transparent;
+    --_font-size: 4rem;
+    --_font-colour: whitesmoke;
+    --_background-image: ;
+    
+    position: relative;
+    
+    background-color: var(--navbar-back);
+    
+    height: 50dvh;
+    min-height: 300px;
+    padding: 1rem;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    background-image: var(--_background-image);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    
+    transition: background-image 250ms ease 0s;
+    
+    & h1 {
+        font-size: var(--_font-size);
+        color: var(--_font-colour);
+    }
+    
+    & a {
+        color: var(--_font-colour);
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-size: 1.4rem;
+    }
+    
+}
+
+.top-header__overlay {
+    position: absolute;
+    inset: 0;
+
+    background-color: rgb(24 24 24 / 60%);
+    background-image: radial-gradient(closest-corner, var(--radial-inside), var(--radial-outside));
+}
+
+.top-header__overlay ~ * {
+    position: relative;
+}

@@ -1,0 +1,217 @@
+﻿@using Portfolio.Model.Project
+@using Portfolio.Mappers
+
+@page "/projects"
+@page "/projects/{Filter:int}"
+@layout ProjectsOverviewLayout
+
+@inject ProjectInfoGetter PInfoGetter
+@inject LanguageTable LangTable
+@inject AppState AppState
+@inject NavigationManager NavManager
+
+@implements IDisposable
+
+<section class="tags-title">
+    <div class="tags-title__inner">
+        <h2>Filter</h2>
+        
+        <div class="tags-container">
+            @if (Filter == 0)
+            {
+                <p class="tags-container__tag"></p>
+            }
+            else
+            {
+                @foreach (var flag in Filter.ExtractFlags())
+                {
+                    <p class="tags-container__tag">
+                        @flag.ToMemberString()
+                        <button class="tag__remove" onclick="@(() => { RemoveFlag(flag); })">&times;</button>
+                    </p>
+                }
+            }
+            
+            <button 
+                id="flagOptions_Btn"
+                class="tags-container__add"
+                onclick="@(() => ToggleList())">+</button>
+            
+            <article
+                id="flagOptions"
+                class="tags-container__options @ListOpenClass">
+                
+                @{
+                    var allFlags = Enum.GetValues<ProjectTags>().Where(f => !_filter.HasFlag(f)).ToArray();
+                    if (allFlags.Length > 0)
+                    {
+                        <ul class="options__list">
+                            @{
+                                foreach (var flag in allFlags)
+                                {
+                                    <li class="options__list__item"
+                                        onclick="@(() => { AddFlag(flag); ListOpen = false; })">
+                                        @flag.ToMemberString()
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    }
+                }
+            </article>
+            
+        </div>
+        <hr/>
+    </div>
+</section>
+
+<section class="projects-container">
+    <div class="projects-container__inner">
+        @if (_filteredDisplayModels is not null)
+        {
+            @foreach (var model in _filteredDisplayModels)
+            {
+                <a class="project"
+                   href="@(model.Href)"
+                   style="--_background-image: url(@(model.Background))">
+                    <div class="project__overlay"></div>
+                    <div class="project__inner">
+                        <h3 class="project-container__inner__title">
+                            @(model.HeaderData.Title)
+                        </h3>
+                        @* <p class="project-container__inner__description"> *@
+                        @*     @(model.HeaderData.Description) *@
+                        @* </p> *@
+                        <div class="project__inner__tags">
+                            @foreach (var flag in model.Tags.ExtractFlags())
+                            {
+                                <TagItem Tag="@(flag)" SizeModifier="medium" />
+                            }
+                        </div>
+                    </div>
+                </a>
+            }
+        }
+    </div>
+</section>
+
+@code {
+    private IReadOnlyDictionary<string, ProjectDataModel>? _allModelsRDict;
+    
+    private ProjectDataModel[]? _allModels;
+    private CarouselModel[]? _allDisplayModels;
+    
+    private CarouselModel[]? _filteredDisplayModels;
+    private ProjectTags _filter = 0;
+    private bool _listOpen;
+
+    private static readonly LinkTag PageIcon = new PageIcon("image/webp", "./images/AboutMeCroppedHead.webp");
+    
+    [Parameter]
+    public ProjectTags Filter
+    {
+        get => _filter;
+        set
+        {
+            if (value == _filter)
+                return;
+            
+            _filter = value;
+            _filteredDisplayModels = _allDisplayModels?.Where(m => m.Tags.HasFlag(_filter)).ToArray();
+            
+            StateHasChanged();
+        }
+    }
+
+    private bool ListOpen
+    {
+        get => _listOpen;
+        set
+        {
+            if (_listOpen == value)
+                return;
+
+            _listOpen = value;
+            StateHasChanged();
+        }
+    }
+
+    private string ListOpenClass =>
+        ListOpen ? "open" : string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        AppState.PageTitleExtension = " - Overview";
+        AppState.PageIcon = PageIcon;
+        
+        await PInfoGetter.RetrieveData();
+        _allModelsRDict = PInfoGetter.Data;
+        _allModels = _allModelsRDict?.Values.ToArray();
+        await GetDisplayModels();
+    }
+
+    private async Task GetDisplayModels()
+    {
+        LangTable.LanguageChangedAsync += OnLanguageChanged;
+        await LangTable.AwaitLanguageContentAsync(SetLangData);
+    }
+
+    private async Task SetLangData(object? sender)
+    {
+        var langCode = AppState.CurrentLanguage;
+        var dataModelCount = _allModels!.Length;
+
+        var data = new List<CarouselModel>();
+        
+        for (var i = 0; i < dataModelCount; i++)
+        {
+            var cur = _allModels[i];
+            var model = ToCarouselModelMapper.MapTo(cur);
+            model.HeaderData = (await LangTable.LoadHeaderForPage(model.Href!, langCode))!.Value;
+            data.Add(model);
+        }
+
+        _allDisplayModels = data.ToArray();
+        _filteredDisplayModels = _allDisplayModels.Where(m => m.Tags.HasFlag(_filter)).ToArray();
+        
+        StateHasChanged();
+    }
+
+    private async Task OnLanguageChanged(object? sender, int nextLangIdx)
+    {
+        await SetLangData(sender);
+    }
+
+    private void RemoveFlag(ProjectTags flag)
+    {
+        var newFilter = Filter;
+        newFilter &= ~flag;
+        var baseRelSplits = NavManager.ToBaseRelativePath(NavManager.Uri).Split('/')[..^1];
+        var baseRel = string.Join("", baseRelSplits);
+        NavManager.NavigateTo($"./{baseRel}/{(int)newFilter}");
+    }
+
+    private void AddFlag(ProjectTags flag)
+    {
+        var newFilter = Filter;
+        newFilter |= flag;
+        var baseRelSplits = NavManager.ToBaseRelativePath(NavManager.Uri).Split('/');
+        if (baseRelSplits.Length > 1)
+            baseRelSplits = baseRelSplits[..^1];
+            
+        var baseRel = string.Join("", baseRelSplits);
+        NavManager.NavigateTo($"./{baseRel}/{(int)newFilter}");
+    }
+
+    private void ToggleList()
+    {
+        ListOpen = !ListOpen;
+    }
+
+    public void Dispose()
+    {
+        LangTable.ManifestLoadedAsync -= SetLangData;
+        LangTable.LanguageChangedAsync -= OnLanguageChanged;
+    }
+
+}
