@@ -3,9 +3,9 @@ using Portfolio.Model.Project;
 
 namespace Portfolio.Mappers;
 
-public class ToCarouselModelMapper : IMapper<ProjectDataModel, CarouselModel>
+public class ToCarouselModelMapper : IMapper<ProjectDataModel, CarouselModel>, IMapper
 {
-    public static CarouselModel MapTo(ProjectDataModel obj)
+    public CarouselModel MapFrom(ProjectDataModel obj)
     {
         return new CarouselModel
         {
@@ -14,5 +14,13 @@ public class ToCarouselModelMapper : IMapper<ProjectDataModel, CarouselModel>
             Background = obj.Header.HeaderImage,
             Tags = obj.Tags,
         };
+    }
+
+    public object? MapFrom(object? obj)
+    {
+        if (obj is not ProjectDataModel typedObj)
+            return default;
+
+        return MapFrom(typedObj);
     }
 }

@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Portfolio.Factories;
+using Portfolio.Mappers;
+using Portfolio.Model;
+using Portfolio.Model.Project;
+using Portfolio.Model.Text;
 using Portfolio.Services;
 
 namespace Portfolio.Client;
@@ -17,6 +21,10 @@ public static class Program
         builder.Services.AddScoped<ColourMapperFactory>();
         builder.Services.AddScoped<ProjectInfoGetter>();
         builder.Services.AddScoped<LangTablePreCacher>();
+
+        builder.Services.AddScoped<IMapper<ProjectDataModel, CarouselModel>, ToCarouselModelMapper>();
+        builder.Services.AddScoped<IMapper<LangHeaderModel, HeaderData>, ToHeaderDataMapper>();
+        builder.Services.AddScoped<IMapper<LangLinkModel, NavLinkData>, ToNavLinkDataMapper>();
 
         builder.Services.AddSingleton<AppState>();
         builder.Services.AddSingleton<ProjectState>();

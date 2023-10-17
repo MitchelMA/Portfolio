@@ -1,0 +1,20 @@
+[
+  {
+    "min-width": 650,
+    "links": [
+      {
+        "href": "#iductie",
+        "display-text": "Introductie"
+      },
+      {
+        "href": "#struct",
+        "display-text": "Structuur"
+      }
+    ]
+  },
+  
+  {
+    "min-width": 100,
+    "links": []
+  }
+]
