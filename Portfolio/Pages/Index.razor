@@ -14,11 +14,12 @@
 
 @implements IDisposable
 
-<PageIsland IslandTitle="Projects" id="projects">
+<PageIsland IslandTitle="Highlights" id="high">
     <ChildContent>
         <Carousel FromJsonFile="./ProjectData/Projects.json"
                   DelayAmount="7000"
-                  StartIdx="2"/>
+                  StartIdx="2"
+                  HighLightRanges="@(new []{..5})"/>
     </ChildContent>
 </PageIsland>
 
