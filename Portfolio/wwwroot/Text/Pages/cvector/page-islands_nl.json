@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "title": "Introductie",
+    "id": "iductie"
+  },
+  {
+    "title": "Structuur",
+    "id": "struct"
+  }
+]
