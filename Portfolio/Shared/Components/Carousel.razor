@@ -33,32 +33,32 @@
         }
     </div>
     <div class="carousel__dots-holder">
-        @if (_allModels?.Length > 1)
+        @if (UsedModels?.Length > 1)
         {
-            @for (int i = 0; i < _allModels?.Length; i++)
+            @for (var i = 0; i < UsedModels?.Length; i++)
             {
                 var idx = i;
                 <input type="radio" checked="@(idx == CurrentIdx)"
-                       title="@_allModels[idx].HeaderData.Title"
+                       title="@UsedModels[idx].HeaderData.Title"
                        @onclick="() => { RadioClick(idx); }"/>
             }
         }
     </div>
     <div class="carousel__buttons-holder">
         @{
-            var nextIdx = (CurrentIdx + 1) % _allModels?.Length ?? 0;
+            var nextIdx = (CurrentIdx + 1) % UsedModels?.Length ?? 0;
             var prevIdx = CurrentIdx - 1;
             if (prevIdx < 0)
-                prevIdx = _allModels?.Length - 1 ?? 0;
+                prevIdx = UsedModels?.Length - 1 ?? 0;
         }
         <button class="btn btn-prev"
                 @onclick="() => { RadioClick(CurrentIdx - 1); }"
-                title="@_allModels?[prevIdx].HeaderData.Title">
+                title="@UsedModels?[prevIdx].HeaderData.Title">
             <i class="bi bi-arrow-left-circle-fill"></i>
         </button>
         <button class="btn btn-next"
                 @onclick="() => { RadioClick(CurrentIdx + 1); }"
-                title="@_allModels?[nextIdx].HeaderData.Title">
+                title="@UsedModels?[nextIdx].HeaderData.Title">
             <i class="bi bi-arrow-right-circle-fill"></i>
         </button>
     </div>
@@ -79,6 +79,8 @@
     private bool _disposed = false;
     private CancellationTokenSource _cts = new();
     private Stack<object> _clickStack = new();
+
+    private CarouselModel[]? UsedModels => _highLightRanges is null ? _allModels : _highlightedModels;
 
     /// <summary>
     /// The Starting index of the carousel
@@ -145,9 +147,7 @@
                 return;
 
             _highLightRanges = value;
-            if (_highLightRanges is null) return;
-            
-            
+            ApplyRangeFilter(_highLightRanges);
         }
         
     }
@@ -160,14 +160,14 @@
         set
         {
             if (value < 0)
-                value = _allModels!.Length - 1;
+                value = UsedModels!.Length - 1;
 
-            value %= _allModels!.Length;
+            value %= UsedModels!.Length;
             _index = value;
         }
     }
 
-    private CarouselModel? CurrentModel => _allModels?[CurrentIdx];
+    private CarouselModel? CurrentModel => UsedModels?[CurrentIdx];
 
     private string? HeightString =>
         CurrentModel?.SetHeight is not null ?
@@ -232,12 +232,22 @@
     
     private void ApplyRangeFilter(Range[]? filter)
     {
+        if (_highLightRanges?.Overlaps() ?? false)
+            throw new ArgumentException("Ranges may not overlap", nameof(filter));
+        
         if (_allModels is null)
             return;
 
         if (filter is null)
             _highlightedModels = _allModels;
+
+        var highlightedList = new List<CarouselModel>();
+        var filterCount = filter!.Length;
+        for (var i = 0; i < filterCount; i++)
+            highlightedList.AddRange(_allModels[filter[i]]);
+        _highlightedModels = highlightedList.ToArray();
         
+        StateHasChanged();
     }
     
     private async Task SetLangData(object? sender)
@@ -255,6 +265,7 @@
             data.Add(model);
         }
         _allModels = data.ToArray();
+        ApplyRangeFilter(_highLightRanges);
         
         ScrollThrough(CurrentIdx);
 

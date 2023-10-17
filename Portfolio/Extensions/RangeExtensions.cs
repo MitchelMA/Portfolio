@@ -4,7 +4,7 @@ public static class RangeExtensions
 {
     public static bool Overlaps(this Range range, Range other)
     {
-        return !(range.Start.Value < other.End.Value && other.Start.Value < range.End.Value);
+        return (range.Start.Value < other.End.Value && other.Start.Value < range.End.Value);
     }
     
     public static bool Overlaps(this IEnumerable<Range> ranges)
