@@ -29,13 +29,15 @@
                 {
                     <li class="nav-links__nav-item clearfix">
                         @{
-                            var (href, display, opensNew) = Links[i];
+                            var (href, display, navigationType) = Links[i];
                         }
-                        <AnchorLink 
-                            class=@("nav-item__nav-link hover-scale sc05 " + (opensNew ? "outgoing" : string.Empty))
+                        <AnchorLink
+                            class=@("nav-item__nav-link hover-scale sc05 " + (navigationType != NavigationType.Stays ? "outgoing" : string.Empty))
                             href="@href"
                             @onclick="ForceClose"
-                            target=@(opensNew ? "_blank" : null)>@display</AnchorLink>
+                            target=@(navigationType == NavigationType.External ? "_blank" : null)>
+                            @display
+                        </AnchorLink>
                     </li>
                 }
             </ul>

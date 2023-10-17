@@ -1,56 +1,55 @@
 ﻿[
   {
-    "min-width": 650,
+    "min-width": 775,
     "links": [
       {
         "href": "#high",
-        "display-text": "Highlights",
-        "opens-new": false
+        "display-text": "Highlights"
       },
       {
         "href": "#about",
-        "display-text": "About Me",
-        "opens-new": false
+        "display-text": "About Me"
       },
       {
         "href": "#contact",
-        "display-text": "Contact Me",
-        "opens-new": false
-      },
-      {
-        "href": "./cv.pdf",
-        "display-text": "CV",
-        "opens-new": true
+        "display-text": "Contact Me"
       },
       {
         "href": "./projects",
         "display-text": "Projects",
         "navigation-type": "Internal"
-      }
-    ]
-  },
-  {
-    "min-width": 650,
-    "links": [
-      {
-        "href": "#projects",
-        "display-text": "Projects",
-        "opens-new": false
-      },
-      {
-        "href": "#about",
-        "display-text": "About Me",
-        "opens-new": false
-      },
-      {
-        "href": "#contact",
-        "display-text": "Contact Me",
-        "opens-new": false
       },
       {
         "href": "./cv.pdf",
         "display-text": "CV",
-        "opens-new": true
+        "navigation-type": "External"
+      }
+    ]
+  },
+  {
+    "min-width": 775,
+    "links": [
+      {
+        "href": "#high",
+        "display-text": "Highlights"
+      },
+      {
+        "href": "#about",
+        "display-text": "About Me"
+      },
+      {
+        "href": "#contact",
+        "display-text": "Contact Me"
+      },
+      {
+        "href": "./projects",
+        "display-text": "Projects",
+        "navigation-type": "Internal"
+      },
+      {
+        "href": "./cv.pdf",
+        "display-text": "CV",
+        "navigation-type": "External"
       }
     ]
   }
