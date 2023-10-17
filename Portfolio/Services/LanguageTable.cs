@@ -114,7 +114,7 @@ public sealed class LanguageTable
 
     private string UriEscaper(string relativeUri)
     {
-        var text = relativeUri.Split('?')[0];
+        var text = relativeUri.Split('?', '#')[0];
         if (text.StartsWith("./")) return text;
         return "./" + text;
     }
