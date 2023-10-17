@@ -9,6 +9,7 @@
 @inject LanguageTable LangTable
 @inject AppState AppState
 @inject NavigationManager NavManager
+@inject IMapper<ProjectDataModel, CarouselModel> Mapper
 
 @implements IDisposable
 
@@ -166,7 +167,7 @@
         for (var i = 0; i < dataModelCount; i++)
         {
             var cur = _allModels[i];
-            var model = ToCarouselModelMapper.MapTo(cur);
+            var model = Mapper.MapFrom(cur);
             model.HeaderData = (await LangTable.LoadHeaderForPage(model.Href!, langCode))!.Value;
             data.Add(model);
         }

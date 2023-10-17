@@ -1,5 +1,6 @@
 ﻿@page "/towerdefense"
 @using Portfolio.Client
+@using Portfolio.Mappers
 @using Portfolio.Model.Project
 @using Portfolio.Model.Text
 
@@ -11,6 +12,9 @@
 @inject LightboxRegistry Registry
 @inject LanguageTable LanguageTable
 @inject LangTablePreCacher PreCacher
+
+@inject IMapper<LangHeaderModel, HeaderData> HeaderMapper
+@inject IMapper<LangLinkModel, NavLinkData> LinkMapper
 
 @implements IDisposable
 
@@ -103,15 +107,8 @@
 
     private void SetHeaderData(LangHeaderModel headerData)
     {
-        var header = new HeaderData
-        {
-            Title = headerData.Title,
-            UnderTitle = headerData.UnderTitle,
-            Description = headerData.Description,
-            ImagePath = _model!.Value.Header.HeaderImage,
-            ExtraStyles = null
-        };
-
+        var header = HeaderMapper.MapFrom(headerData);
+        header.ImagePath = _model!.Value.Header.HeaderImage;
         AppState.HeaderData = header;
         AppState.PageTitleExtension = " " + headerData.PageTitleExtension;
     }
@@ -121,10 +118,7 @@
         var l = linksData.Links.Length;
         _links = new NavLinkData[l];
         for (var i = 0; i < l; i++)
-        {
-            var cur = linksData.Links[i];
-            _links[i] = new NavLinkData(cur.Href, cur.DisplayText, cur.OpensNew);
-        }
+            _links[i] = LinkMapper.MapFrom(linksData.Links[i]);
 
         AppState.Links = _links;
         AppState.MinNonStackedSize = linksData.MinWidth;

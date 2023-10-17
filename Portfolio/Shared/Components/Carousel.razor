@@ -4,6 +4,7 @@
 @inject HttpClient HttpClient
 @inject LanguageTable LanguageTable
 @inject AppState AppState
+@inject IMapper<ProjectDataModel, CarouselModel> Mapper
 
 @implements IDisposable
 
@@ -219,7 +220,7 @@
         for (var i = 0; i < l; i++)
         {
             var cur = tmp![i];
-            var model = ToCarouselModelMapper.MapTo(cur);
+            var model = Mapper.MapFrom(cur);
             model.HeaderData = (await LanguageTable.LoadHeaderForPage(model.Href!, langCode))!.Value;
             data.Add(model);
         }

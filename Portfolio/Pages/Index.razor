@@ -1,6 +1,7 @@
 ﻿@page "/"
 
 @using Portfolio.Client
+@using Portfolio.Mappers
 @using Portfolio.Model.Project
 @using Portfolio.Model.Text
 
@@ -8,6 +9,8 @@
 @inject LightboxRegistry LightboxRegistry
 @inject LanguageTable LanguageTable
 @inject LangTablePreCacher PreCacher;
+
+@inject IMapper<LangLinkModel, NavLinkData> LinkMapper
 
 @implements IDisposable
 
@@ -166,10 +169,7 @@
     {
         _links = new NavLinkData[linksData.Links.Length];
         for (var i = 0; i < linksData.Links.Length; i++)
-        {
-            var cur = linksData.Links[i];
-            _links[i] = new NavLinkData(cur.Href, cur.DisplayText, cur.OpensNew);
-        }
+            _links[i] = LinkMapper.MapFrom(linksData.Links[i]);
 
         AppState.Links = _links;
         AppState.MinNonStackedSize = linksData.MinWidth;

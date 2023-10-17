@@ -2,6 +2,7 @@
 @using Portfolio.Model.Project
 @using Portfolio.Model.Text
 @using Portfolio.Client
+@using Portfolio.Mappers
 @layout ProjectLayout
 
 @inject LightboxRegistry Registry
@@ -10,6 +11,9 @@
 @inject ProjectInfoGetter Getter
 @inject LanguageTable LanguageTable
 @inject LangTablePreCacher PreCacher
+
+@inject IMapper<LangHeaderModel, HeaderData> HeaderMapper
+@inject IMapper<LangLinkModel, NavLinkData> LinkMapper
 
 @implements IDisposable
 
@@ -102,14 +106,8 @@
 
     private void SetHeaderData(LangHeaderModel headerData)
     {
-        var header = new HeaderData()
-        {
-            Description = headerData.Description,
-            ExtraStyles = null,
-            ImagePath = _model!.Value.Header.HeaderImage,
-            Title = headerData.Title,
-            UnderTitle = headerData.UnderTitle,
-        };
+        var header = HeaderMapper.MapFrom(headerData);
+        header.ImagePath = _model!.Value.Header.HeaderImage;
         AppState.HeaderData = header;
         AppState.PageTitleExtension = " " + headerData.PageTitleExtension;
     }
@@ -118,10 +116,7 @@
     {
         _links = new NavLinkData[linksData.Links.Length];
         for (var i = 0; i < linksData.Links.Length; i++)
-        {
-            var cur = linksData.Links[i];
-            _links[i] = new NavLinkData(cur.Href, cur.DisplayText, cur.OpensNew);
-        }
+            _links[i] = LinkMapper.MapFrom(linksData.Links[i]);
 
         AppState.Links = _links;
         AppState.MinNonStackedSize = linksData.MinWidth;
