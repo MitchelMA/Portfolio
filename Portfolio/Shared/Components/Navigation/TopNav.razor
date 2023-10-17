@@ -24,7 +24,7 @@
 
         @if (Links is not null && Links.Length > 0)
         {
-            <ul class="topnav__nav-links clearfix" style="height: @(NavHeight)px;">
+            <ul class="topnav__nav-links clearfix" style="height: @(NavHeight)px; padding-top: @(OpenTopPadding)px;">
                 @for (int i = 0; i < Links.Length; i++)
                 {
                     <li class="nav-links__nav-item clearfix">
@@ -53,20 +53,37 @@
     [Parameter]
     public int MinNonStackedSize { get; set; } = 950;
 
+    [Parameter]
+    public int StackedTopPadding { get; set; }
+
     private bool _navCollapsed = true;
     private int? ElementsHeight => 56 * Links?.Length;
 
     private string? ShownClass => _navCollapsed ? null : "shown";
-    private int? NavHeight => _navCollapsed ? 0 : ElementsHeight;
+    private int? NavHeight => _navCollapsed ? 0 : ElementsHeight + StackedTopPadding;
+    private int? OpenTopPadding => _navCollapsed ? 0 : StackedTopPadding;
+
+    public bool NavCollapsed
+    {
+        get => _navCollapsed;
+        set
+        {
+            if (value == _navCollapsed)
+                return;
+
+            _navCollapsed = value;
+            StateHasChanged();
+        }
+    }
 
     private void ToggleNav()
     {
-        _navCollapsed = !_navCollapsed;
+        NavCollapsed = !NavCollapsed;
     }
 
     private void ForceClose()
     {
-        _navCollapsed = true;
+        NavCollapsed = true;
     }
 
     protected override void OnInitialized()
@@ -86,11 +103,12 @@
 
     private async void LocationChanged(object? sender, LocationChangedEventArgs e)
     {
-        string location = e.Location;
-        Uri uri = NavigationManager.ToAbsoluteUri(location);
-        string fragment = uri.Fragment;
+        var location = e.Location;
+        var uri = NavigationManager.ToAbsoluteUri(location);
+        var fragment = uri.Fragment;
+        Console.WriteLine(fragment);
 
-        string elementId = fragment.StartsWith('#') ? fragment[1..] : fragment;
+        var elementId = fragment.StartsWith('#') ? fragment[1..] : fragment;
 
         await ScrollToElementId(elementId);
     }

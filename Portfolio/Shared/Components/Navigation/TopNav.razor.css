@@ -125,13 +125,16 @@
 }
 
 .topnav__nav-links {
+    --_transition-duration: 250ms;
+    
     list-style: none;
     padding: 0 0.5rem 0;
     margin: 0;
     display: flex;
     flex-flow: column;
     overflow: hidden;
-    transition: height 250ms ease 0s;
+    transition: height var(--_transition-duration) ease 0s,
+                padding-top var(--_transition-duration) ease 0s;
 }
 
 .nav-links__nav-item {
@@ -145,6 +148,14 @@
     border-radius: var(--border-radius-small);
     text-decoration: none;
     color: var(--navbar-fore);
+}
+
+.topnav ::deep:not(.non-stacked) > a.nav-item__nav-link {
+    scale: 1;
+}
+
+.topnav.non-stacked .topnav__nav-links {
+    padding-top: 0 !important;
 }
 
 .nav-links__nav-item ::deep > a.nav-item__nav-link:hover {
