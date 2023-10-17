@@ -22,6 +22,7 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    background-attachment: fixed;
     
     transition: background-image 250ms ease 0s;
     
@@ -46,6 +47,7 @@
 
     background-color: rgb(24 24 24 / 60%);
     background-image: radial-gradient(closest-corner, var(--radial-inside), var(--radial-outside));
+    background-attachment: fixed;
 }
 
 .top-header__overlay ~ * {

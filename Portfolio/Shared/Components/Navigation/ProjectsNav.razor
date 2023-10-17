@@ -10,10 +10,6 @@
 
 <div class="proj-nav">
     <section class="proj-nav__header">
-        @if (GitHubLink is not null)
-        {
-            <a href="@GitHubLink" target="_blank">GitHub</a>
-        }
         <h3 class="proj-nav__head">Projects</h3>
     </section>
     <ul class="proj-nav__projects">
@@ -55,9 +51,6 @@
 
 
 @code {
-
-    [Parameter]
-    public string? GitHubLink { get; set; }
 
     private int _projectIdx;
     private IReadOnlyDictionary<string, ProjectDataModel>? _models;

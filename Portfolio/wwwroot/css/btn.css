@@ -1,0 +1,13 @@
+﻿.btn {
+    border-width: 2px;
+}
+
+.btn-outline-accent {
+    color: var(--accent-colour);
+    border-color: var(--accent-colour);
+    
+    &:hover {
+        background-color: var(--accent-colour);
+        color: white;
+    }
+}
