@@ -3,6 +3,7 @@
     --radial-outside: rgb(34 34 34 / 80%);
     
     position: relative;
+    display: flex;
     min-height: 60vh;
     /* overload for when small vh is available */
     min-height: 60svh;
