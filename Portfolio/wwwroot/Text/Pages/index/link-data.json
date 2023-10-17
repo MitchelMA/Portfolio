@@ -3,8 +3,8 @@
     "min-width": 650,
     "links": [
       {
-        "href": "#projects",
-        "display-text": "Projects",
+        "href": "#high",
+        "display-text": "Highlights",
         "opens-new": false
       },
       {
@@ -21,6 +21,11 @@
         "href": "./cv.pdf",
         "display-text": "CV",
         "opens-new": true
+      },
+      {
+        "href": "./projects",
+        "display-text": "Projects",
+        "navigation-type": "Internal"
       }
     ]
   },

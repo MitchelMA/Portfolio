@@ -145,11 +145,13 @@
     border-radius: var(--border-radius-small);
     text-decoration: none;
     color: var(--navbar-fore);
-
 }
 
 .nav-links__nav-item ::deep > a.nav-item__nav-link:hover {
     background: rgba(255, 255, 255, 10%);
+}
+.nav-links__nav-item ::deep > a.nav-item__nav-link.outgoing {
+    color: var(--accent-colour);
 }
 
 .topnav.non-stacked .topnav__inner-container {

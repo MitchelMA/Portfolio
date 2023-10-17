@@ -31,7 +31,11 @@
                         @{
                             var (href, display, opensNew) = Links[i];
                         }
-                        <AnchorLink class="nav-item__nav-link hover-scale sc05" href="@href" @onclick="ForceClose" target=@(opensNew ? "_blank" : null)>@display</AnchorLink>
+                        <AnchorLink 
+                            class=@("nav-item__nav-link hover-scale sc05 " + (opensNew ? "outgoing" : string.Empty))
+                            href="@href"
+                            @onclick="ForceClose"
+                            target=@(opensNew ? "_blank" : null)>@display</AnchorLink>
                     </li>
                 }
             </ul>
