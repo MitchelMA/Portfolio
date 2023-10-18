@@ -9,6 +9,10 @@
       {
         "href": "#struct",
         "display-text": "Structuur"
+      },
+      {
+        "href": "#perf",
+        "display-text": "Performance"
       }
     ]
   },

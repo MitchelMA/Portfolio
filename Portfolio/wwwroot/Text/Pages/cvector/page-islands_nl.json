@@ -4,7 +4,26 @@
     "id": "iductie"
   },
   {
+    "flex-values": ["3 0 350px", "2 1 300px"],
     "title": "Structuur",
-    "id": "struct"
+    "id": "struct",
+    "images": [
+      {
+        "src": "./images/cvector/header.png",
+        "alt": "Huidig structuur van de vector in de .c file",
+        "width": 300,
+        "extra-css-styles": "max-width: 100%;"
+      },
+      {
+        "src": "./images/cvector/public-typedef.png",
+        "alt": "De public definition van vector_t om te gebruiken",
+        "width": 300,
+        "extra-css-styles": "max-width: 100%;"
+      }
+    ]
+  },
+  {
+    "title": "Performance",
+    "id": "perf"
   }
 ]
