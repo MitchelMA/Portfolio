@@ -1,5 +1,8 @@
 <p>
-    Door de opzet van de structuur, is de performance van het toevoegen van een element aan het einde van de vector
-    O(1), random access is O(1) en het toevoegen van een element in de vector O(n) waar `n` het aantal opvolgende elementen
-    in de vector.
+    De structuur van de vector biedt de mogelijkheid om het te gebruiken voor alle types (niet door elkaar in de zelfde vector).
+    Dit is omdat het begin address wordt bijgehouden middels een void-pointer. En de grootte van het type wordt gebruikt
+    voor de pointer-arithmetic om offsets te bepalen. Verder houdt de vector een capacity en een grootte bij.  
+    <br />
+    De capacity maakt optimization mogelijk. Ik hoef hierdoor niet elke keer wanneer een element wordt toegevoegd, meer geheugen te allocaten.
+    Pas wanneer hij in de buurt van de capacity komt, verdubbeld hij de capacity. Hetzelfde gaat op voor krimpen.
 </p>

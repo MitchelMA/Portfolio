@@ -4,6 +4,10 @@
     "id": "iductie"
   },
   {
+    "title": "Gebruik",
+    "id": "geb"
+  },
+  {
     "flex-values": ["3 0 350px", "2 1 300px"],
     "title": "Structuur",
     "id": "struct",
@@ -25,5 +29,25 @@
   {
     "title": "Performance",
     "id": "perf"
+  },
+  {
+    "inverted": true,
+    "flex-values": ["2 1 300px", "3 0 320px"],
+    "title": "Destruction",
+    "id": "des",
+    "images": [
+      {
+        "src": "./images/cvector/constructor.png",
+        "alt": "Een van de mogelijke functies om een vector_t te constructen",
+        "width": 450,
+        "extra-css-styles": "max-width: 100%;"
+      },
+      {
+        "src": "./images/cvector/destructor.png",
+        "alt": "De functie om een vector_t te destructen",
+        "width": 450,
+        "extra-css-styles": "max-width: 100%;"
+      }
+    ]
   }
 ]

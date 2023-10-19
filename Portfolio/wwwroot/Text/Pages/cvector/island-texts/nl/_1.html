@@ -1,8 +1,10 @@
 <p>
-    De structuur van de vector biedt de mogelijkheid om het te gebruiken voor alle types (niet door elkaar in de zelfde vector).
-    Dit is omdat het begin address wordt bijgehouden middels een void-pointer. En de grootte van het type wordt gebruikt
-    voor de pointer-arithmetic om offsets te bepalen. Verder houdt de vector een capacity en een grootte bij.  
-    <br />
-    De capacity maakt optimization mogelijk. Ik hoef hierdoor niet elke keer wanneer een element wordt toegevoegd, meer geheugen te allocaten.
-    Pas wanneer hij in de buurt van de capacity komt, verdubbeld hij de capacity. Hetzelfde gaat op voor krimpen.
+    Deze library maakt gebruik van CMake, wat ik een fijn build-system vind.
+    Maar CMake kent nog iets handigs;
+    <a href="https://cmake.org/cmake/help/latest/command/find_package.html"
+       target="_blank"><code>find_package()</code></a>.
+    Wanneer je de package wilt toevoegen, gebruik je
+    <a href="https://cmake.org/cmake/help/latest/module/FetchContent.html"
+       target="_blank"><code>FetchContent</code></a>.
+    Daarna kan je de lib `CVector` toevoegen aan je target.
 </p>

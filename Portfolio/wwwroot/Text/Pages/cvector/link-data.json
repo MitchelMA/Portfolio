@@ -1,10 +1,14 @@
 [
   {
-    "min-width": 650,
+    "min-width": 800,
     "links": [
       {
         "href": "#iductie",
         "display-text": "Introductie"
+      },
+      {
+        "href": "#geb",
+        "display-text": "Gebruik"
       },
       {
         "href": "#struct",
@@ -13,6 +17,10 @@
       {
         "href": "#perf",
         "display-text": "Performance"
+      },
+      {
+        "href": "#des",
+        "display-text": "Destruction"
       }
     ]
   },
