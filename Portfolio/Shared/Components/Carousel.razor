@@ -1,9 +1,11 @@
 ﻿@using System.Text.Json
 @using Portfolio.Mappers
 @using Portfolio.Model.Project
+@using System.Collections
 @inject HttpClient HttpClient
 @inject LanguageTable LanguageTable
 @inject AppState AppState
+@inject IMapper<ProjectDataModel, CarouselModel> Mapper
 
 @implements IDisposable
 
@@ -31,32 +33,32 @@
         }
     </div>
     <div class="carousel__dots-holder">
-        @if (_models?.Length > 1)
+        @if (UsedModels?.Length > 1)
         {
-            @for (int i = 0; i < _models?.Length; i++)
+            @for (var i = 0; i < UsedModels?.Length; i++)
             {
                 var idx = i;
                 <input type="radio" checked="@(idx == CurrentIdx)"
-                       title="@_models[idx].HeaderData.Title"
+                       title="@UsedModels[idx].HeaderData.Title"
                        @onclick="() => { RadioClick(idx); }"/>
             }
         }
     </div>
     <div class="carousel__buttons-holder">
         @{
-            var nextIdx = (CurrentIdx + 1) % _models?.Length ?? 0;
+            var nextIdx = (CurrentIdx + 1) % UsedModels?.Length ?? 0;
             var prevIdx = CurrentIdx - 1;
             if (prevIdx < 0)
-                prevIdx = _models?.Length - 1 ?? 0;
+                prevIdx = UsedModels?.Length - 1 ?? 0;
         }
         <button class="btn btn-prev"
                 @onclick="() => { RadioClick(CurrentIdx - 1); }"
-                title="@_models?[prevIdx].HeaderData.Title">
+                title="@UsedModels?[prevIdx].HeaderData.Title">
             <i class="bi bi-arrow-left-circle-fill"></i>
         </button>
         <button class="btn btn-next"
                 @onclick="() => { RadioClick(CurrentIdx + 1); }"
-                title="@_models?[nextIdx].HeaderData.Title">
+                title="@UsedModels?[nextIdx].HeaderData.Title">
             <i class="bi bi-arrow-right-circle-fill"></i>
         </button>
     </div>
@@ -65,7 +67,9 @@
 @code {
 
     private string? _fromJsonFile;
-    private CarouselModel[]? _models;
+    private CarouselModel[]? _allModels;
+    private CarouselModel[]? _highlightedModels;
+    private Range[]? _highLightRanges;
     private int _index;
     private bool _toggle = false;
     private string[] _togglesText = { "", "" };
@@ -75,6 +79,8 @@
     private bool _disposed = false;
     private CancellationTokenSource _cts = new();
     private Stack<object> _clickStack = new();
+
+    private CarouselModel[]? UsedModels => _highLightRanges is null ? _allModels : _highlightedModels;
 
     /// <summary>
     /// The Starting index of the carousel
@@ -93,10 +99,10 @@
     {
         set
         {
-            if (_models is not null)
+            if (_allModels is not null)
                 return;
 
-            _models = value;
+            _allModels = value;
         }
     }
 
@@ -130,6 +136,21 @@
     /// </summary>
     [Parameter]
     public int? TransitionDuration { get; set; }
+    
+    [Parameter]
+    public Range[]? HighLightRanges 
+    { 
+        get => _highLightRanges;
+        set
+        {
+            if (value?.Equals(_highLightRanges) ?? false)
+                return;
+
+            _highLightRanges = value;
+            ApplyRangeFilter(_highLightRanges);
+        }
+        
+    }
 
     private float DynamicDelayAmount => DelayAmount / Math.Max(_clickStack.Count * 1.5f, 1f);
 
@@ -139,14 +160,14 @@
         set
         {
             if (value < 0)
-                value = _models!.Length - 1;
+                value = UsedModels!.Length - 1;
 
-            value %= _models!.Length;
+            value %= UsedModels!.Length;
             _index = value;
         }
     }
 
-    private CarouselModel? CurrentModel => _models?[CurrentIdx];
+    private CarouselModel? CurrentModel => UsedModels?[CurrentIdx];
 
     private string? HeightString =>
         CurrentModel?.SetHeight is not null ?
@@ -209,6 +230,23 @@
         await LanguageTable.AwaitLanguageContentAsync(SetLangData);
     }
     
+    private void ApplyRangeFilter(Range[]? filter)
+    {
+        if (_highLightRanges?.Overlaps() ?? false)
+            throw new ArgumentException("Ranges may not overlap", nameof(filter));
+        
+        if (_allModels is null || filter is null)
+            return;
+
+        var highlightedList = new List<CarouselModel>();
+        var filterCount = filter!.Length;
+        for (var i = 0; i < filterCount; i++)
+            highlightedList.AddRange(_allModels[filter[i]]);
+        _highlightedModels = highlightedList.ToArray();
+        
+        StateHasChanged();
+    }
+    
     private async Task SetLangData(object? sender)
     {
         List<CarouselModel> data = new();
@@ -219,15 +257,16 @@
         for (var i = 0; i < l; i++)
         {
             var cur = tmp![i];
-            var model = ToCarouselModelMapper.MapTo(cur);
+            var model = Mapper.MapFrom(cur);
             model.HeaderData = (await LanguageTable.LoadHeaderForPage(model.Href!, langCode))!.Value;
             data.Add(model);
         }
-        _models = data.ToArray();
+        _allModels = data.ToArray();
+        ApplyRangeFilter(_highLightRanges);
         
         ScrollThrough(CurrentIdx);
 
-        if (_delay != 0 && _models?.Length > 1)
+        if (_delay != 0 && _allModels?.Length > 1)
             await AutoLoop(_cts.Token);
     }
 

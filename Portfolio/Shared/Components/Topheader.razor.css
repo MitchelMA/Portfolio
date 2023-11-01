@@ -3,16 +3,16 @@
     --radial-outside: rgb(34 34 34 / 80%);
     
     position: relative;
-    height: 100vh;
+    display: flex;
+    min-height: 60vh;
     /* overload for when small vh is available */
-    height: 100svh;
+    min-height: 60svh;
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
     background-attachment: fixed;
     padding: 2rem;
     contain: layout;
-    min-height: 600px;
     
     color: whitesmoke;
 }
@@ -46,7 +46,7 @@
 
 .header__scroll-down
 {
-    margin-top: 3rem;
+    margin-top: 2.1vw;
     outline: none;
     border: none;
     background: none;
@@ -58,6 +58,6 @@
 }
 
 .texts__extra {
-    margin-top: 5rem;
+    margin-top: 1.2vw;
     font-size: 1.6rem;
 }

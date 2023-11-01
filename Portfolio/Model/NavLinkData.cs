@@ -1,3 +1,5 @@
+using Portfolio.Enums;
+
 namespace Portfolio.Model;
 
-public record NavLinkData(string Href, string LinkText, bool OpensNew = false);
+public record NavLinkData(string Href, string LinkText, NavigationType NavigationType);

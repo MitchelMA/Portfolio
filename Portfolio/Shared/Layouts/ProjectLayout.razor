@@ -19,7 +19,8 @@
                Style="@AppState.HeaderExtraStyles"/>
 
     <TopNav Links="@AppState.Links"
-            MinNonStackedSize="@AppState.MinNonStackedSize"/>
+            MinNonStackedSize="@AppState.MinNonStackedSize"
+            StackedTopPadding="12"/>
 
     <main class="main-content" id="main_content">
         <div class="main-content__inner">
@@ -29,12 +30,19 @@
                         <article style="display: flex; justify-content: center;">
                             <ProjectInfoTable Model="@_model" />
                         </article>
+                        @if (ProjectState.PageEndGithub is not null or "")
+                        {
+                            <div style="position: absolute; right: 10px; top: -4px;">
+                                <a class="btn btn-sm btn-outline-accent" style="font-size: 1.3rem; text-decoration: underline;"
+                                   href="@(StaticData.GitHubStartLink + ProjectState.PageEndGithub)"
+                                   target="_blank">GitHub</a>
+                            </div>
+                        }
                     </PageIsland>
                     @Body
                 </Main>
                 <Right>
-                    <ProjectsNav 
-                        GitHubLink=@($"https://github.com/MitchelMA/{ProjectState.PageEndGithub}") />
+                    <ProjectsNav />
                 </Right>
             </MainAside>
         </div>
