@@ -18,12 +18,12 @@ public class LangTablePreCacher
         _infoGetter = infoGetter;
     }
 
-    public async Task<bool> PreCache(int langCode)
+    public async Task PreCache(int langCode)
     {
         await _infoGetter.RetrieveData();
         var uris = _infoGetter.Data.Keys;
         uris = uris.Concat(Extra);
 
-        return await _langTable.PreCacheAll(uris, langCode);
+        _langTable.PreCacheAll(uris, langCode);
     }
 }
