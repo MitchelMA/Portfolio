@@ -24,6 +24,6 @@ public class LangTablePreCacher
         var uris = _infoGetter.Data.Keys;
         uris = uris.Concat(Extra);
 
-        return await _langTable.PreCacheAll(uris, langCode);
+        return _langTable.PreCacheAll(uris, langCode);
     }
 }
