@@ -21,6 +21,7 @@ public static class Program
         builder.Services.AddScoped<ColourMapperFactory>();
         builder.Services.AddScoped<ProjectInfoGetter>();
         builder.Services.AddScoped<LangTablePreCacher>();
+        builder.Services.AddScoped<HeroInfoGetter>();
 
         builder.Services.AddScoped<IMapper<ProjectDataModel, CarouselModel>, ToCarouselModelMapper>();
         builder.Services.AddScoped<IMapper<LangHeaderModel, HeaderData>, ToHeaderDataMapper>();

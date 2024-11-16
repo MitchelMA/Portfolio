@@ -1,0 +1,12 @@
+@page "/hero/{HeroName}"
+@layout HeroLayout
+
+<div class="page">
+    @if (_heroData.HasValue)
+    {
+        <h3>@_heroData?.Title</h3>
+        <p>@_heroData?.UnderTitle</p>
+        <p>@_heroData?.PageTitleExtension</p>
+        <p>@_heroData?.PageIcon</p>
+    }
+</div>

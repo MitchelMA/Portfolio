@@ -1,0 +1,21 @@
+@inherits LayoutComponentBase
+
+<div class="page">
+    
+    <main class="main-content" id="main_content">
+        <div class="main-content__inner">
+            @Body
+        </div>
+    </main>
+
+    @if (AppState!.ShowFooter)
+    {
+        <Footer>
+            <MainSection>
+                <h5 style="margin-bottom: 0">Mitchel Vonk©</h5>
+            </MainSection>
+        </Footer>
+    }
+    <ToTopBtn/>
+    
+</div>
