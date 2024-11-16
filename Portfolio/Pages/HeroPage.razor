@@ -9,4 +9,12 @@
         <p>@_heroData?.PageTitleExtension</p>
         <p>@_heroData?.PageIcon</p>
     }
+    
+    @if (_heroProjectsData is not null)
+    {
+        @foreach (var heroProject in _heroProjectsData)
+        {
+            <AnchorLink href="@heroProject.LocalHref" >@heroProject.LocalHref</AnchorLink><br/>
+        }
+    }
 </div>

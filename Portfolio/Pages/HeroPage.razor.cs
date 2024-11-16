@@ -15,19 +15,19 @@ public partial class HeroPage : ComponentBase, IDisposable
     private ProjectInfoGetter ProjectInfoGetter { get; init; } = null!;
     [Inject]
     private HeroInfoGetter HeroInfoGetter { get; init; } = null!;
-    
+
     [Parameter]
     public string HeroName { get; init; } = "";
 
-    private ProjectDataModel[]? _heroProjectData;
+    private ProjectDataModel[]? _heroProjectsData;
     private HeroPageInfo? _heroData;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-
-        var heroData = ProjectInfoGetter.Data.Values.ToArray();
-        _heroProjectData = heroData.Where(x => x.Heroes != null && x.Heroes.Contains(HeroName)).ToArray();
-        LangTable.ManifestLoadedAsync += OnLanguageManifestLoadedAsync;
+        await ProjectInfoGetter.RetrieveData();
+        SetHeroProjectsData();
+        
+        await LangTable.AwaitLanguageContentAsync(OnLanguageManifestLoadedAsync);
         LangTable.LanguageChangedAsync += OnLanguageChangedAsync;
     }
 
@@ -44,6 +44,12 @@ public partial class HeroPage : ComponentBase, IDisposable
     private async Task SetHeroData()
     {
         _heroData = await LangTable.LoadCurrentHeroPageInfo(HeroName);
+        StateHasChanged();
+    }
+
+    private void SetHeroProjectsData()
+    {
+        _heroProjectsData = ProjectInfoGetter.Data.Values.Where(x => x.Heroes != null && x.Heroes.Contains(HeroName)).ToArray();
         StateHasChanged();
     }
 
