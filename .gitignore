@@ -400,3 +400,4 @@ FodyWeavers.xsd
 # Own ignores
 Inspiration/
 *.docx
+.idea**
