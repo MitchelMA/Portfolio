@@ -1,20 +1,61 @@
 @page "/hero/{HeroName}"
 @layout HeroLayout
 
-<div class="page">
-    @if (_heroData.HasValue)
-    {
-        <h3>@_heroData?.Title</h3>
-        <p>@_heroData?.UnderTitle</p>
-        <p>@_heroData?.PageTitleExtension</p>
-        <p>@_heroData?.PageIcon</p>
-    }
-    
-    @if (_heroProjectsData is not null)
-    {
-        @foreach (var heroProject in _heroProjectsData)
-        {
-            <AnchorLink href="@heroProject.LocalHref" >@heroProject.LocalHref</AnchorLink><br/>
-        }
-    }
-</div>
+<section class="cards-section">
+    <div class="cards-section__inner">
+        <h3>Projects:</h3>
+        <div class="cards-grid">
+            @if (_heroProjectsData is not null && _langHeaderData is not null)
+            {
+                for (var i = 0; i < _heroProjectsData.Length; i++)
+                {
+                    var heroProjectData = _heroProjectsData[i];
+                    var heroLanguageData = _langHeaderData[i];
+                    var extractedFlags = heroProjectData.Tags.ExtractFlags();
+
+                    <a class="hero-card" href="@heroProjectData.LocalHref"
+                       style="--_background-image: url(@heroProjectData.Header.HeaderImage)">
+                        <div class="card__overlay"></div>
+                        <div class="card__inner">
+                            <h3 class="card__inner__title">
+                                @heroLanguageData.Title
+                            </h3>
+                            <p class="card__inner__description">
+                                @heroLanguageData.Description
+                            </p>
+                            <div class="card__inner__tags">
+                                @foreach (var flag in extractedFlags)
+                                {
+                                    <TagItem Tag="flag" SizeModifier="medium"/>
+                                }
+                            </div>
+                        </div>
+                    </a>
+                }
+            }
+        </div>
+        
+        <hr/>
+        
+        <h3>Relevant Tags:</h3>
+        <aside class="relevant-tags-container">
+            @if (_heroProjectsData is not null)
+            {
+                ProjectTags tags = default;
+                for (var i = 0; i < _heroProjectsData.Length; i++)
+                {
+                    var projectData = _heroProjectsData[i];
+
+                    tags |= projectData.Tags;
+                }
+
+                var extractedFlags = tags.ExtractFlags();
+                foreach (var flag in extractedFlags)
+                {
+                    <TagItem Tag="flag" />
+                }
+
+            }
+        </aside>
+    </div>
+</section>
