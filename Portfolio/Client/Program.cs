@@ -27,7 +27,6 @@ public static class Program
         builder.Services.AddScoped<IMapper<LangLinkModel, NavLinkData>, ToNavLinkDataMapper>();
 
         builder.Services.AddSingleton<AppState>();
-        builder.Services.AddSingleton<ProjectState>();
         builder.Services.AddSingleton<LanguageTable>();
 
         builder.Services.AddTransient<LightboxRegistry>();

@@ -1,17 +1,9 @@
 ﻿@inherits LayoutComponentBase
 
-@inject AppState AppState;
-@inject ProjectState ProjectState;
-@inject NavigationManager NavManager;
-@inject ProjectInfoGetter Getter
-@inject IJSRuntime JsRuntime
-
 @using Portfolio.Client
-@using Portfolio.Model.Project
-@implements IDisposable;
 
 <div class="page">
-    <TopHeader HeaderImg="@AppState.HeaderImgPath"
+    <TopHeader HeaderImg="@AppState!.HeaderImgPath"
                Title="@AppState.HeaderTitle"
                UnderTitle="@AppState.HeaderUnderTitle"
                ScrollToId="main_content"
@@ -28,18 +20,17 @@
                 <Main>
                     <PageIsland IslandTitle="Info">
                         <article style="display: flex; justify-content: center;">
-                            <ProjectInfoTable Model="@_model" />
+                            <ProjectInfoTable Model="@Model" />
                         </article>
-                        @if (ProjectState.PageEndGithub is not null or "")
-                        {
-                            <div style="position: absolute; right: 10px; top: -4px;">
-                                <a class="btn btn-sm btn-outline-accent" style="font-size: 1.3rem; text-decoration: underline;"
-                                   href="@(StaticData.GitHubStartLink + ProjectState.PageEndGithub)"
-                                   target="_blank">GitHub</a>
-                            </div>
-                        }
+                        <div style="position: absolute; right: 10px; top: -4px;">
+                            <a class="btn btn-sm btn-outline-accent" style="font-size: 1.3rem; text-decoration: underline;"
+                               href="@(StaticData.GitHubStartLink + Model?.GitHub)"
+                               target="_blank">GitHub</a>
+                        </div>
                     </PageIsland>
-                    @Body
+                    <CascadingValue Value="@this">
+                        @Body
+                    </CascadingValue>
                 </Main>
                 <Right>
                     <ProjectsNav />
@@ -60,57 +51,3 @@
 
     <ToTopBtn/>
 </div>
-
-@code {
-
-    private ProjectDataModel? _model;
-
-    protected override void OnInitialized()
-    {
-        AppState.StateChangedAsync += AppStateChanged;
-        ProjectState.StateChanged += ProjectStateChanged;
-        NavManager.LocationChanged += OnLocationChanged;
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        _model = await Getter.GetCorrespondingToUri();
-        StateHasChanged();
-    }
-
-    public void Dispose()
-    {
-        AppState.StateChangedAsync -= AppStateChanged;
-        ProjectState.StateChanged -= ProjectStateChanged;
-        NavManager.LocationChanged -= OnLocationChanged;
-    }
-
-    private async Task AppStateChanged()
-    {
-        await CheckScroll();
-        StateHasChanged();
-    }
-
-    private void ProjectStateChanged()
-    {
-        StateHasChanged();
-    }
-
-    private async void OnLocationChanged(object? sender, LocationChangedEventArgs e)
-    {
-        _model = await Getter.GetCorrespondingToUri();
-    }
-
-    private async Task CheckScroll()
-    {
-        if (AppState.ScrollLocked)
-        {
-            await JsRuntime.InvokeVoidAsync("lockScroll", StaticData.LockedClassName);
-        }
-        else
-        {
-            await JsRuntime.InvokeVoidAsync("unlockScroll", StaticData.LockedClassName);
-        }
-    }
-
-}
