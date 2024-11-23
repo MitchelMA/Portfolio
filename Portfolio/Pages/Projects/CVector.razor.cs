@@ -9,7 +9,7 @@ using Portfolio.Shared.Layouts;
 
 namespace Portfolio.Pages.Projects;
 
-public partial class CsvLexing : ComponentBase
+public partial class CVector : ComponentBase, IDisposable
 {
     [CascadingParameter]
     private ProjectLayout ParentLayout { get; init; } = null!;
@@ -22,7 +22,7 @@ public partial class CsvLexing : ComponentBase
     private LanguageTable? LanguageTable { get; init; }
     [Inject]
     private LangTablePreCacher? PreCacher { get; init; }
-    
+
     [Inject]
     private IMapper<LangHeaderModel, HeaderData>? HeaderMapper { get; init; }
     [Inject]
@@ -35,38 +35,37 @@ public partial class CsvLexing : ComponentBase
 
     protected override async Task OnInitializedAsync()
     {
-        PreCacher!.Extra = new[] { "./index" };
-        
+        PreCacher!.Extra = new[] {"./index"};
         _model = await ProjectInfoGetter!.GetCorrespondingToUri();
         ParentLayout.Model = _model;
-        
+
         AppState!.PageIcon = StaticData.DefaultPageIcon;
         AppState.ShowFooter = true;
-        
+
         LanguageTable!.LanguageChangedAsync += OnLanguageChanged;
         await LanguageTable.AwaitLanguageContentAsync(SetLangData);
     }
 
-    private Task OnLanguageChanged(object sender, int newCultureIdx) => SetLangData(sender);
+    private Task OnLanguageChanged(object? sender, int newCulture) => SetLangData(sender);
 
     private async Task SetLangData(object? sender)
     {
         var currentData = await LanguageTable!.LoadAllCurrentPageData();
         if (currentData is null)
         {
-            await Console.Error.WriteLineAsync("Couldn't get Page Data in specified language!");
-            return;
+             await Console.Error.WriteLineAsync("Couldn't get Page Data in specified language!");
+             return;           
         }
-        
+
         SetPageContent(currentData);
         await PreCacher!.PreCache(AppState!.CurrentLanguage);
     }
 
-    private void SetPageContent(LangPageData langPageData)
+    private void SetPageContent(LangPageData pageData)
     {
-        SetHeaderData(langPageData.HeaderData!.Value);
-        SetLinksData(langPageData.LinksData!.Value);
-        SetIslandsData(langPageData.PageIslandsData!);
+        SetHeaderData(pageData.HeaderData!.Value);
+        SetLinksData(pageData.LinksData!.Value);
+        SetIslandsData(pageData.PageIslandsData!);
     }
 
     private void SetHeaderData(LangHeaderModel headerData)
@@ -79,8 +78,9 @@ public partial class CsvLexing : ComponentBase
 
     private void SetLinksData(LangLinksModel linksData)
     {
-        _links = new NavLinkData[linksData.Links.Length];
-        for (var i = 0; i < linksData.Links.Length; i++)
+        var l = linksData.Links.Length;
+        _links = new NavLinkData[l];
+        for (var i = 0; i < l; i++)
             _links[i] = LinkMapper!.MapFrom(linksData.Links[i]);
 
         AppState!.Links = _links;
@@ -95,9 +95,8 @@ public partial class CsvLexing : ComponentBase
 
     public void Dispose()
     {
-        LanguageTable!.ManifestLoadedAsync -= SetLangData;
-        LanguageTable.LanguageChangedAsync -= OnLanguageChanged;
+        LanguageTable!.LanguageChangedAsync -= OnLanguageChanged;
+        LanguageTable.ManifestLoadedAsync -= SetLangData;
         GC.SuppressFinalize(this);
     }
-    
 }

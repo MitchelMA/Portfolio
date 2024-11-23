@@ -41,7 +41,7 @@ public partial class Minesweeper : ComponentBase, IDisposable
         PreCacher!.Extra = new[] { "./index" };
         
         _model = await ProjectInfoGetter!.GetCorrespondingToUri();
-        ParentLayout!.Model = _model;
+        ParentLayout.Model = _model;
 
         AppState!.PageIcon = new PageIcon("image/png", "./images/minesweeper/minesweepericon.png");
         AppState.ShowFooter = true;
@@ -50,7 +50,7 @@ public partial class Minesweeper : ComponentBase, IDisposable
         await LanguageTable.AwaitLanguageContentAsync(SetLangData);
     }
 
-    private async Task OnLanguageChanged(object? sender, int newCultureIdx) => await SetLangData(sender);
+    private Task OnLanguageChanged(object? sender, int newCultureIdx) => SetLangData(sender);
 
     private async Task SetLangData(object? sender)
     {
