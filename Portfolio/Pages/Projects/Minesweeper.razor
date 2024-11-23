@@ -1,6 +1,8 @@
 ﻿@page "/minesweeper"
 @layout ProjectLayout
 
+@inject LightboxRegistry Registry;
+
 @if (_islandsData is not null)
 {
     foreach (var island in _islandsData)

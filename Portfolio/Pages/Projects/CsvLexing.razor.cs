@@ -1,24 +1,19 @@
 using Microsoft.AspNetCore.Components;
-
-using Portfolio.Model.Project;
-using Portfolio.Model.Text;
+using Portfolio.Client;
 using Portfolio.Mappers;
 using Portfolio.Model;
-using Portfolio.Model.Tags;
+using Portfolio.Model.Project;
+using Portfolio.Model.Text;
 using Portfolio.Services;
 using Portfolio.Shared.Layouts;
 
 namespace Portfolio.Pages.Projects;
 
-public partial class Minesweeper : ComponentBase, IDisposable
+public partial class CsvLexing : ComponentBase
 {
-    // Cascading
-
     [CascadingParameter]
     private ProjectLayout ParentLayout { get; init; } = null!;
     
-    // Injections
-
     [Inject]
     private AppState? AppState { get; init; }
     [Inject]
@@ -27,10 +22,12 @@ public partial class Minesweeper : ComponentBase, IDisposable
     private LanguageTable? LanguageTable { get; init; }
     [Inject]
     private LangTablePreCacher? PreCacher { get; init; }
+    
     [Inject]
     private IMapper<LangHeaderModel, HeaderData>? HeaderMapper { get; init; }
     [Inject]
     private IMapper<LangLinkModel, NavLinkData>? LinkMapper { get; init; }
+    
     
     private static ProjectDataModel? _model;
     private static NavLinkData[]? _links;
@@ -41,16 +38,16 @@ public partial class Minesweeper : ComponentBase, IDisposable
         PreCacher!.Extra = new[] { "./index" };
         
         _model = await ProjectInfoGetter!.GetCorrespondingToUri();
-        ParentLayout!.Model = _model;
-
-        AppState!.PageIcon = new PageIcon("image/png", "./images/minesweeper/minesweepericon.png");
+        ParentLayout.Model = _model;
+        
+        AppState!.PageIcon = StaticData.DefaultPageIcon;
         AppState.ShowFooter = true;
-
+        
         LanguageTable!.LanguageChangedAsync += OnLanguageChanged;
         await LanguageTable.AwaitLanguageContentAsync(SetLangData);
     }
 
-    private async Task OnLanguageChanged(object? sender, int newCultureIdx) => await SetLangData(sender);
+    private async Task OnLanguageChanged(object sender, int newCultureIdx) => await SetLangData(sender);
 
     private async Task SetLangData(object? sender)
     {
@@ -60,7 +57,7 @@ public partial class Minesweeper : ComponentBase, IDisposable
             await Console.Error.WriteLineAsync("Couldn't get Page Data in specified language!");
             return;
         }
-
+        
         SetPageContent(currentData);
         await PreCacher!.PreCache(AppState!.CurrentLanguage);
     }
@@ -82,9 +79,8 @@ public partial class Minesweeper : ComponentBase, IDisposable
 
     private void SetLinksData(LangLinksModel linksData)
     {
-        var l = linksData.Links.Length;
-        _links = new NavLinkData[l];
-        for (var i = 0; i < l; i++)
+        _links = new NavLinkData[linksData.Links.Length];
+        for (var i = 0; i < linksData.Links.Length; i++)
             _links[i] = LinkMapper!.MapFrom(linksData.Links[i]);
 
         AppState!.Links = _links;
@@ -103,5 +99,5 @@ public partial class Minesweeper : ComponentBase, IDisposable
         LanguageTable.LanguageChangedAsync -= OnLanguageChanged;
         GC.SuppressFinalize(this);
     }
-
+    
 }
