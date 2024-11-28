@@ -1,0 +1,62 @@
+main {
+    position: relative;
+    display: flex;
+    flex-flow: column;
+}
+
+.top-header {
+    --radial-outside: rgb(34 34 34 / 80%);
+    --radial-inside: transparent;
+    --_font-size: 4rem;
+    --_font-colour: whitesmoke;
+    --_background-image: ;
+    position: relative;
+    background-color: var(--navbar-back);
+    background-image: var(--_background-image);
+    height: 70vh;
+    height: 70svh;
+    min-height: 400px;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: var(--_background-image);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    contain: layout;
+    
+    .top-header__overlay {
+        position: absolute;
+        inset: 0;
+        background-color: rgb(24 24 24 / 60%);
+        background-image: radial-gradient(closest-corner, var(--radial-inside), var(--radial-outside));
+        background-attachment: fixed;
+        
+        /* Everything following this class */
+        ~ * {
+            position: relative;
+        }
+    }
+    
+    & a {
+        color : var(--_font-colour);
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-size: 1.4rem;
+    }
+    
+    & h1, h2, h3, h4, h5, h6 {
+        color: var(--_font-colour);
+    }
+    
+    & h1 {
+        text-align: center;
+        margin-bottom: 4rem;
+        font-size: var(--_font-size);
+        max-width: 90vw;
+    }
+    
+}

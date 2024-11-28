@@ -1,0 +1,38 @@
+@inherits LayoutComponentBase
+
+<div class="page">
+    <header class="top-header" style="--_background-image: url(@(HeroInfo?.BannerImg ?? ""))">
+        <div class="top-header__overlay"></div>
+        
+        <a href="/">
+            <i class="bi bi-arrow-left"></i>
+            Home
+        </a>
+        
+        <div class="top-header__inner">
+            <section class="top-header__texts">
+                <h1>@HeroInfo?.Title</h1>
+                <h2>@HeroInfo?.UnderTitle</h2>        
+            </section>
+        </div>
+    </header>
+    
+    <CascadingValue Value="@this">
+        <main class="main-content" id="main_content">
+            <div class="main-content__inner">
+                @Body
+            </div>
+        </main>
+    </CascadingValue>
+
+    @if (AppState!.ShowFooter)
+    {
+        <Footer>
+            <MainSection>
+                <h5 style="margin-bottom: 0">Mitchel Vonk©</h5>
+            </MainSection>
+        </Footer>
+    }
+    <ToTopBtn/>
+
+</div>

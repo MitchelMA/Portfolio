@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.Serialization;
 using Portfolio.Attributes;
+using Portfolio.Configuration;
 
 namespace Portfolio.Deserialization;
 
@@ -14,22 +15,27 @@ internal class CsvDeserializer<T> where T : new()
 
     private string[] _headers;
     private string[][] _values;
+    private CsvDeserializationOptions _options;
+    private Dictionary<Type, ICsvConverter> _typedConverters = new();
 
     /// <summary>
     /// Creates a new instance of a CsvDeserializer for Generic T
     /// </summary>
     /// <param name="headers">The header values of the csv file</param>
     /// <param name="values">The comma-seperated-values of the csv excluding the header</param>
+    /// <param name="options">The Deserialization options</param>
     /// <exception cref="SerializationException">
     /// When no properties with the attribute CsvPropertyName are in the target type
     /// </exception>
     /// <exception cref="MissingMemberException">
     /// When there is a missing property for a header value
     /// </exception>
-    internal CsvDeserializer(string[] headers, string[][] values)
+    internal CsvDeserializer(string[] headers, string[][] values, CsvDeserializationOptions options = new())
     {
         _headers = headers;
         _values = values;
+        _options = options;
+        SetupTypedConverters();
 
         _tType = typeof(T);
         _csvProps = GetCsvProps();
@@ -45,6 +51,21 @@ internal class CsvDeserializer<T> where T : new()
             string missingJ = string.Join(", ", missing);
             throw new MissingMemberException(
                 $"Target type does not include property for every header value.\nMissing properties for header-values: `{missingJ}`");
+        }
+    }
+
+    private void SetupTypedConverters()
+    {
+        if (_options.Converters is null)
+            return;
+        
+        var convertersCount = _options.Converters.Count;
+        for (var i = 0; i < convertersCount; i++)
+        {
+            var converterType = _options.Converters[i].GetType();
+            var implementedInterfaces = converterType.GetInterfaces();
+            var genericType = implementedInterfaces.First(iType => iType.IsGenericType && iType.GetGenericTypeDefinition() == typeof(ICsvConverter<>)).GetGenericArguments()[0];
+            _typedConverters.Add(genericType, _options.Converters[i]);
         }
     }
 
@@ -68,8 +89,9 @@ internal class CsvDeserializer<T> where T : new()
         for (int i = 0; i < l; i++)
         {
             var cur = typeMapS[i];
+            var foundConverter = _typedConverters.TryGetValue(cur.Value, out var specificConverter);
 
-            object converted = Converter.ConvertToType(cur.Value, lineValues[i]);
+            var converted = foundConverter ? specificConverter!.Read(lineValues[i]) : Converter.ConvertToType(cur.Value, lineValues[i]);
             _tType.InvokeMember(cur.Key, Binds | BindingFlags.SetProperty, Type.DefaultBinder, inst,
                 new[] { converted });
         }

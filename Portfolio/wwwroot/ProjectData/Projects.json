@@ -14,7 +14,8 @@
     "GitHub": "towerdefense",
     "CardInfo": {
       "SetHeight": "21rem"
-    }
+    },
+    "Heroes": ["MA"]
   },
   {
     "Planning": {
@@ -31,7 +32,8 @@
     "GitHub": "Line-collision",
     "CardInfo": {
       "SetHeight": "21rem"
-    }
+    },
+    "Heroes": ["MA"]
   },
   {
     "Planning": {
@@ -48,7 +50,8 @@
     "GitHub": "Vertical-Slice-P2",
     "CardInfo": {
       "SetHeight": "21rem"
-    }
+    },
+    "Heroes": ["MA"]
   },
   {
     "Planning": {

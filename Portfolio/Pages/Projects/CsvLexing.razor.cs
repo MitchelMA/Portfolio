@@ -9,7 +9,7 @@ using Portfolio.Shared.Layouts;
 
 namespace Portfolio.Pages.Projects;
 
-public partial class CsvLexing : ComponentBase
+public partial class CsvLexing : ComponentBase, IDisposable
 {
     [CascadingParameter]
     private ProjectLayout ParentLayout { get; init; } = null!;

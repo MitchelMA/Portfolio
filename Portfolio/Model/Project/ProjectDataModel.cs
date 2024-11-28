@@ -10,4 +10,5 @@ public struct ProjectDataModel
     public string LocalHref { get; init; }
     public string? GitHub { get; init; }
     public CardInfo CardInfo { get; init; }
+    public string[]? Heroes { get; init; }
 }

@@ -3,7 +3,10 @@ using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 using Portfolio.Client;
 using Portfolio.Configuration;
+using Portfolio.Converters.CSV;
+using Portfolio.Deserialization;
 using Portfolio.Extensions;
+using Portfolio.Model.Hero;
 using Portfolio.Model.Text;
 using Portfolio.Services.CSV;
 
@@ -30,6 +33,10 @@ public sealed class LanguageTable
 
     // Cached text-contents for the duration-type texts
     private readonly Dictionary<int, DurationTextsModel> _durationTextsCachedData = new();
+    
+    // A nested Dictionary where the outer is for the name of the hero and the inner is the index of the specified language:
+    // _heroPageInfoCachedData[HeroName][LanguageCode]
+    private readonly Dictionary<string, Dictionary<int, HeroPageInfo>> _heroPageInfoCachedData = new();
 
     #endregion
 
@@ -164,6 +171,13 @@ public sealed class LanguageTable
         return (true, cache);
     }
 
+    private (bool exists, HeroPageInfo? langData) HeroPageInfoCacheExists(string heroName, int langCode)
+    {
+        if (!_heroPageInfoCachedData.TryGetValue(heroName, out var cache)) return (false, default);
+        if (!cache.TryGetValue(langCode, out var langData)) return (false, default);
+        return (true, langData);
+    }
+    
     #endregion
 
     #region Cache Getters
@@ -177,6 +191,16 @@ public sealed class LanguageTable
         _pageContentCachedData[relativeUri] = pageCache;
 
         return pageCache;
+    }
+
+    private Dictionary<int, HeroPageInfo> GetHeroSpecificCache(string heroName)
+    {
+        if (_heroPageInfoCachedData.TryGetValue(heroName, out var cache)) return cache;
+        
+        cache = new Dictionary<int, HeroPageInfo>();
+        _heroPageInfoCachedData[heroName] = cache;
+
+        return cache;
     }
 
     #endregion
@@ -267,6 +291,26 @@ public sealed class LanguageTable
         return true;
     }
 
+    private bool CacheHeroData(string heroName, IReadOnlyList<HeroPageInfo> pageInfo)
+    {
+        if (HeroPageInfoCacheExists(heroName, 0).exists) return false;
+        
+        for (var langCode = 0; langCode < pageInfo.Count; langCode++)
+        {
+            var heroData = GetHeroSpecificCache(heroName);
+            if (heroData.TryGetValue(langCode, out var langData))
+            {
+                heroData[langCode] = pageInfo[langCode];
+            }
+            else
+            {
+                heroData.TryAdd(langCode, pageInfo[langCode]);
+            }
+        }
+
+        return true;
+    }
+    
     #endregion
 
     #region Language Content Getters
@@ -406,7 +450,38 @@ public sealed class LanguageTable
         return content[langCode];
     }
 
+    public async Task<HeroPageInfo?> LoadHeroPageInfo(string heroName, int langCode)
+    {
+        if (!_isLoaded)
+            return default;
+        
+        var (exists, langData) = HeroPageInfoCacheExists(heroName, langCode);
+        if (exists)
+            return langData;
 
+        var heroPageFilePath = Path.Combine(LocationBase, _manifestContent.HeroContentDirName, 
+            _manifestContent.HeroContentsPrefix + heroName + ".csv");
+        var fileContent = await _httpClient.GetStringAsync(heroPageFilePath);
+        
+        using var heroPageLexer = new CsvLexer(fileContent, CsvSettings);
+        CsvDeserializationOptions deserializationOptions = new(
+            new List<ICsvConverter>
+            {
+                new CsvColorConverter()
+            }
+        );
+        var heroContentDeserialized = await heroPageLexer.DeserializeAsync<HeroPageInfo>(deserializationOptions);
+
+        CacheHeroData(heroName, heroContentDeserialized);
+
+        if (langCode >= heroContentDeserialized.Length)
+            return default;
+        
+        return heroContentDeserialized[langCode];
+
+    }
+    
+    
     private Task<LangHeaderModel?> LoadCurrentHeaderData()
     {
         var langCode = _appState.CurrentLanguage;
@@ -441,6 +516,12 @@ public sealed class LanguageTable
     {
         var langCode = _appState.CurrentLanguage;
         return LoadDurationTexts(langCode);
+    }
+
+    public Task<HeroPageInfo?> LoadCurrentHeroPageInfo(string heroName)
+    {
+        var langCode = _appState.CurrentLanguage;
+        return LoadHeroPageInfo(heroName, langCode);
     }
 
     public async Task<LangPageData?> LoadAllCurrentPageData()
