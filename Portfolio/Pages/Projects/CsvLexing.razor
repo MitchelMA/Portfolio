@@ -1,19 +1,8 @@
 @page "/csv-lexer"
-@using Portfolio.Model.Project
-@using Portfolio.Model.Text
-@using Portfolio.Client
-@using Portfolio.Mappers
+
 @layout ProjectLayout
 
 @inject LightboxRegistry Registry
-@inject AppState AppState
-@inject ProjectState ProjectState
-@inject ProjectInfoGetter Getter
-@inject LanguageTable LanguageTable
-@inject LangTablePreCacher PreCacher
-
-@inject IMapper<LangHeaderModel, HeaderData> HeaderMapper
-@inject IMapper<LangLinkModel, NavLinkData> LinkMapper
 
 @implements IDisposable
 
@@ -60,78 +49,3 @@
 
 <Lightbox LightboxName="@nameof(CsvLexing)"
           Registry="Registry"/>
-
-@code {
-
-    private static ProjectDataModel? _model;
-    private static NavLinkData[]? _links;
-    private static PageIslandModel[]? _islandsData;
-
-    protected override async Task OnInitializedAsync()
-    {
-        PreCacher.Extra = new[] { "./index" };
-        
-        _model = await Getter.GetCorrespondingToUri();
-        AppState.PageIcon = StaticData.DefaultPageIcon;
-        AppState.ShowFooter = true;
-        
-    // project data
-        ProjectState.PageEndGithub = _model?.GitHub;
-        
-        LanguageTable.LanguageChangedAsync += OnLanguageChanged;
-        await LanguageTable.AwaitLanguageContentAsync(SetLangData);
-    }
-
-    private async Task OnLanguageChanged(object sender, int newCultureIdx) => await SetLangData(sender);
-
-    private async Task SetLangData(object? sender)
-    {
-        var currentData = await LanguageTable.LoadAllCurrentPageData();
-        if (currentData is null)
-        {
-            await Console.Error.WriteLineAsync("Couldn't get Page Data in specified language!");
-            return;
-        }
-        
-        SetPageContent(currentData);
-        await PreCacher.PreCache(AppState.CurrentLanguage);
-    }
-
-    private void SetPageContent(LangPageData langPageData)
-    {
-        SetHeaderData(langPageData.HeaderData!.Value);
-        SetLinksData(langPageData.LinksData!.Value);
-        SetIslandsData(langPageData.PageIslandsData!);
-    }
-
-    private void SetHeaderData(LangHeaderModel headerData)
-    {
-        var header = HeaderMapper.MapFrom(headerData);
-        header.ImagePath = _model!.Value.Header.HeaderImage;
-        AppState.HeaderData = header;
-        AppState.PageTitleExtension = " " + headerData.PageTitleExtension;
-    }
-
-    private void SetLinksData(LangLinksModel linksData)
-    {
-        _links = new NavLinkData[linksData.Links.Length];
-        for (var i = 0; i < linksData.Links.Length; i++)
-            _links[i] = LinkMapper.MapFrom(linksData.Links[i]);
-
-        AppState.Links = _links;
-        AppState.MinNonStackedSize = linksData.MinWidth;
-    }
-
-    private void SetIslandsData(PageIslandModel[] islandsData)
-    {
-        _islandsData = islandsData;
-        StateHasChanged();
-    }
-
-    public void Dispose()
-    {
-        LanguageTable.ManifestLoadedAsync -= SetLangData;
-        LanguageTable.LanguageChangedAsync -= OnLanguageChanged;
-    }
-
-}
