@@ -23,7 +23,7 @@ public partial class ProjectsNav : ComponentBase, IDisposable
 
             var old = _activeProject;
             _activeProject = value;
-            ActiveProjectDelta(old, _activeProject);
+            _ = ActiveProjectDelta(old, _activeProject);
         }
     }
     
@@ -53,10 +53,10 @@ public partial class ProjectsNav : ComponentBase, IDisposable
         StateHasChanged();
     }
 
-    private void ActiveProjectDelta(ProjectDataModel? previous, ProjectDataModel? current)
+    private async Task ActiveProjectDelta(ProjectDataModel? previous, ProjectDataModel? current)
     {
         _relevantProjects = GetRelevantProjects();
-        _titles = GetProjectTitles().Result;
+        _titles = await GetProjectTitles();
         StateHasChanged();
     }
     

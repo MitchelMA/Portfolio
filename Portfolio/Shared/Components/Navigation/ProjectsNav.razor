@@ -1,4 +1,33 @@
 <div class="proj-nav">
+    @{
+        if (ActiveProject?.Heroes != null)
+        {
+            var heroes = ActiveProject.Value.Heroes!;
+            <section class="proj-nav__header">
+                @if (heroes.Length == 1)
+                {
+                    <h3 class="proj-nav__head">Hero Page</h3>
+                }
+                else
+                {
+                    <h3 class="proj-nav__head">Hero Pages</h3>
+                }
+            </section>
+            <ul class="proj-nav__tags">
+
+                @foreach (var heroName in ActiveProject.Value.Heroes)
+                {
+                    <li class="tags__tag">
+                        <HeroPageLinkItem HeroName="@(heroName)"/>
+                    </li>
+                }
+
+            </ul>
+
+            <hr/>
+        }
+    }
+    
     <section class="proj-nav__header">
         <h3 class="proj-nav__head">Relevant Projects</h3>
     </section>
