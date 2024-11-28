@@ -1,3 +1,4 @@
+using System.Drawing;
 using Portfolio.Attributes;
 
 namespace Portfolio.Model.Hero;
@@ -14,4 +15,6 @@ public struct HeroPageInfo
     public string PageIcon { get; init; }
     [CsvPropertyName("banner-img")]
     public string BannerImg { get; init; }
+    [CsvPropertyName("theme-colour")]
+    public Color ThemeColour { get; init; }
 }

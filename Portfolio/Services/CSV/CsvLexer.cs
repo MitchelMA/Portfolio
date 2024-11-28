@@ -67,13 +67,13 @@ public class CsvLexer : IDisposable
         return _splits;
     }
 
-    public T[] Deserialize<T>() where T : new()
+    public T[] Deserialize<T>(CsvDeserializationOptions deserializationOptions = new()) where T : new()
     {
         if (!_settings.FirstIsHeader)
             throw new Exception("FirstIsHeader needs to be set to `True` in the settings for deserialization");
 
         Lex();
-        CsvDeserializer<T> deserializer = new(_header!, _splits!);
+        CsvDeserializer<T> deserializer = new(_header!, _splits!, deserializationOptions);
         return deserializer.Deserialize();
     }
 
@@ -92,9 +92,10 @@ public class CsvLexer : IDisposable
         return await Task.Run(Lex);
     }
 
-    public async Task<T[]> DeserializeAsync<T>() where T : new()
+    public async Task<T[]> DeserializeAsync<T>(CsvDeserializationOptions deserializationOptions = new()) where T : new()
     {
-        return await Task.Run(Deserialize<T>);
+        return await new TaskFactory().StartNew(() => Deserialize<T>(deserializationOptions));
+        // return await Task.Run(Deserialize<T>(deserializationOptions));
     }
 
     public async Task<T[]> DeserializeAsync<T>(string[] headers, bool ignoreFirst = false) where T : new()

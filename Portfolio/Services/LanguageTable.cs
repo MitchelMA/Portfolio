@@ -3,6 +3,8 @@ using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 using Portfolio.Client;
 using Portfolio.Configuration;
+using Portfolio.Converters.CSV;
+using Portfolio.Deserialization;
 using Portfolio.Extensions;
 using Portfolio.Model.Hero;
 using Portfolio.Model.Text;
@@ -462,7 +464,13 @@ public sealed class LanguageTable
         var fileContent = await _httpClient.GetStringAsync(heroPageFilePath);
         
         using var heroPageLexer = new CsvLexer(fileContent, CsvSettings);
-        var heroContentDeserialized = await heroPageLexer.DeserializeAsync<HeroPageInfo>();
+        CsvDeserializationOptions deserializationOptions = new(
+            new List<ICsvConverter>
+            {
+                new CsvColorConverter()
+            }
+        );
+        var heroContentDeserialized = await heroPageLexer.DeserializeAsync<HeroPageInfo>(deserializationOptions);
 
         CacheHeroData(heroName, heroContentDeserialized);
 
