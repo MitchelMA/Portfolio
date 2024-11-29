@@ -1,0 +1,70 @@
+.hero-item {
+    --transition-duration: 200ms;
+
+    --font-size: 1rem;
+    --circle-size: 1.2rem;
+    --border-thickness: 2px;
+
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background-color: var(--footer-back);
+    color: var(--footer-fore);
+
+    border-radius: 7px;
+    padding: calc(0.4rem - 2px);
+    margin: 0 0.1rem;
+
+    line-height: 1;
+    font-size: var(--font-size);
+    border: var(--border-thickness) dashed var(--background-color);
+
+    & .hero-item__colour {
+        display: block;
+        vertical-align: middle;
+        height: var(--circle-size);
+        width: var(--circle-size);
+        border-radius: 10px;
+        background-color: var(--background-color);
+    }
+
+    & .hero-item__tag-text {
+        display: none;
+        margin: 0 0.4rem;
+    }
+
+    &:not(.minimized) {
+        & .hero-item__tag-text {
+            display: inline !important;
+        }
+    }
+
+
+    &.minimized:hover {
+        & .hero-item__tag-text {
+            display: inline !important;
+            margin: 0 0.4rem;
+        }
+    }
+
+    &[size="small"]
+    {
+        --circle-size: 0.7rem;
+        --font-size: 0.7rem;
+        --border-thickness: 1px;
+    }
+
+    &[size="medium"]
+    {
+        --circle-size: 0.9rem;
+        --font-size: 0.8rem;
+    }
+
+    &[size="large"]
+    {
+        --circle-size: 1.4rem;
+        --font-size: 1.2rem;
+        --border-thickness: 3px;
+    }
+}

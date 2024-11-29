@@ -8,8 +8,9 @@
         
         width: 100%;
         max-width: var(--content-max-width-xl);
-        padding: 1rem;
+        padding: 3rem;
         margin: auto;
+        overflow: hidden;
     }
     
     & .cards-grid {
