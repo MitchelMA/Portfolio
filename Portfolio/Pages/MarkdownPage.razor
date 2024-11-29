@@ -1,0 +1,30 @@
+@page "/markdown"
+@layout ProjectLayout
+
+<h3>Markdown</h3>
+@{
+    if (_sections is not null)
+    {
+        foreach (var section in _sections.Where(section => section.Length > 0))
+        {
+            <PageIsland IslandTitle="title">
+                @((MarkupString) _myMarkdown.Transform(section))
+            </PageIsland>
+        }
+    }
+}
+
+@code {
+
+    private string _markdownText = "## Hallo {#my-cool-id}\nHoe is Het?\nMet mij gaat het goed\n## hey\n## Makker";
+    private List<string>? _sections;
+    private MarkdownDeep.Markdown _myMarkdown = new();
+
+    protected override void OnInitialized()
+    {
+        _myMarkdown.ExtraMode = true;
+        _sections = MarkdownDeep.Markdown.SplitSections(_markdownText);
+        StateHasChanged();
+    }
+
+}
