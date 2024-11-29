@@ -1,4 +1,4 @@
-﻿.page-island {
+.page-island {
     position: relative;
     width: 100%;
     background-color: var(--page-island-background);
@@ -18,11 +18,15 @@
     width: 100%;
     max-width: var(--content-max-width-l);
     margin: 0 auto;
+    
+    img {
+        max-width: 100%;
+    }
 }
 
-.page-island__inner img {
-    max-width: 100%;
-    border-radius: var(--border-radius-medium);
+
+.page-island ~ .page-island > .page-island__inner > :not(h1, h2, h3, h4, h5, h6, .page-island__inner) {
+    padding-left: 0.7rem;
 }
 
 .page-island:not(:nth-child(1))
