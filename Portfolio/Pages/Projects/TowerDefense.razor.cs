@@ -5,6 +5,7 @@ using Portfolio.Model;
 using Portfolio.Model.Project;
 using Portfolio.Model.Text;
 using Portfolio.Services;
+using Portfolio.Services.Markdown;
 using Portfolio.Shared.Layouts;
 
 namespace Portfolio.Pages.Projects;
@@ -31,6 +32,9 @@ public partial class TowerDefense : ComponentBase, IDisposable
     private static NavLinkData[]? _links;
     private static ProjectDataModel? _model;
     private static PageIslandModel[]? _islandsData;
+    private static string? _markdownText;
+
+    private readonly ProjectMarkdown _projectMarkdown = new () {ExtraMode = true};
 
     protected override async Task OnInitializedAsync()
     {
@@ -67,6 +71,7 @@ public partial class TowerDefense : ComponentBase, IDisposable
         SetHeaderData(langPageData.HeaderData!.Value);
         SetLinksData(langPageData.LinksData!.Value);
         SetIslandsData(langPageData.PageIslandsData!);
+        SetMarkdownData(langPageData.PageMarkdownText);
     }
 
     private void SetHeaderData(LangHeaderModel headerData)
@@ -91,6 +96,12 @@ public partial class TowerDefense : ComponentBase, IDisposable
     private void SetIslandsData(PageIslandModel[] islandsData)
     {
         _islandsData = islandsData;
+        StateHasChanged();
+    }
+
+    private void SetMarkdownData(string? markdownText)
+    {
+        _markdownText = markdownText;
         StateHasChanged();
     }
 

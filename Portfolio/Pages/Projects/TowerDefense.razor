@@ -3,7 +3,7 @@
 
 @inject LightboxRegistry Registry
 
-@if (_islandsData is not null)
+@if (_islandsData is not null && _markdownText is null)
 {
     foreach (var island in _islandsData)
     {
@@ -41,6 +41,18 @@
                 </TwoView>
             }
         </PageIsland>
+    }
+}
+else if (_markdownText is not null)
+{
+    var markdownSections = MarkdownDeep.Markdown.SplitSections(_markdownText).Where(x => x.Length > 0);
+    @foreach (var section in markdownSections)
+    {
+        <section class="page-island">
+            <div class="page-island__inner">
+                @((MarkupString)_projectMarkdown.Transform(section))
+            </div>
+        </section>
     }
 }
 
