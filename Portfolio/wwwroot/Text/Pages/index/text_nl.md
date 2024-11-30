@@ -14,5 +14,4 @@ gemaakt voor Game-Developer.
 Naast programmeren ga ik graag om met vrienden, welke voort zijn gekomen uit een hechte groep die was gevormd aan
 het begin van mijn middelbare school periode. Ook sport ik erg graag en heb ik ook al redelijk wat beoefend:
 skiën, schaatsen en snowboarden. En ga ik wekelijks naar de sportschool.  
-
-![test](./images/AboutMeCropped.webp)
+![Foto van mij op wintersport](./images/AboutMeCropped.webp)

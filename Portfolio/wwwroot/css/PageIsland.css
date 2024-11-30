@@ -7,6 +7,22 @@
     flex-flow: column;
     padding: 0.8rem;
     padding-top: 1.8rem;
+
+    &.md img {
+        max-width: 85%;
+        border-radius: var(--border-radius-small);
+        max-height: 350px;
+        display: block;
+        position: relative;
+        transition: scale 150ms ease 0s;
+        
+        &:hover {
+            scale: 1.075;
+        }
+    }
+    &.md p > img {
+        margin-top: 1rem;
+    }
 }
 
 .page-island:nth-child(even) {
@@ -18,15 +34,15 @@
     width: 100%;
     max-width: var(--content-max-width-l);
     margin: 0 auto;
-    
-    img {
-        max-width: 100%;
-    }
 }
 
 
-.page-island ~ .page-island > .page-island__inner > :not(h1, h2, h3, h4, h5, h6, .page-island__inner) {
-    padding-left: 0.7rem;
+.page-island ~ .page-island.md > .page-island__inner > :not(h1, h2, h3, h4, h5, h6, .page-island__inner) {
+    padding: 0 1.7rem;
+}
+
+.page-island ~ .page-island.md > .page-island__inner > hr {
+    margin: 1rem 1.7rem;
 }
 
 .page-island:not(:nth-child(1))

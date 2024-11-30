@@ -24,7 +24,7 @@
     </ChildContent>
 </PageIsland>
 
-@if (_islandsData is not null)
+@if (_islandsData is not null && _markdownText is null)
 {
     foreach (var island in _islandsData)
     {
@@ -64,7 +64,18 @@
         </PageIsland>
     }
 }
-
+else if (_markdownText is not null)
+{
+    var markdownSections = MarkdownDeep.Markdown.SplitSections(_markdownText).Where(x => x.Length > 0);
+    @foreach (var section in markdownSections)
+    {
+        <section class="page-island md">
+            <div class="page-island__inner">
+                @((MarkupString)_projectMarkdown.Transform(section))
+            </div>
+        </section>
+    }   
+}
 
 
 <PageIsland IslandTitle="Contact Me" id="contact">
@@ -131,14 +142,10 @@
 
     private string? _markdownText;
 
-    private ProjectMarkdown _projectMarkdown = new();
+    private readonly ProjectMarkdown _projectMarkdown = new() {ExtraMode = true};
 
     protected override async Task OnInitializedAsync()
     {
-        _projectMarkdown.ExtraMode = true;
-        StateHasChanged();
-        // _projectMarkdown.SafeMode = true;
-        
         AppState.PageIcon = PageIcon;
         
         await LanguageTable.AwaitLanguageContentAsync(SetLangData);
@@ -196,7 +203,7 @@
 
     private void SetMarkdownData(string markdownText)
     {
-        _markdownText = markdownText;
+        // _markdownText = markdownText;
         StateHasChanged();
     }
 
