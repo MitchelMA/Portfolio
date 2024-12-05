@@ -32,7 +32,7 @@ public partial class TowerDefense : ComponentBase, IDisposable
     private static NavLinkData[]? _links;
     private static ProjectDataModel? _model;
     private static PageIslandModel[]? _islandsData;
-    private static string? _markdownText;
+    private string? _markdownText;
 
     private readonly ProjectMarkdown _projectMarkdown = new () {ExtraMode = true};
 

@@ -12,7 +12,7 @@
         max-width: 85%;
         border-radius: var(--border-radius-small);
         max-height: 350px;
-        display: block;
+        /*display: block;*/
         position: relative;
         transition: scale 150ms ease 0s;
         
