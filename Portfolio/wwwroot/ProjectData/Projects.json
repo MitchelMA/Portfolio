@@ -10,7 +10,8 @@
       "HeaderImage": "./images/Unity_4xajzJxaDR.jpg"
     },
     "Tags": "UnityFinished",
-    "LocalHref": "./towerdefense",
+    "LocalHref": "./project/towerdefense",
+    "InformalName": "towerdefense",
     "GitHub": "towerdefense",
     "CardInfo": {
       "SetHeight": "21rem"
@@ -28,7 +29,8 @@
       "HeaderImage": "./images/Unity_OfLfkoIeGj.png"
     },
     "Tags": "UnityPrototype, Finished",
-    "LocalHref": "./line-collisions",
+    "LocalHref": "./project/line-collisions",
+    "InformalName": "line-collisions",
     "GitHub": "Line-collision",
     "CardInfo": {
       "SetHeight": "21rem"
@@ -46,7 +48,8 @@
       "HeaderImage": "./images/Unity_KFo5HjMIzQ.png"
     },
     "Tags": "UnityFinished",
-    "LocalHref": "./vertical-slice",
+    "LocalHref": "./project/vertical-slice",
+    "InformalName": "vertical-slice",
     "GitHub": "Vertical-Slice-P2",
     "CardInfo": {
       "SetHeight": "21rem"
@@ -65,7 +68,8 @@
       "HeaderImage": "./images/CsvDelimited001.svg"
     },
     "Tags": "Finished, DotNet, CSharp, Lib",
-    "LocalHref": "./csv-lexer",
+    "LocalHref": "./project/csv-lexer",
+    "InformalName": "csv-lexer",
     "GitHub": "Csv-lexer",
     "CardInfo": {
       "SetHeight": "21rem"
@@ -82,7 +86,8 @@
       "HeaderImage": "./images/minesweeper/WindowsTerminal_Go2DqqA6XS.png"
     },
     "Tags": "CxxFinished",
-    "LocalHref": "./minesweeper",
+    "LocalHref": "./project/minesweeper",
+    "InformalName": "minesweeper",
     "GitHub": "Minesweeper-cpp",
     "CardInfo": {
       "SetHeight": "21rem"
@@ -99,7 +104,8 @@
       "HeaderImage": "./images/cvector/header.png"
     },
     "Tags": "CFinished, Lib",
-    "LocalHref": "./cvector",
+    "LocalHref": "./project/cvector",
+    "InformalName": "cvector",
     "GitHub": "CVector",
     "CardInfo": {
       "SetHeight": "21rem"

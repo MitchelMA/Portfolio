@@ -72,7 +72,7 @@ public partial class HeroPage : ComponentBase, IDisposable
         for (var i = 0; i < l; i++)
         {
             var model = _heroProjectsData[i];
-            _langHeaderData[i] = (await LangTable.LoadHeaderForPage(model.LocalHref, AppState.CurrentLanguage))!.Value;
+            _langHeaderData[i] = (await LangTable.LoadHeaderForPage(model.InformalName, AppState.CurrentLanguage))!.Value;
         }
         StateHasChanged();
     }

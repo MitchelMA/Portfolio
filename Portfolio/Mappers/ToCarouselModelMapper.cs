@@ -10,6 +10,7 @@ public class ToCarouselModelMapper : IMapper<ProjectDataModel, CarouselModel>, I
         return new CarouselModel
         {
             Href = obj.LocalHref,
+            InformalName = obj.InformalName,
             SetHeight = obj.CardInfo.SetHeight,
             Background = obj.Header.HeaderImage,
             Tags = obj.Tags,
