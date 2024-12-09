@@ -32,5 +32,6 @@ Het eerste plaatje is het csv-bestandje en het tweede plaatje een voorbeeld van 
 uitlezen in code.
 Dit wordt ook wel een model genoemd.  
   
-![Voorbeeld van een .csv bestand](./images/rider64_6CXTNg5dUr.png)
+![Voorbeeld van een .csv bestand](./images/rider64_6CXTNg5dUr.png)  
+  
 ![Voorbeeld van een model in code](./images/rider64_DgcDDkJOS9.png)
