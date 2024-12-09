@@ -50,7 +50,8 @@ target="_blank">
 ENABLE_VIRTUAL_TERMINAL_PROCESSING
 </a>  
   
-![Functie om ansi-escape characters te kunnen gebruiken voor output](./images/minesweeper/clion64_AldTn81zFX.png)
+![Functie om ansi-escape characters te kunnen gebruiken voor output](./images/minesweeper/clion64_AldTn81zFX.png)  
+  
 ![Functie om de console-modus te restoren](./images/minesweeper/clion64_BOeIkOFoon.png)
 
 ## Opslaan {#op}
