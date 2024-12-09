@@ -36,8 +36,13 @@
 }
 
 
-.page-island ~ .page-island.md > .page-island__inner > :not(h1, h2, h3, h4, h5, h6, .page-island__inner) {
+.page-island ~ .page-island.md > .page-island__inner > :not(h1, h2, h3, h4, h5, h6, .page-island__inner, ul, ol) {
     padding: 0 1.7rem;
+}
+
+.page-island__inner > ul,
+.page_island__inner > ol {
+    padding-left: 3rem;
 }
 
 .page-island ~ .page-island.md > .page-island__inner > hr {
