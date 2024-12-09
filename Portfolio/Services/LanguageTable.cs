@@ -275,7 +275,7 @@ public sealed class LanguageTable
 
     private bool CacheMarkdownForPage(string informalName, int langCode, string markdownText)
     {
-        if (PageMarkdownCacheExists(informalName, langCode) is null) return false;
+        if (PageMarkdownCacheExists(informalName, langCode) is not null) return false;
         var pageData = GetPageSpecificCache(informalName);
         if (pageData.TryGetValue(langCode, out var langData))
         {
