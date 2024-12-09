@@ -13,8 +13,22 @@ namespace Portfolio.Pages.Projects;
 
 public partial class ProjectPage : ComponentBase, IDisposable
 {
+    private static string _projectName = "";
+
     [Parameter]
-    public string ProjectName { get; init; } = null!;
+    public string ProjectName
+    {
+        get => _projectName;
+        init
+        {
+            if (value == _projectName)
+                return;
+            
+            _projectName = value;
+            Task.Run(async () => { await SetPageData(); });
+        }
+    }
+
 
     [CascadingParameter]
     private ProjectLayout ParentLayout { get; init; } = null!;
@@ -27,8 +41,6 @@ public partial class ProjectPage : ComponentBase, IDisposable
     private LanguageTable? LanguageTable { get; init; }
     [Inject]
     private LangTablePreCacher? LangTablePreCacher { get; init; }
-    [Inject]
-    private NavigationManager? NavigationManager { get; init; }
     
     [Inject]
     private IMapper<LangHeaderModel, HeaderData>? HeaderDataMapper { get; init; }
@@ -44,32 +56,26 @@ public partial class ProjectPage : ComponentBase, IDisposable
     protected override async Task OnInitializedAsync()
     {
         LangTablePreCacher!.Extra = new[] { "./index" };
-
-        _model = await ProjectInfoGetter!.GetCorrespondingToUri();
-        Console.WriteLine(_model.HasValue);
-        ParentLayout.Model = _model;
-
         AppState!.ShowFooter = true;
+        
+        _model = await ProjectInfoGetter!.GetCorrespondingToUri();
+        ParentLayout.Model = _model;
+        
         AppState.PageIcon = StaticData.DefaultPageIcon;
 
-        NavigationManager!.LocationChanged += OnLocationChanged;
         LanguageTable!.LanguageChangedAsync += OnLanguageChanged;
         await LanguageTable.AwaitLanguageContentAsync(SetLangData);
     }
 
-    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    private async Task SetPageData()
     {
-        // ignore non-project location changes
-        if (!e.Location.Contains("project"))
-            return;
-        
-        Task.Run(async () =>
-        {
-            _model = await ProjectInfoGetter!.GetCorrespondingToUri();
-            ParentLayout.Model = _model;
-        });
-        if (sender is not null)
-            _ = SetLangData(sender);
+        _model = await ProjectInfoGetter!.GetCorrespondingToUri();
+        ParentLayout.Model = _model;
+
+        if (AppState != null)
+            AppState.PageIcon = StaticData.DefaultPageIcon;
+
+        await SetLangData(this);
     }
 
     private Task OnLanguageChanged(object sender, int newCultureIdx) => SetLangData(sender);
@@ -126,7 +132,6 @@ public partial class ProjectPage : ComponentBase, IDisposable
 
     public void Dispose()
     {
-        NavigationManager!.LocationChanged -= OnLocationChanged;
         LanguageTable!.ManifestLoadedAsync -= SetLangData;
         LanguageTable.LanguageChangedAsync -= OnLanguageChanged;
         GC.SuppressFinalize(this);
