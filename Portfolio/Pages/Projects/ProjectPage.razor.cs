@@ -60,8 +60,8 @@ public partial class ProjectPage : ComponentBase, IDisposable
         
         _model = await ProjectInfoGetter!.GetCorrespondingToUri();
         ParentLayout.Model = _model;
+        AppState.PageIcon = _model!.Value.Header.PageIcon ?? StaticData.DefaultPageIcon;
         
-        AppState.PageIcon = StaticData.DefaultPageIcon;
 
         LanguageTable!.LanguageChangedAsync += OnLanguageChanged;
         await LanguageTable.AwaitLanguageContentAsync(SetLangData);
@@ -73,7 +73,7 @@ public partial class ProjectPage : ComponentBase, IDisposable
         ParentLayout.Model = _model;
 
         if (AppState != null)
-            AppState.PageIcon = StaticData.DefaultPageIcon;
+            AppState.PageIcon = _model!.Value.Header.PageIcon ?? StaticData.DefaultPageIcon;
 
         await SetLangData(this);
     }

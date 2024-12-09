@@ -26,7 +26,8 @@
       "Software": "C#, Unity"
     },
     "Header": {
-      "HeaderImage": "./images/Unity_OfLfkoIeGj.png"
+      "HeaderImage": "./images/Unity_OfLfkoIeGj.png",
+      "PageIcon": "image/png|./images/Unity_AmCJ2pY4oC.png"
     },
     "Tags": "UnityPrototype, Finished",
     "LocalHref": "./project/line-collisions",
@@ -83,7 +84,8 @@
       "Software": "C++, CMake"
     },
     "Header": {
-      "HeaderImage": "./images/minesweeper/WindowsTerminal_Go2DqqA6XS.png"
+      "HeaderImage": "./images/minesweeper/WindowsTerminal_Go2DqqA6XS.png",
+      "PageIcon": "image/png|./images/minesweeper/minesweepericon.png"
     },
     "Tags": "CxxFinished",
     "LocalHref": "./project/minesweeper",
