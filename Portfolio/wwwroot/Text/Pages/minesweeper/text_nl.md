@@ -45,14 +45,16 @@ Als je naar de background van de header van deze pagina kijkt, zie je dat
 er met kleuren naar de console/terminal wordt geprint. Voor zover ik ermee heb gewerkt,
 is het enabelen hiervan alleen nodig op een Windows-systeem. De flag die hiervoor aangezet moet worden
 heet
+<span style="word-wrap: anywhere">
 <a href="https://learn.microsoft.com/en-us/windows/console/setconsolemode#:~:text=any%20subsequent%20characters.-,ENABLE_VIRTUAL_TERMINAL_PROCESSING,-0x0004"
 target="_blank">
 ENABLE_VIRTUAL_TERMINAL_PROCESSING
 </a>  
+</span>
   
-![Functie om ansi-escape characters te kunnen gebruiken voor output](./images/minesweeper/clion64_AldTn81zFX.png)  
+![Functie om ansi-escape characters te kunnen gebruiken voor output](./images/minesweeper/clion64_AldTn81zFX.png "open")  
   
-![Functie om de console-modus te restoren](./images/minesweeper/clion64_BOeIkOFoon.png)
+![Functie om de console-modus te restoren](./images/minesweeper/clion64_BOeIkOFoon.png "open")
 
 ## Opslaan {#op}
 Ik heb het ook mogelijk gemaakt om je spel-voortgang op te kunnen slaan.
@@ -68,7 +70,7 @@ zijn opslag-bestanden niet groot. Dus al wil ik een speelveld van 50x50 opslaan.
 dan bedraagt dit minder drie kilobyte. Het uitlezen werkt op precies de omgekeerde manier.
 zo wordt 0x09 bijvoorbeeld uitgelezen als een geopend vakje welke aan één mijn grenst.  
   
-![Indeling van cell-gegevens](./images/minesweeper/clion64_v4vVOEyDjJ.png)
-![Explicit constructor om een Cell te creëren van een byte](./images/minesweeper/clion64_lb813o5JLQ.png)
-![Function om een Cell naar een byte te converten](./images/minesweeper/clion64_aR5W31UiOI.png)
+![Indeling van cell-gegevens](./images/minesweeper/clion64_v4vVOEyDjJ.png "open")
+![Explicit constructor om een Cell te creëren van een byte](./images/minesweeper/clion64_lb813o5JLQ.png "open")
+![Function om een Cell naar een byte te converten](./images/minesweeper/clion64_aR5W31UiOI.png "open")
  

@@ -75,7 +75,10 @@ public class EnlargeImageService : IDisposable, IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         if (_module != null)
+        {
             await _module.DisposeAsync();
+            _module = null;
+        }
 
         GC.SuppressFinalize(this);
     }

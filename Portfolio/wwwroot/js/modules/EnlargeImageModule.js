@@ -6,7 +6,8 @@ export function addImageHandlers(query) {
     const images = document.querySelectorAll(query);
     console.log(images);
     images.forEach(image => {
-        image.addEventListener("click", imageClickHandlerBuilder(image));
+        // image.addEventListener("click", imageClickHandlerBuilder(image));
+        image.onclick = imageClickHandlerBuilder(image);
     });
 }
 

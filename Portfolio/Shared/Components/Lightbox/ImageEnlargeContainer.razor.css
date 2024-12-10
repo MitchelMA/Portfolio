@@ -30,9 +30,9 @@
 
 .img-container__inner__image {
     position: relative;
-    max-width: 85%;
-    max-height: 85%;
-    border-radius: var(--border-radius-medium);
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: var(--border-radius-small);
 }
 
 .img-container__inner .img-container__inner__under-title {
@@ -45,6 +45,7 @@
     position: absolute;
     top: 2.5rem;
     right: 2.5rem;
+    z-index: 1;
 }
 
 .btn {

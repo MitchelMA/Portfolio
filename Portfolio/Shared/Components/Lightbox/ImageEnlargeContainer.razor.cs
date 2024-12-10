@@ -8,8 +8,9 @@ namespace Portfolio.Shared.Components.Lightbox;
 public partial class ImageEnlargeContainer : ComponentBase, IDisposable, IAsyncDisposable
 {
     [Inject] private EnlargeImageService EnlargeImageService { get; init; } = null!;
-
     [Inject] private AppState AppState { get; init; } = null!;
+
+    public bool IsModuleLoaded => EnlargeImageService.IsModuleLoaded;
 
     private Vector2 _currentPosition;
 
@@ -17,6 +18,8 @@ public partial class ImageEnlargeContainer : ComponentBase, IDisposable, IAsyncD
     private string? _clickedAlt;
     private bool _isTransitioning;
     private bool _isOpen = false;
+    private Mutex _loadMutex = new();
+    private bool _isBound = false;
 
     private string? TransitionStyle
     {
@@ -36,10 +39,13 @@ public partial class ImageEnlargeContainer : ComponentBase, IDisposable, IAsyncD
 
     public async ValueTask LoadModule()
     {
-        if (!EnlargeImageService.IsModuleLoaded)
-            await EnlargeImageService.ImportJsModule("./js/modules/EnlargeImageModule.js");
-
+        _loadMutex.WaitOne();
+        if (EnlargeImageService.IsModuleLoaded || _isBound) return;
+        _isBound = true;
+        
+        await EnlargeImageService.ImportJsModule("./js/modules/EnlargeImageModule.js");
         EnlargeImageService.OnImageClickedAsync += OnImageClickedAsync;
+        _loadMutex.ReleaseMutex();
     }
 
     public ValueTask OnPageContentSet(string query)
@@ -50,6 +56,9 @@ public partial class ImageEnlargeContainer : ComponentBase, IDisposable, IAsyncD
     private async Task<bool> OnImageClickedAsync(object? sender, string imageSrc, string imageAlt, Vector2 origin,
         Vector2 size)
     {
+        if (_isTransitioning || _isOpen)
+            return true;
+        
         _isOpen = true;
         _clickedSrc = imageSrc;
         _clickedAlt = imageAlt;
@@ -72,11 +81,14 @@ public partial class ImageEnlargeContainer : ComponentBase, IDisposable, IAsyncD
         await Task.Delay(500);
         _isTransitioning = false;
         StateHasChanged();
-        return false;
+        return true;
     }
     
     private void Close()
     {
+        if (_isTransitioning)
+            return;
+        
         _isOpen = false;
         AppState.RemoveFromScrollLock(this);
         StateHasChanged();
@@ -90,8 +102,8 @@ public partial class ImageEnlargeContainer : ComponentBase, IDisposable, IAsyncD
 
     public async ValueTask DisposeAsync()
     {
+        Close();
         EnlargeImageService.OnImageClickedAsync -= OnImageClickedAsync;
-        AppState.ForceScrollUnlock();
         
         await EnlargeImageService.DisposeAsync();
         GC.SuppressFinalize(this);

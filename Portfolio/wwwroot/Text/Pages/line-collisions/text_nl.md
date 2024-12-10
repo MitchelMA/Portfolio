@@ -20,8 +20,8 @@ en lijkt heel erg op het berekenen van de
 van een lineare formule.
 </p>
   
-![Hoek van inval is hoek van uitval](./images/circle-line-2.png)
-![Simpele uitwerking van Vector Resolution](./images/vector-resolution.png)
+![Hoek van inval is hoek van uitval](./images/circle-line-2.png "open")
+![Simpele uitwerking van Vector Resolution](./images/vector-resolution.png "open")
 
 ## Uitwerking {#uit}
 <p>
@@ -51,7 +51,7 @@ Nu hebben we een resolutie-vector van `v`, die rekening houdt met de normal van 
 De nieuwe velocity `v` na impact wordt als volgt berekent: <br/>
 ![Vector nv = [-0.44, 0.89]](./images/math/line-collisions/vector_nv_equation.svg)  
   
-![Resolution process](./images/resolution-process.png)
+![Resolution process](./images/resolution-process.png "open")
 
 ## Achterliggend {#systeem}
 Ik heb, als achterliggend systeem, een singleton gebouwd waar ik aan het begin van de scene
@@ -72,4 +72,4 @@ die ik gebruik om wiskundige berekeningen te maken met de componenten p, q en r 
 opbouw: `px + qy = r`.
 Ik kan met deze class de slope van een formule berekenen, de angle, ik kan de x ophalen met
 een gegeven y en andersom.. en nog veel meer.  
-![De add method in de singleton](./images/rider64_SUVtMKrW1o.png)
+![De add method in de singleton](./images/rider64_SUVtMKrW1o.png "open")
