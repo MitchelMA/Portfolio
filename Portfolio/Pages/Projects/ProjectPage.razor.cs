@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Routing;
 using Portfolio.Client;
 using Portfolio.Mappers;
 using Portfolio.Model;
@@ -7,6 +6,7 @@ using Portfolio.Model.Project;
 using Portfolio.Model.Text;
 using Portfolio.Services;
 using Portfolio.Services.Markdown;
+using Portfolio.Shared.Components.Lightbox;
 using Portfolio.Shared.Layouts;
 
 namespace Portfolio.Pages.Projects;
@@ -46,6 +46,8 @@ public partial class ProjectPage : ComponentBase, IDisposable
     private IMapper<LangHeaderModel, HeaderData>? HeaderDataMapper { get; init; }
     [Inject]
     private IMapper<LangLinkModel, NavLinkData>? NavLinkDataMapper { get; init; }
+
+    private ImageEnlargeContainer? EnlargeContainer { get; set; }
     
     private NavLinkData[]? _links;
     private ProjectDataModel? _model;
@@ -61,10 +63,22 @@ public partial class ProjectPage : ComponentBase, IDisposable
         _model = await ProjectInfoGetter!.GetCorrespondingToUri();
         ParentLayout.Model = _model;
         AppState.PageIcon = _model!.Value.Header.PageIcon ?? StaticData.DefaultPageIcon;
-        
 
         LanguageTable!.LanguageChangedAsync += OnLanguageChanged;
         await LanguageTable.AwaitLanguageContentAsync(SetLangData);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (EnlargeContainer is null)
+            await Console.Error.WriteLineAsync("EnlargeContainer is null");
+        if (EnlargeContainer is not null)
+        {
+            await EnlargeContainer.LoadModule();
+            if (firstRender)
+                await SetEnlargerPageContent();
+        }
+        
     }
 
     private async Task SetPageData()
@@ -76,6 +90,8 @@ public partial class ProjectPage : ComponentBase, IDisposable
             AppState.PageIcon = _model!.Value.Header.PageIcon ?? StaticData.DefaultPageIcon;
 
         await SetLangData(this);
+        await EnlargeContainer!.LoadModule();
+        await SetEnlargerPageContent();
     }
 
     private Task OnLanguageChanged(object sender, int newCultureIdx) => SetLangData(sender);
@@ -128,6 +144,11 @@ public partial class ProjectPage : ComponentBase, IDisposable
     private void SetMarkdownData(string? markdownText)
     {
         _markdownText = markdownText;
+    }
+
+    private ValueTask SetEnlargerPageContent()
+    {
+        return EnlargeContainer!.OnPageContentSet(".page-island.md img[title=open");
     }
 
     public void Dispose()

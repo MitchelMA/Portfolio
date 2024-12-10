@@ -37,8 +37,8 @@ naar de terminal uit staan. En om de input uit te lezen, lees
 ik 8 bytes uit de file-descriptor van stdin (dit is zodat ik non-blocking kan uitlezen). Ook return ik hoe hoog de
 "degree" is die ik heb uitgelezen, welke de hoeveelheid aan uitgelezen bytes aangeeft.  
   
-![Voorbeeld van struct voor input-gegevens](./images/minesweeper/clion64_ubcBv7IdSa.png)
-![Function voor multi-platform input](./images/minesweeper/clion64_7Q11kdq78G.png)
+![Voorbeeld van struct voor input-gegevens](./images/minesweeper/clion64_ubcBv7IdSa.png "open")
+![Function voor multi-platform input](./images/minesweeper/clion64_7Q11kdq78G.png "open")
 
 ## Output {#o}
 Als je naar de background van de header van deze pagina kijkt, zie je dat
