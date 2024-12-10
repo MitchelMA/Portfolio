@@ -31,6 +31,7 @@ public static class Program
         builder.Services.AddSingleton<LanguageTable>();
 
         builder.Services.AddTransient<LightboxRegistry>();
+        builder.Services.AddTransient<EnlargeImageService>();
 
         await builder.Build().RunAsync();
     }

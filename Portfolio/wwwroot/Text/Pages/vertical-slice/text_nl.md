@@ -26,7 +26,7 @@ Daarom is het ook makkelijk als de sprites ook gedraaid zijn naar de camera.
 Omdat ik hiermee de hoek bereken tussen sprite en camera, kan ik ook tegelijkertijd corrigeren
 voor de hoogte, waardoor de sprite nogsteeds op de grond staat.  
   
-![Visual sheet van het naar de camera toe draaien](./images/FaceCam.png)
+![Visual sheet van het naar de camera toe draaien](./images/FaceCam.png "open")
 
 ## Boundaries {#bounds}
 Dit spel maakt ook gebruik van "bounds".  
@@ -42,4 +42,4 @@ houden met deze ingestelde bounds.
 En ook kan je de bounds ophalen van aan welke kant je staat (rechts of links).
 Dit omdat de middelijn ook ingesteld kan worden.  
   
-![Visual sheet van het instellen van de boundaries](./images/Bounds.png)
+![Visual sheet van het instellen van de boundaries](./images/Bounds.png "open")

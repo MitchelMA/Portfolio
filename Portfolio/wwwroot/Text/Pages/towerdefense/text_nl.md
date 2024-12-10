@@ -9,7 +9,7 @@ maar eerder het leren van implementeren van
 <a href="https://en.wikipedia.org/wiki/Game_mechanics" target="_blank">game mechanics</a>
 (i.e. enemy-wave systeem; schieten van projectielen; etc..)  
 </span>
-![De map van het spel](./images/Unity_4xajzJxaDR.jpg)
+![De map van het spel](./images/Unity_4xajzJxaDR.jpg "open")
 
 ## Path Finding {#path}
 <p>
@@ -28,4 +28,4 @@ het hele level wordt laten zien.
 Het pad van de cutscene kan ik maken middels het zelfde systeem wat ik gebruik voor
 de enemies.
 </p>
-![Visual sheet van path finding mechanic](./images/PathFinding.png)
+![Visual sheet van path finding mechanic](./images/PathFinding.png "open")
