@@ -62,9 +62,9 @@ public partial class ImageEnlargeContainer : ComponentBase, IDisposable, IAsyncD
         _loadMutex.ReleaseMutex();
     }
 
-    public ValueTask OnPageContentSet(string query)
+    public async ValueTask OnPageContentSet(string query)
     {
-        return EnlargeImageService.AddImageHandlers(query);
+        await EnlargeImageService.AddImageHandlers(query);
     }
 
     private async Task<bool> OnImageClickedAsync(object? sender, string imageSrc, string imageAlt, Vector2 origin,

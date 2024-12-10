@@ -77,10 +77,10 @@ public partial class ProjectPage : ComponentBase, IDisposable
             await Console.Error.WriteLineAsync("EnlargeContainer is null");
             return;
         }
-
+        
         if (!firstRender)
             return;
-
+        
         if (EnlargeContainer.IsModuleLoaded)
             await SetEnlargerPageContent();
         else
@@ -112,7 +112,7 @@ public partial class ProjectPage : ComponentBase, IDisposable
         var currentData = await LanguageTable!.LoadAllCurrentPageData();
         if (currentData == null)
         {
-            await Console.Error.WriteLineAsync("Couldn't get Page Data in specified language!");
+            // await Console.Error.WriteLineAsync("Couldn't get Page Data in specified language!");
             return;
         }
 
@@ -157,9 +157,12 @@ public partial class ProjectPage : ComponentBase, IDisposable
         _markdownText = markdownText;
     }
 
-    private ValueTask SetEnlargerPageContent()
+    private async ValueTask SetEnlargerPageContent()
     {
-        return EnlargeContainer!.OnPageContentSet(".page-island.md img[title=open");
+        if (EnlargeContainer is null)
+            return;
+        
+        await EnlargeContainer.OnPageContentSet(".page-island.md img[title=open");
     }
 
     public void Dispose()
