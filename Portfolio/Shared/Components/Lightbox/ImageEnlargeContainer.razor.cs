@@ -21,6 +21,13 @@ public partial class ImageEnlargeContainer : ComponentBase, IDisposable, IAsyncD
     private Mutex _loadMutex = new();
     private bool _isBound = false;
 
+    public delegate void OnModuleLoadedDelegate(object? sender);
+
+    public delegate ValueTask OnModuleLoadedAsyncDelegate(object? sender);
+
+    public event OnModuleLoadedDelegate? OnModuleLoaded;
+    public event OnModuleLoadedAsyncDelegate? OnModuleLoadedAsync;
+
     private string? TransitionStyle
     {
         get
@@ -36,6 +43,10 @@ public partial class ImageEnlargeContainer : ComponentBase, IDisposable, IAsyncD
 
     private string? OpenClass => _isOpen ? "open" : null;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadModule();
+    }
 
     public async ValueTask LoadModule()
     {
@@ -45,6 +56,9 @@ public partial class ImageEnlargeContainer : ComponentBase, IDisposable, IAsyncD
         
         await EnlargeImageService.ImportJsModule("./js/modules/EnlargeImageModule.js");
         EnlargeImageService.OnImageClickedAsync += OnImageClickedAsync;
+        OnModuleLoaded?.Invoke(this);
+        if (OnModuleLoadedAsync is not null)
+            await OnModuleLoadedAsync.Invoke(this);
         _loadMutex.ReleaseMutex();
     }
 

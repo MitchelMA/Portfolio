@@ -65,6 +65,7 @@ public partial class ProjectPage : ComponentBase, IDisposable
         AppState.PageIcon = _model!.Value.Header.PageIcon ?? StaticData.DefaultPageIcon;
 
         LanguageTable!.LanguageChangedAsync += OnLanguageChanged;
+
         await LanguageTable.AwaitLanguageContentAsync(SetLangData);
 
     }
@@ -72,16 +73,20 @@ public partial class ProjectPage : ComponentBase, IDisposable
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (EnlargeContainer is null)
-            await Console.Error.WriteLineAsync("EnlargeContainer is null");
-
-        if (firstRender && EnlargeContainer is not null)
         {
-            await EnlargeContainer.LoadModule();
-            await SetEnlargerPageContent();
+            await Console.Error.WriteLineAsync("EnlargeContainer is null");
+            return;
         }
-        
-    }
 
+        if (!firstRender)
+            return;
+
+        if (EnlargeContainer.IsModuleLoaded)
+            await SetEnlargerPageContent();
+        else
+            EnlargeContainer!.OnModuleLoadedAsync += OnJsModuleLoaded;
+    }
+    
     private async Task SetPageData()
     {
         _model = await ProjectInfoGetter!.GetCorrespondingToUri();
@@ -97,6 +102,11 @@ public partial class ProjectPage : ComponentBase, IDisposable
 
     private Task OnLanguageChanged(object sender, int newCultureIdx) => SetLangData(sender);
 
+    private async ValueTask OnJsModuleLoaded(object? sender)
+    {
+        await SetEnlargerPageContent();
+    }
+    
     private async Task SetLangData(object sender)
     {
         var currentData = await LanguageTable!.LoadAllCurrentPageData();
@@ -156,6 +166,7 @@ public partial class ProjectPage : ComponentBase, IDisposable
     {
         LanguageTable!.ManifestLoadedAsync -= SetLangData;
         LanguageTable.LanguageChangedAsync -= OnLanguageChanged;
+        EnlargeContainer!.OnModuleLoadedAsync -= OnJsModuleLoaded;
         GC.SuppressFinalize(this);
     }
 }
