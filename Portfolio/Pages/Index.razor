@@ -4,6 +4,7 @@
 @using Portfolio.Mappers
 @using Portfolio.Model.Project
 @using Portfolio.Model.Text
+@using Portfolio.Services.Markdown
 
 @inject AppState AppState
 @inject LightboxRegistry LightboxRegistry
@@ -23,7 +24,7 @@
     </ChildContent>
 </PageIsland>
 
-@if (_islandsData is not null)
+@if (_islandsData is not null && _markdownText is null)
 {
     foreach (var island in _islandsData)
     {
@@ -63,6 +64,19 @@
         </PageIsland>
     }
 }
+else if (_markdownText is not null)
+{
+    var markdownSections = MarkdownDeep.Markdown.SplitSections(_markdownText).Where(x => x.Length > 0);
+    @foreach (var section in markdownSections)
+    {
+        <section class="page-island md">
+            <div class="page-island__inner">
+                @((MarkupString)_projectMarkdown.Transform(section))
+            </div>
+        </section>
+    }   
+}
+
 
 <PageIsland IslandTitle="Contact Me" id="contact">
     <ChildContent>
@@ -126,6 +140,10 @@
 
     private PageIslandModel[]? _islandsData;
 
+    private string? _markdownText;
+
+    private readonly ProjectMarkdown _projectMarkdown = new() {ExtraMode = true};
+
     protected override async Task OnInitializedAsync()
     {
         AppState.PageIcon = PageIcon;
@@ -155,6 +173,7 @@
         SetHeaderData(langPageData.HeaderData!.Value);
         SetLinksData(langPageData.LinksData!.Value); 
         SetIslandsData(langPageData.PageIslandsData!);
+        SetMarkdownData(langPageData.PageMarkdownText!);
     }
 
     private void SetHeaderData(LangHeaderModel headerData)
@@ -179,6 +198,12 @@
     private void SetIslandsData(PageIslandModel[] islands)
     {
         _islandsData = islands;
+        StateHasChanged();
+    }
+
+    private void SetMarkdownData(string markdownText)
+    {
+        // _markdownText = markdownText;
         StateHasChanged();
     }
 

@@ -28,6 +28,10 @@ public sealed class LanguageTable
     // _cachedData[RelativeUriString][LanguageCode]
     private readonly Dictionary<string, Dictionary<int, LangPageData>> _pageContentCachedData = new();
 
+    // A nested Dictionary where the outer is for the page uri and the inner for the specified language:
+    // _cachedData[RelativeUriString][LanguageCode]
+    // private readonly Dictionary<string, Dictionary<int, string>> _pageContentCachedMdData = new();
+
     // Cached text-contents for the page-info-table headers 
     private readonly Dictionary<int, InfoTableHeaderModel> _pageInfoTableCachedData = new();
 
@@ -135,28 +139,32 @@ public sealed class LanguageTable
 
     #region Cache Exist Checkers
 
-    private (bool exists, LangHeaderModel? langData) HeaderCacheExists(string relativeUri, int langCode)
+    private (bool exists, LangHeaderModel? langData) HeaderCacheExists(string informalName, int langCode)
     {
-        relativeUri = UriEscaper(relativeUri);
-        if (!_pageContentCachedData.TryGetValue(relativeUri, out var pageCache)) return (false, default);
+        if (!_pageContentCachedData.TryGetValue(informalName, out var pageCache)) return (false, default);
         if (!pageCache.TryGetValue(langCode, out var langData)) return (false, default);
         return (langData.HeaderData is not null, langData.HeaderData);
     }
 
-    private (bool exists, LangLinksModel? langData) LinksCacheExists(string relativeUri, int langCode)
+    private (bool exists, LangLinksModel? langData) LinksCacheExists(string informalName, int langCode)
     {
-        relativeUri = UriEscaper(relativeUri);
-        if (!_pageContentCachedData.TryGetValue(relativeUri, out var pageCache)) return (false, default);
+        if (!_pageContentCachedData.TryGetValue(informalName, out var pageCache)) return (false, default);
         if (!pageCache.TryGetValue(langCode, out var langData)) return (false, default);
         return (langData.LinksData is not null, langData.LinksData);
     }
 
-    private (bool exists, PageIslandModel[]? langData) PageIslandsCacheExists(string relativeUri, int langCode)
+    private (bool exists, PageIslandModel[]? langData) PageIslandsCacheExists(string informalName, int langCode)
     {
-        relativeUri = UriEscaper(relativeUri);
-        if (!_pageContentCachedData.TryGetValue(relativeUri, out var pageCache)) return (false, default);
+        if (!_pageContentCachedData.TryGetValue(informalName, out var pageCache)) return (false, default);
         if (!pageCache.TryGetValue(langCode, out var langData)) return (false, default);
         return (langData.PageIslandsData is not null, langData.PageIslandsData);
+    }
+
+    private string? PageMarkdownCacheExists(string informalName, int langCode)
+    {
+        if (!_pageContentCachedData.TryGetValue(informalName, out var pageCache)) return null;
+        if (!pageCache.TryGetValue(langCode, out var langPageData)) return null;
+        return langPageData.PageMarkdownText;
     }
 
     private (bool exits, InfoTableHeaderModel? langData) InfoTableCacheExists(int langCode)
@@ -182,13 +190,12 @@ public sealed class LanguageTable
 
     #region Cache Getters
 
-    private Dictionary<int, LangPageData> GetPageSpecificCache(string relativeUri)
+    private Dictionary<int, LangPageData> GetPageSpecificCache(string informalName)
     {
-        relativeUri = UriEscaper(relativeUri);
-        if (_pageContentCachedData.TryGetValue(relativeUri, out var pageCache)) return pageCache;
+        if (_pageContentCachedData.TryGetValue(informalName, out var pageCache)) return pageCache;
 
         pageCache = new Dictionary<int, LangPageData>();
-        _pageContentCachedData[relativeUri] = pageCache;
+        _pageContentCachedData[informalName] = pageCache;
 
         return pageCache;
     }
@@ -207,15 +214,14 @@ public sealed class LanguageTable
 
     #region Cache Setters
 
-    private bool CacheHeaderDataForPage(string relativeUri, IReadOnlyList<LangHeaderModel> headerContent)
+    private bool CacheHeaderDataForPage(string informalName, IReadOnlyList<LangHeaderModel> headerContent)
     {
-        relativeUri = UriEscaper(relativeUri);
         // All header-content is saved in one file. If lang-code 0 exists, all the other should as well.
-        if (HeaderCacheExists(relativeUri, 0).exists) return false;
+        if (HeaderCacheExists(informalName, 0).exists) return false;
 
         for (var langCode = 0; langCode < headerContent.Count; langCode++)
         {
-            var pageData = GetPageSpecificCache(relativeUri);
+            var pageData = GetPageSpecificCache(informalName);
             if (pageData.TryGetValue(langCode, out var langData))
             {
                 langData.HeaderData = headerContent[langCode];
@@ -229,15 +235,14 @@ public sealed class LanguageTable
         return true;
     }
 
-    private bool CacheLinksDataForPage(string relativeUri, IReadOnlyList<LangLinksModel> linksContent)
+    private bool CacheLinksDataForPage(string informalName, IReadOnlyList<LangLinksModel> linksContent)
     {
-        relativeUri = UriEscaper(relativeUri);
         // all links-content is saved in one file. If lang-code 0 exists, all the other should as well.
-        if (LinksCacheExists(relativeUri, 0).exists) return false;
+        if (LinksCacheExists(informalName, 0).exists) return false;
 
         for (var langcode = 0; langcode < linksContent.Count; langcode++)
         {
-            var pageData = GetPageSpecificCache(relativeUri);
+            var pageData = GetPageSpecificCache(informalName);
             if (pageData.TryGetValue(langcode, out var langData))
             {
                 langData.LinksData = linksContent[langcode];
@@ -251,12 +256,11 @@ public sealed class LanguageTable
         return true;
     }
 
-    private bool CachePageIslandsDataForPage(string relativeUri, int langCode, PageIslandModel[] islandsContent)
+    private bool CachePageIslandsDataForPage(string informalName, int langCode, PageIslandModel[] islandsContent)
     {
-        relativeUri = UriEscaper(relativeUri);
-        if (PageIslandsCacheExists(relativeUri, langCode).exists) return false;
+        if (PageIslandsCacheExists(informalName, langCode).exists) return false;
 
-        var pageData = GetPageSpecificCache(relativeUri);
+        var pageData = GetPageSpecificCache(informalName);
         if (pageData.TryGetValue(langCode, out var langData))
         {
             langData.PageIslandsData = islandsContent;
@@ -264,6 +268,22 @@ public sealed class LanguageTable
         else
         {
             pageData.TryAdd(langCode, new LangPageData { PageIslandsData = islandsContent });
+        }
+
+        return true;
+    }
+
+    private bool CacheMarkdownForPage(string informalName, int langCode, string markdownText)
+    {
+        if (PageMarkdownCacheExists(informalName, langCode) is not null) return false;
+        var pageData = GetPageSpecificCache(informalName);
+        if (pageData.TryGetValue(langCode, out var langData))
+        {
+            langData.PageMarkdownText = markdownText;
+        }
+        else
+        {
+            pageData.TryAdd(langCode, new LangPageData {PageMarkdownText = markdownText});
         }
 
         return true;
@@ -315,25 +335,23 @@ public sealed class LanguageTable
 
     #region Language Content Getters
 
-    public async Task<LangHeaderModel?> LoadHeaderForPage(string relativeUri, int langCode)
+    public async Task<LangHeaderModel?> LoadHeaderForPage(string informalName, int langCode)
     {
         if (!_isLoaded)
             return default;
 
-        relativeUri = UriEscaper(relativeUri);
-
-        var (exists, langHeaderData) = HeaderCacheExists(relativeUri, langCode);
+        var (exists, langHeaderData) = HeaderCacheExists(informalName, langCode);
         if (exists)
             return langHeaderData;
 
-        var headerFilePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName, relativeUri,
+        var headerFilePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName, informalName,
             _manifestContent.HeaderFileName);
         var headerFileContent = await _httpClient.GetStringAsync(headerFilePath);
 
         using var headerFileLexer = new CsvLexer(headerFileContent, CsvSettings);
         var headerContentDeserialized = await headerFileLexer.DeserializeAsync<LangHeaderModel>();
 
-        CacheHeaderDataForPage(relativeUri, headerContentDeserialized);
+        CacheHeaderDataForPage(informalName, headerContentDeserialized);
 
         if (langCode >= headerContentDeserialized.Length)
             return default;
@@ -341,22 +359,20 @@ public sealed class LanguageTable
         return headerContentDeserialized[langCode];
     }
 
-    public async Task<LangLinksModel?> LoadLinksForPage(string relativeUri, int langCode)
+    public async Task<LangLinksModel?> LoadLinksForPage(string informalName, int langCode)
     {
         if (!_isLoaded)
             return default;
 
-        relativeUri = UriEscaper(relativeUri);
-
-        var (exists, langLinksData) = LinksCacheExists(relativeUri, langCode);
+        var (exists, langLinksData) = LinksCacheExists(informalName, langCode);
         if (exists)
             return langLinksData;
 
-        var linksFilePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName, relativeUri,
+        var linksFilePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName, informalName,
             _manifestContent.LinkDataFileName);
         var linksContentDeserialized = await _httpClient.GetFromJsonAsync<LangLinksModel[]>(linksFilePath);
 
-        CacheLinksDataForPage(relativeUri, linksContentDeserialized!);
+        CacheLinksDataForPage(informalName, linksContentDeserialized!);
 
         if (langCode >= linksContentDeserialized!.Length)
             return default;
@@ -364,19 +380,17 @@ public sealed class LanguageTable
         return linksContentDeserialized[langCode];
     }
 
-    public async Task<PageIslandModel[]?> LoadIslandsForPage(string relativeUri, int langCode)
+    public async Task<PageIslandModel[]?> LoadIslandsForPage(string informalName, int langCode)
     {
         if (!_isLoaded)
             return default;
 
-        relativeUri = UriEscaper(relativeUri);
-
-        var (exists, langIslandData) = PageIslandsCacheExists(relativeUri, langCode);
+        var (exists, langIslandData) = PageIslandsCacheExists(informalName, langCode);
         if (exists)
             return langIslandData;
 
         var filePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName,
-            relativeUri, _manifestContent.PageContentsPrefix + SupportedCultures[langCode] + ".json");
+            informalName, _manifestContent.PageContentsPrefix + SupportedCultures[langCode] + ".json");
 
         PageIslandModel[]? contentDeserialized;
         try
@@ -396,15 +410,41 @@ public sealed class LanguageTable
         for (var i = 0; i < modelCount; i++)
         {
             var itemPath = Path.Combine(LocationBase, _manifestContent.PageContentDirName,
-                relativeUri, _manifestContent.PageIslandsTextLocation, SupportedCultures[langCode], $"_{i}.html");
+                informalName, _manifestContent.PageIslandsTextLocation, SupportedCultures[langCode], $"_{i}.html");
             contentDeserialized[i].HtmlContentString = await _httpClient.GetStringAsync(itemPath);
         }
 
-        CachePageIslandsDataForPage(relativeUri, langCode, contentDeserialized);
+        CachePageIslandsDataForPage(informalName, langCode, contentDeserialized);
 
         return contentDeserialized;
     }
 
+    public async Task<string?> LoadMarkdownForPage(string informalName, int langCode)
+    {
+        if (!_isLoaded)
+            return default;
+
+        var markdownCache = PageMarkdownCacheExists(informalName, langCode);
+        if (markdownCache is not null)
+            return markdownCache;
+
+        var filePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName, informalName,
+            $"text_{SupportedCultures[langCode]}.md");
+
+        try
+        {
+            var markdownText = await _httpClient.GetStringAsync(filePath);
+            CacheMarkdownForPage(informalName, langCode, markdownText);
+            return markdownText;
+        }
+        catch
+        {
+            // await Console.Error.WriteLineAsync($"Failed to retrieve page-content from file ${filePath}");
+        }
+
+        return null;
+    }
+    
     public async Task<InfoTableHeaderModel?> LoadInfoTableHeaderData(int langCode)
     {
         if (!_isLoaded)
@@ -485,25 +525,33 @@ public sealed class LanguageTable
     private Task<LangHeaderModel?> LoadCurrentHeaderData()
     {
         var langCode = _appState.CurrentLanguage;
-        var curUri = CurrentRelUri;
+        var informalName = CurrentRelUri.Split('/').Last();
 
-        return LoadHeaderForPage(curUri, langCode);
+        return LoadHeaderForPage(informalName, langCode);
     }
 
     private Task<LangLinksModel?> LoadCurrentLinksData()
     {
         var langCode = _appState.CurrentLanguage;
-        var curUri = CurrentRelUri;
+        var informalName = CurrentRelUri.Split('/').Last();
 
-        return LoadLinksForPage(curUri, langCode);
+        return LoadLinksForPage(informalName, langCode);
     }
 
     private Task<PageIslandModel[]?> LoadCurrentIslandsData()
     {
         var langCode = _appState.CurrentLanguage;
-        var curUri = CurrentRelUri;
+        var informalName = CurrentRelUri.Split('/').Last();
 
-        return LoadIslandsForPage(curUri, langCode);
+        return LoadIslandsForPage(informalName, langCode);
+    }
+
+    private Task<string?> LoadCurrentMarkdownData()
+    {
+        var langCode = _appState.CurrentLanguage;
+        var informalName = CurrentRelUri.Split('/').Last();
+
+        return LoadMarkdownForPage(informalName, langCode);
     }
 
     public Task<InfoTableHeaderModel?> LoadCurrentInfoTableData()
@@ -528,38 +576,38 @@ public sealed class LanguageTable
     {
         if (!_isLoaded)
             return default;
-
-        var headerData = await LoadCurrentHeaderData();
-        var linksData = await LoadCurrentLinksData();
-        var islandsData = await LoadCurrentIslandsData();
-        if (headerData is null || linksData is null || islandsData is null)
-             return default;
+        
+        var headerData = LoadCurrentHeaderData();
+        var linksData = LoadCurrentLinksData();
+        var islandsData = LoadCurrentIslandsData();
+        var markdownData = LoadCurrentMarkdownData();
 
         LangPageData data = new()
         {
-            HeaderData = headerData.Value,
-            LinksData = linksData.Value,
-            PageIslandsData = islandsData,
+            HeaderData = await headerData,
+            LinksData = await linksData,
+            PageIslandsData = await islandsData,
+            PageMarkdownText = await markdownData
         };
 
         return data;
     }
 
-    public bool PreCacheAll(IEnumerable<string> uris, int langCode)
+    public bool PreCacheAll(IEnumerable<string> informalNames, int langCode)
     {
         if (!_isLoaded)
             return false;
 
-        var enumerated = uris as string[] ?? uris.ToArray();
-        var escaped = enumerated.Select(UriEscaper).ToArray();
+        var enumerated = informalNames as string[] ?? informalNames.ToArray();
 
-        var uriCount = escaped.Length;
+        var uriCount = enumerated.Length;
         for (var i = 0; i < uriCount; i++)
         {
-            var currentUri = escaped[i];
-            _ = LoadHeaderForPage(currentUri, langCode);
-            _ = LoadLinksForPage(currentUri, langCode);
-            _ = LoadIslandsForPage(currentUri, langCode);
+            var currentInformalName = enumerated[i];
+            _ = LoadHeaderForPage(currentInformalName, langCode);
+            _ = LoadLinksForPage(currentInformalName, langCode);
+            _ = LoadIslandsForPage(currentInformalName, langCode);
+            _ = LoadMarkdownForPage(currentInformalName, langCode);
         }
 
         return true;

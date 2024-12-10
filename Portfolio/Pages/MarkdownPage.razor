@@ -1,0 +1,33 @@
+@page "/markdown"
+@using Portfolio.Services.Markdown
+@layout ProjectLayout
+
+<h3>Markdown</h3>
+@{
+    if (_sections is not null)
+    {
+        foreach (var section in _sections)
+        {
+            <section class="page-island">
+                <div class="page-island__inner">
+                    @((MarkupString)_myMarkdown.Transform(section))
+                </div>
+            </section>
+        }
+    }
+}
+
+@code {
+
+    private string _markdownText = "## Hallo {#my-cool-id}\nHoe is Het?  \nMet mij gaat het goed\n## hey\n## Makker\ncoole text ![](./images/Bounds.png \"cool\")";
+    private List<string>? _sections;
+    private ProjectMarkdown _myMarkdown = new();
+
+    protected override void OnInitialized()
+    {
+        _myMarkdown.ExtraMode = true;
+        _sections = MarkdownDeep.Markdown.SplitSections(_markdownText).Where(x => x.Length > 0).ToList();
+        StateHasChanged();
+    }
+
+}

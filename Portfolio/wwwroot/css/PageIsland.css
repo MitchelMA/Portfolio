@@ -1,4 +1,4 @@
-﻿.page-island {
+.page-island {
     position: relative;
     width: 100%;
     background-color: var(--page-island-background);
@@ -7,6 +7,21 @@
     flex-flow: column;
     padding: 0.8rem;
     padding-top: 1.8rem;
+
+    &.md img {
+        max-width: 85%;
+        border-radius: var(--border-radius-small);
+        max-height: 350px;
+        position: relative;
+        transition: scale 150ms ease 0s;
+        
+        &:hover {
+            scale: 1.075;
+        }
+    }
+    /*&.md p ~ p > img {*/
+    /*    margin-top: 1rem;*/
+    /*}*/
 }
 
 .page-island:nth-child(even) {
@@ -20,9 +35,18 @@
     margin: 0 auto;
 }
 
-.page-island__inner img {
-    max-width: 100%;
-    border-radius: var(--border-radius-medium);
+
+.page-island ~ .page-island.md > .page-island__inner > :not(h1, h2, h3, h4, h5, h6, .page-island__inner, ul, ol) {
+    padding: 0 1.7rem;
+}
+
+.page-island__inner > ul,
+.page_island__inner > ol {
+    padding-left: 3rem;
+}
+
+.page-island ~ .page-island.md > .page-island__inner > hr {
+    margin: 1rem 1.7rem;
 }
 
 .page-island:not(:nth-child(1))

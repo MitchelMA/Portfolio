@@ -46,7 +46,7 @@ public class ProjectInfoGetter
     public async Task<ProjectDataModel?> GetCorrespondingToUri()
     {
         await RetrieveData();
-        string path = "./" + _navigationManager.ToBaseRelativePath(_navigationManager.Uri).Split('#')[0].Split('?')[0];
+        var path = _navigationManager.ToBaseRelativePath(_navigationManager.Uri).Split('#')[0].Split('/').Last().Split('?')[0];
         if (_data.TryGetValue(path, out var value))
             return value;
 
@@ -64,7 +64,7 @@ public class ProjectInfoGetter
 
     private bool AddOrReplace(ProjectDataModel model)
     {
-        var added = _data.TryAdd(model.LocalHref, model);
+        var added = _data.TryAdd(model.InformalName, model);
         if (!added)
             _data[model.LocalHref] = model;
 

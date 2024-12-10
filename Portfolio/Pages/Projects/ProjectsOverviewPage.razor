@@ -168,7 +168,7 @@
         {
             var cur = _allModels[i];
             var model = Mapper.MapFrom(cur);
-            model.HeaderData = (await LangTable.LoadHeaderForPage(model.Href!, langCode))!.Value;
+            model.HeaderData = (await LangTable.LoadHeaderForPage(model.InformalName!, langCode))!.Value;
             data.Add(model);
         }
 

@@ -1,0 +1,17 @@
+@page "/project/{ProjectName}"
+@layout ProjectLayout
+
+@if (_markdownText is not null)
+{
+    var markdownSections = MarkdownDeep.Markdown.SplitSections(_markdownText).Where(x => x.Length > 0);
+    @foreach (var section in markdownSections)
+    {
+    <section class="page-island md">
+        <div class="page-island__inner">
+            @((MarkupString)_projectMarkdown.Transform(section))
+        </div>
+    </section>
+    }
+}
+
+@* <Lightbox LightboxName="@nameof(ProjectLayout)"/> *@
