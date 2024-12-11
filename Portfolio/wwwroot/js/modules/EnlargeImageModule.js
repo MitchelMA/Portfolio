@@ -9,6 +9,7 @@ export function addImageHandlers(query) {
         // image.addEventListener("click", imageClickHandlerBuilder(image));
         image.onclick = imageClickHandlerBuilder(image);
     });
+    return images.length;
 }
 
 export function getScreenSize() {

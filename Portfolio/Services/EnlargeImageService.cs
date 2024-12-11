@@ -37,16 +37,16 @@ public class EnlargeImageService : IDisposable, IAsyncDisposable
             moduleName);
     }
 
-    public async ValueTask AddImageHandlers(string javaScriptQuery)
+    public async ValueTask<int> AddImageHandlers(string javaScriptQuery)
     {
         if (_module is null)
         {
             await Console.Error.WriteLineAsync("Module was null!");
-            return;
+            return 0;
         }
 
         _lastUsedQuery = javaScriptQuery;
-        await _module.InvokeVoidAsync("addImageHandlers", javaScriptQuery);
+        return await _module.InvokeAsync<int>("addImageHandlers", javaScriptQuery);
     }
 
     public ValueTask<float[]> GetScreenSize()
