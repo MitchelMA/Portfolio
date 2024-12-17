@@ -25,8 +25,8 @@ voor de pointer-arithmetic om offsets te bepalen. Verder houdt de vector een cap
 De capacity maakt optimization mogelijk. Ik hoef hierdoor niet elke keer wanneer een element wordt toegevoegd, meer geheugen te allocaten.
 Pas wanneer hij in de buurt van de capacity komt, verdubbeld hij de capacity. Hetzelfde gaat op voor krimpen.  
   
-![Huidig structuur van de vector in de .c file](./images/cvector/header.png)
-![De public definition van vector_t om te gebruiken](./images/cvector/public-typedef.png)
+![Huidig structuur van de vector in de .c file](./images/cvector/header.png "open")
+![De public definition van vector_t om te gebruiken](./images/cvector/public-typedef.png "open")
 
 ## Performance {#perf}
  Door de opzet van de structuur, is de performance van het toevoegen van een element aan het einde van de vector
@@ -42,6 +42,6 @@ In C is het in deze situatie misschien dus wel onhandig dat een \`struct\` niet 
 Wat betekend dat je dit dus handmatig moet doen. Je moet dus als gebruiker altijd de 
 `void vector_clean()` function aanroepen om de vector op te ruimen wanneer je klaar bent met het gebruiken.  
   
-![Een van de mogelijke functies om een vector_t te constructen](./images/cvector/constructor.png)  
+![Een van de mogelijke functies om een vector_t te constructen](./images/cvector/constructor.png "open")  
   
-![De functie om een vector_t te destructen](./images/cvector/destructor.png)
+![De functie om een vector_t te destructen](./images/cvector/destructor.png "open")

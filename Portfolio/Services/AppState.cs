@@ -9,7 +9,7 @@ public class AppState
 {
     private PageDetails _pageDetails = new();
     private HeaderData _headerData = new();
-    private readonly List<object> _scrollLocks = new();
+    public readonly List<object> _scrollLocks = new();
     private int _currentLanguage = StaticData.DefaultLangCode;
 
     public event Action? StateChanged;

@@ -1,0 +1,15 @@
+<div class="enlarge-img-container @OpenClass">
+    <div class="img-container__inner">
+        <button class="img-container__inner__close btn" @onclick="Close">
+            <i class="bi bi-x"></i>
+        </button>
+        
+        <img class="img-container__inner__image"
+             style="@TransitionStyle"
+             src="@_clickedSrc" alt="@_clickedAlt"/>
+        @if (_clickedAlt is not null)
+        {
+            <h3 class="img-container__inner__under-title">@_clickedAlt</h3>
+        }
+    </div>
+</div>

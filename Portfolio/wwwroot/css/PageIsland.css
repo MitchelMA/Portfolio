@@ -10,13 +10,17 @@
 
     &.md img {
         max-width: 85%;
-        border-radius: var(--border-radius-small);
+
         max-height: 350px;
         position: relative;
         transition: scale 150ms ease 0s;
         
         &:hover {
             scale: 1.075;
+        }
+        &[title=open] {
+            border-radius: var(--border-radius-small);
+            margin: 0.3em;
         }
     }
     /*&.md p ~ p > img {*/

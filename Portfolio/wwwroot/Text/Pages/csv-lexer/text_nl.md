@@ -6,7 +6,7 @@ is een lightweight bestands format om gegevens in op te slaan. Het kan bijvoorbe
 kleurecodes toe te passen op de indicator die je linksonderin ziet.  
 </p>
   
-![Voorbeeld van een .csv bestand](./images/rider64_6CXTNg5dUr.png)
+![Voorbeeld van een .csv bestand](./images/rider64_6CXTNg5dUr.png "open")
 
 ## Standaard {#stand}
 Er is op het moment wel een idee voor een "officiële"
@@ -32,6 +32,6 @@ Het eerste plaatje is het csv-bestandje en het tweede plaatje een voorbeeld van 
 uitlezen in code.
 Dit wordt ook wel een model genoemd.  
   
-![Voorbeeld van een .csv bestand](./images/rider64_6CXTNg5dUr.png)  
+![Voorbeeld van een .csv bestand](./images/rider64_6CXTNg5dUr.png "open")  
   
-![Voorbeeld van een model in code](./images/rider64_DgcDDkJOS9.png)
+![Voorbeeld van een model in code](./images/rider64_DgcDDkJOS9.png "open")
