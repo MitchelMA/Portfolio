@@ -1,0 +1,15 @@
+[
+  {
+    "min-width": 650,
+    "links": [
+      {
+        "href": "#iductie",
+        "display-text": "Introductie"
+      },
+      {
+        "href": "#obj-pool",
+        "display-text": "Object Pooling"
+      }
+    ]
+  }
+]

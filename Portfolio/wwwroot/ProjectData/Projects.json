@@ -112,5 +112,25 @@
     "CardInfo": {
       "SetHeight": "21rem"
     }
+  },
+  {
+    "Planning": {
+      "Duration": 25,
+      "DurationType": "week",
+      "PeopleCount": 1,
+      "Software": "Unreal Engine, C++"
+    },
+    "Header": {
+      "HeaderImage": "./images/flappy-bird/thumbnail.png",
+      "PageIcon": "image/x-icon|./images/flappy-bird/icon.ico"
+    },
+    "Tags": "Finished, UnrealCxxProject",
+    "LocalHref": "./project/flappy-bird",
+    "InformalName": "flappy-bird",
+    "GitHub": "FlappyBird",
+    "CardInfo": {
+      "SetHeight": "21rem"
+    },
+    "Heroes": ["SCM"]
   }
 ]

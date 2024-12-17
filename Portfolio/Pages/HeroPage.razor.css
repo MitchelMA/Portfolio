@@ -64,7 +64,7 @@
     }
 
     & .card__inner__description {
-        margin-top: auto;
+        margin: auto auto 0 auto;
         transform: translateY(50px) scale(0);
         transition: 250ms ease;
     }
