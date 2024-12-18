@@ -18,3 +18,15 @@ Dit systeem bestaat uit het object wat de obstakels opslaat, een spawner en een 
 Dit systeem maakt het voor mij mogelijk om maximaal maar 3 à 4 obstakels tegelijkertijd te hebben omdat ze steeds opnieuw
 worden gebruikt.  
 ![Visual sheet van object pooling](./images/flappy-bird/ObstaclePooling.png "open")  
+
+## Pipe Spawning {#spawning}
+Wegens het feit dat het flappy-bird endless is, zullen er ook steeds nieuwe pipes ingespawnt moeten worden.
+Dit wordt gedaan door aan de object-pool een obstakel terug te vragen.  
+![Functie waarmee een object kan worden opgevraagd](./images/flappy-bird/RequestObj.png "open")  
+![Functie die het inspawnen van een aangevraagde obstakel regelt](./images/flappy-bird/SpawnPipe.png "open")
+
+## Pipe opslaan {#storing}
+Nadat een obstakel uit het scherm is geraakt, zal deze ook weer opgeschoont moeten worden.
+Hierbij wordt ook weer gebruik gemaakt van de object-pool.
+![Functie waarmee een object kan worden opgeslagen](./images/flappy-bird/StoreObj.png "open")  
+![Functie waarmee een obstakel wordt opgeslagen in de object-pool](./images/flappy-bird/StorePipe.png "open")

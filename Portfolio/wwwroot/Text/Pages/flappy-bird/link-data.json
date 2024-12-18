@@ -1,6 +1,6 @@
 [
   {
-    "min-width": 650,
+    "min-width": 850,
     "links": [
       {
         "href": "#iductie",
@@ -13,7 +13,16 @@
       {
         "href": "#obj-pool",
         "display-text": "Object Pooling"
+      },
+      {
+        "href": "#spawning",
+        "display-text": "Pipe Spawning"
+      },
+      {
+        "href": "#storing",
+        "display-text": "Pipe opslaan"
       }
     ]
-  }
+  },
+  {}
 ]
