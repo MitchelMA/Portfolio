@@ -7,6 +7,10 @@
         "display-text": "Introductie"
       },
       {
+        "href": "#game",
+        "display-text": "Gameplay"
+      },
+      {
         "href": "#obj-pool",
         "display-text": "Object Pooling"
       }

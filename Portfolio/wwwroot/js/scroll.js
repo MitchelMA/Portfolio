@@ -14,8 +14,10 @@ function scrollToId(id, topOffset = 50)
 
 function scrollToElem(element, topOffset)
 {
-    let elementPosition = element.getBoundingClientRect().top;
-    let offsetPosition = elementPosition + window.scrollY - topOffset;
+    const navHeight = document.querySelector("nav.topnav")?.getBoundingClientRect().height ?? 0;
+    const elementRect = element.getBoundingClientRect();
+    const elementPosition = elementRect.top;
+    const offsetPosition = elementPosition + window.scrollY - navHeight - topOffset;
     
     document.documentElement.scrollTo({
         top: offsetPosition,

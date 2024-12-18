@@ -106,7 +106,6 @@
         var location = e.Location;
         var uri = NavigationManager.ToAbsoluteUri(location);
         var fragment = uri.Fragment;
-        Console.WriteLine(fragment);
 
         var elementId = fragment.StartsWith('#') ? fragment[1..] : fragment;
 
@@ -115,7 +114,7 @@
 
     private async Task ScrollToElementId(string elementId)
     {
-        await JsRuntime.InvokeVoidAsync("scrollToId", elementId, 200);
+        await JsRuntime.InvokeVoidAsync("scrollToId", elementId, 50);
     }
 
 }
