@@ -17,7 +17,7 @@ public class CsvColorConverter : ICsvConverter<Color>
         var textSplits = text.Split(',', ';');
         var splitCount = textSplits.Length;
 
-        if (splitCount == 0)
+        if (splitCount <= 1)
             return Color.FromName(text);
         
         var intSplits = new int[splitCount];
