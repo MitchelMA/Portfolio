@@ -24,7 +24,7 @@
     </ChildContent>
 </PageIsland>
 
-@if (_islandsData is not null && _markdownText is null)
+@if (_islandsData is not null)
 {
     foreach (var island in _islandsData)
     {
@@ -63,18 +63,6 @@
             }
         </PageIsland>
     }
-}
-else if (_markdownText is not null)
-{
-    var markdownSections = MarkdownDeep.Markdown.SplitSections(_markdownText).Where(x => x.Length > 0);
-    @foreach (var section in markdownSections)
-    {
-        <section class="page-island md">
-            <div class="page-island__inner">
-                @((MarkupString)_projectMarkdown.Transform(section))
-            </div>
-        </section>
-    }   
 }
 
 
@@ -140,8 +128,6 @@ else if (_markdownText is not null)
 
     private PageIslandModel[]? _islandsData;
 
-    private string? _markdownText;
-
     private readonly ProjectMarkdown _projectMarkdown = new() {ExtraMode = true};
 
     protected override async Task OnInitializedAsync()
@@ -156,7 +142,7 @@ else if (_markdownText is not null)
 
     private async Task SetLangData(object? sender)
     {
-        var currentData = await LanguageTable.LoadAllCurrentPageData();
+        var currentData = await LanguageTable.LoadAllCurrentPageData(false);
         if (currentData is null)
         {
             AppState.HeaderData = _headerData;
@@ -173,7 +159,6 @@ else if (_markdownText is not null)
         SetHeaderData(langPageData.HeaderData!.Value);
         SetLinksData(langPageData.LinksData!.Value); 
         SetIslandsData(langPageData.PageIslandsData!);
-        SetMarkdownData(langPageData.PageMarkdownText!);
     }
 
     private void SetHeaderData(LangHeaderModel headerData)
@@ -198,12 +183,6 @@ else if (_markdownText is not null)
     private void SetIslandsData(PageIslandModel[] islands)
     {
         _islandsData = islands;
-        StateHasChanged();
-    }
-
-    private void SetMarkdownData(string markdownText)
-    {
-        // _markdownText = markdownText;
         StateHasChanged();
     }
 

@@ -572,15 +572,24 @@ public sealed class LanguageTable
         return LoadHeroPageInfo(heroName, langCode);
     }
 
-    public async Task<LangPageData?> LoadAllCurrentPageData()
+    public async Task<LangPageData?> LoadAllCurrentPageData(bool asMarkdown = true)
     {
         if (!_isLoaded)
             return default;
         
         var headerData = LoadCurrentHeaderData();
         var linksData = LoadCurrentLinksData();
-        var islandsData = LoadCurrentIslandsData();
-        var markdownData = LoadCurrentMarkdownData();
+
+        var markdownData = Task.FromResult<string?>(null);
+        var islandsData = Task.FromResult<PageIslandModel[]?>(null);
+        if (asMarkdown)
+        {
+            markdownData = LoadCurrentMarkdownData();
+        }
+        else
+        {
+            islandsData = LoadCurrentIslandsData();
+        }
 
         LangPageData data = new()
         {
@@ -606,8 +615,9 @@ public sealed class LanguageTable
             var currentInformalName = enumerated[i];
             _ = LoadHeaderForPage(currentInformalName, langCode);
             _ = LoadLinksForPage(currentInformalName, langCode);
-            _ = LoadIslandsForPage(currentInformalName, langCode);
             _ = LoadMarkdownForPage(currentInformalName, langCode);
+            // We're not pre-caching page island data, as that is an outdated system I used.
+            // Only the landing-page uses this and thus it needs not to be pre-fetched
         }
 
         return true;
