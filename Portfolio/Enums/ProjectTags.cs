@@ -45,6 +45,9 @@ public enum ProjectTags
     [EnumMember(Value = "Prototype Unity Project")]
     UnityPrototype = Prototype | UnityProject,
     
+    [EnumMember(Value = "Unreal C++ Project")]
+    UnrealCxxProject = Unreal | Cxx,
+    
     [EnumMember(Value = "C Project")]
     CProject = CMake | C,
     [EnumMember(Value = "Finished C Project")]

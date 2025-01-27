@@ -7,11 +7,13 @@
     flex-flow: column;
     padding: 0.8rem;
     padding-top: 1.8rem;
+    
+    --_max-media-width: 85%;
+    --_max-media-height: 350px;
 
     &.md img {
-        max-width: 85%;
-
-        max-height: 350px;
+        max-width: var(--_max-media-width);
+        max-height: var(--_max-media-height);
         position: relative;
         transition: scale 150ms ease 0s;
         
@@ -23,9 +25,12 @@
             margin: 0.3em;
         }
     }
-    /*&.md p ~ p > img {*/
-    /*    margin-top: 1rem;*/
-    /*}*/
+    
+    &.md video {
+        max-width: var(--_max-media-width);
+        max-height: calc(var(--_max-media-height) + 50px);
+        border-radius: var(--border-radius-small);
+    }
 }
 
 .page-island:nth-child(even) {
