@@ -1,0 +1,19 @@
+[
+  {
+    "min-width": 700,
+    "links": [
+      {
+        "href": "#iductie",
+        "display-text": "Introductie"
+      },
+      {
+        "href": "#wapenkamer",
+        "display-text": "Wapen Kamer"
+      },
+      {
+        "href": "#schietbaan",
+        "display-text": "Schietbaan"
+      }
+    ]
+  }
+]
