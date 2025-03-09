@@ -14,6 +14,7 @@ public static class Program
     public static async Task Main(string[] args)
     {
         var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
         builder.RootComponents.Add<App>("#app");
         builder.RootComponents.Add<HeadOutlet>("head::after");
 
@@ -29,9 +30,11 @@ public static class Program
 
         builder.Services.AddSingleton<AppState>();
         builder.Services.AddSingleton<LanguageTable>();
+        builder.Services.AddSingleton<ContentProvider>();
 
         builder.Services.AddTransient<LightboxRegistry>();
         builder.Services.AddTransient<EnlargeImageService>();
+        builder.Services.AddMemoryCache();
 
         await builder.Build().RunAsync();
     }
