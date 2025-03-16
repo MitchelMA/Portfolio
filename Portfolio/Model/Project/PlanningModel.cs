@@ -2,7 +2,7 @@ using Portfolio.Enums;
 
 namespace Portfolio.Model.Project;
 
-public struct Planning
+public struct PlanningModel
 {
     public int Duration { get; init; }
     public Durations DurationType { get; init; }

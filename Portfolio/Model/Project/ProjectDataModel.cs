@@ -4,7 +4,7 @@ namespace Portfolio.Model.Project;
 
 public struct ProjectDataModel
 {
-    public Planning Planning { get; init; }
+    public PlanningModel Planning { get; init; }
     public HeaderModel Header { get; init; }
     public ProjectTags Tags { get; init; }
     public string LocalHref { get; init; }

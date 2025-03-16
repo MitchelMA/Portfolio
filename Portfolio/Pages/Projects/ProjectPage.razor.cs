@@ -35,6 +35,9 @@ public partial class ProjectPage : ComponentBase, IDisposable
 
     [CascadingParameter]
     private ProjectLayout ParentLayout { get; init; } = null!;
+
+    [Inject]
+    private ContentProvider Provider { get; init; } = null!;
     
     [Inject]
     private AppState? AppState { get; init; }
@@ -62,6 +65,22 @@ public partial class ProjectPage : ComponentBase, IDisposable
 
     protected override async Task OnInitializedAsync()
     {
+        await Provider.AwaitSupportedLangauges(async () => {
+            var projectData = Provider.GetProjectData(ProjectName);
+            var projectMeta = Provider.GetProjectMeta(ProjectName);
+            var projectText = Provider.GetProjectPageContent(ProjectName);
+
+            await Task.WhenAll(projectData, projectMeta, projectText);
+
+            Console.WriteLine(projectData.Result.Value.InformalName);
+
+            Console.WriteLine(projectMeta.Result.Title);
+            Console.WriteLine(projectMeta.Result.UnderTitle);
+            Console.WriteLine(projectMeta.Result.Description);
+
+            Console.WriteLine(projectText.Result);
+        });
+
         LangTablePreCacher!.Extra = new[] { "./index" };
         AppState!.ShowFooter = true;
         
@@ -74,6 +93,8 @@ public partial class ProjectPage : ComponentBase, IDisposable
         await LanguageTable.AwaitLanguageContentAsync(SetLangData);
     }
 
+    // This function gets called on internally switching to the next project page
+    // Note: doesn't get called when coming from a different page
     private async Task SetPageData()
     {
         _model = await ProjectInfoGetter!.GetCorrespondingToUri();
