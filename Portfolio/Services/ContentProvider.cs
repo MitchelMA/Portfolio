@@ -100,7 +100,7 @@ public sealed class ContentProvider
 
     public async Task<string> GetProjectPageContent(string informalName)
     {
-        var cached = await _memoryCache.GetOrCreateAsync($"projects/text/{informalName}/{_appState.CurrentLanguage}",
+        Task<string?> cached = _memoryCache.GetOrCreateAsync($"projects/text/{informalName}/{_appState.CurrentLanguage}",
             async entry => {
                 var message = new HttpRequestMessage(
                     HttpMethod.Get,
@@ -111,6 +111,6 @@ public sealed class ContentProvider
                 return await response.Content.ReadAsStringAsync();
             });
 
-        return cached;
+        return (await cached)!;
     }
 }
