@@ -9,16 +9,16 @@ namespace Portfolio.Shared.Components.Navigation;
 
 public partial class ProjectsNav : ComponentBase, IDisposable
 {
-    private ProjectDataModel? _activeProject;
+    private NewProjectModel? _activeProject;
 
     [Parameter]
-    public ProjectDataModel? ActiveProject
+    public NewProjectModel? ActiveProject
     {
         get => _activeProject;
         set
         {
             // Avoid setting it to the same value
-            if ((_activeProject?.LocalHref ?? "a") == (value?.LocalHref ?? "b"))
+            if ((_activeProject?.InformalName ?? "a") == (value?.InformalName ?? "b"))
                 return;
 
             var old = _activeProject;
@@ -53,7 +53,7 @@ public partial class ProjectsNav : ComponentBase, IDisposable
         StateHasChanged();
     }
 
-    private async Task ActiveProjectDelta(ProjectDataModel? previous, ProjectDataModel? current)
+    private async Task ActiveProjectDelta(NewProjectModel? previous, NewProjectModel? current)
     {
         _relevantProjects = GetRelevantProjects();
         _titles = await GetProjectTitles();
@@ -78,7 +78,7 @@ public partial class ProjectsNav : ComponentBase, IDisposable
 
             relevantProjects = ProjectInfoGetter?.Data
                 .Where(p => p.Value.Tags.HasFlag(_randomTag.Value) &&
-                            p.Value.LocalHref != ActiveProject!.Value.LocalHref)
+                            p.Value.LocalHref != ActiveProject!.Value.InformalName)
                 .ToDictionary(key => key.Key, value => value.Value);
             
             tryCount++;

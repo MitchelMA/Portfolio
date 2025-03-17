@@ -49,14 +49,14 @@ public partial class ProjectPage : ComponentBase, IDisposable
     private LangTablePreCacher? LangTablePreCacher { get; init; }
     
     [Inject]
-    private IMapper<LangHeaderModel, HeaderData>? HeaderDataMapper { get; init; }
+    private IMapper<NewProjectMetaDataModel, HeaderData>? HeaderDataMapper { get; init; }
     [Inject]
     private IMapper<LangLinkModel, NavLinkData>? NavLinkDataMapper { get; init; }
 
     private ImageEnlargeContainer? EnlargeContainer { get; set; }
     
     private NavLinkData[]? _links;
-    private ProjectDataModel? _model;
+    private NewProjectModel? _model;
     private string? _markdownText;
     private bool _hadFirstProjectRender;
     private readonly CancellationTokenSource _enlargerWaitToken = new();
@@ -65,43 +65,21 @@ public partial class ProjectPage : ComponentBase, IDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        await Provider.AwaitSupportedLangauges(async () => {
-            var projectData = Provider.GetProjectData(ProjectName);
-            var projectMeta = Provider.GetProjectMeta(ProjectName);
-            var projectText = Provider.GetProjectPageContent(ProjectName);
+        await Provider.AwaitSupportedLanguages(SetPageData);
 
-            await Task.WhenAll(projectData, projectMeta, projectText);
-
-            Console.WriteLine(projectData.Result.Value.InformalName);
-
-            Console.WriteLine(projectMeta.Result.Title);
-            Console.WriteLine(projectMeta.Result.UnderTitle);
-            Console.WriteLine(projectMeta.Result.Description);
-
-            Console.WriteLine(projectText.Result);
-        });
-
-        LangTablePreCacher!.Extra = new[] { "./index" };
         AppState!.ShowFooter = true;
-        
-        _model = await ProjectInfoGetter!.GetCorrespondingToUri();
-        ParentLayout.Model = _model;
-        AppState.PageIcon = _model!.Value.Header.PageIcon ?? StaticData.DefaultPageIcon;
-
         LanguageTable!.LanguageChangedAsync += OnLanguageChanged;
-
-        await LanguageTable.AwaitLanguageContentAsync(SetLangData);
     }
 
     // This function gets called on internally switching to the next project page
     // Note: doesn't get called when coming from a different page
     private async Task SetPageData()
     {
-        _model = await ProjectInfoGetter!.GetCorrespondingToUri();
+        _model = await Provider.GetProjectData(ProjectName);
         ParentLayout.Model = _model;
-
+        
         if (AppState != null)
-            AppState.PageIcon = _model!.Value.Header.PageIcon ?? StaticData.DefaultPageIcon;
+            AppState.PageIcon = _model.Value.Header.PageIcon ?? StaticData.DefaultPageIcon;
 
         await SetLangData(this);
     }
@@ -110,36 +88,33 @@ public partial class ProjectPage : ComponentBase, IDisposable
     
     private async Task SetLangData(object sender)
     {
-        var currentData = await LanguageTable!.LoadAllCurrentPageData();
-        if (currentData == null)
-        {
-            await Console.Error.WriteLineAsync("Couldn't get Page Data in specified language!");
-            return;
-        }
+        var metaTask = Provider.GetProjectMeta(_model!.Value.InformalName);
+        var contentTask = Provider.GetProjectPageContent(_model!.Value.InformalName);
 
-        SetPageContent(currentData);
-        await LangTablePreCacher!.PreCache(AppState!.CurrentLanguage);
+        await Task.WhenAll(metaTask, contentTask);
+        
+        SetPageContent(_model!.Value, metaTask.Result, contentTask.Result);
     }
 
-    private void SetPageContent(LangPageData model)
+    private void SetPageContent(NewProjectModel model, NewProjectMetaDataModel metaData, string pageContent)
     {
         _hadFirstProjectRender = true;
-        SetHeaderData(model.HeaderData);
-        SetLinksData(model.LinksData);
-        SetMarkdownData(model.PageMarkdownText);
+        
+        SetHeaderData(metaData);
+        SetMarkdownData(pageContent);
         StateHasChanged();
         
         _ = WaitForValidate(50, _enlargerWaitToken.Token);
     }
 
-    private void SetHeaderData(LangHeaderModel? headerData)
+    private void SetHeaderData(NewProjectMetaDataModel? headerData)
     {
         if (headerData == null)
             return;
         var header = HeaderDataMapper!.MapFrom(headerData.Value);
         header.ImagePath = _model!.Value.Header.HeaderImage;
         AppState!.HeaderData = header;
-        AppState.PageTitleExtension = " " + headerData.Value.PageTitleExtension;
+        AppState.PageTitleExtension = " " + header.Title;
     }
 
     private void SetLinksData(LangLinksModel? linksData)
@@ -189,6 +164,7 @@ public partial class ProjectPage : ComponentBase, IDisposable
         _enlargerWaitToken.Cancel();
         LanguageTable!.ManifestLoadedAsync -= SetLangData;
         LanguageTable.LanguageChangedAsync -= OnLanguageChanged;
+        Provider.OnSupportedLanguagesLoadedAsync -= SetPageData;
         GC.SuppressFinalize(this);
     }
 }

@@ -16,7 +16,7 @@ public sealed class ContentProvider
     // TODO! Eventualy replace with the Language table,
     // when the language table has been repurposed for only language switching
     // and keeping track of changes
-    private string[] _supportedLangauges = Array.Empty<string>();
+    private string[] _supportedLanguages = Array.Empty<string>();
 
     private readonly IMemoryCache _memoryCache;
     private readonly HttpClient _httpClient;
@@ -24,7 +24,7 @@ public sealed class ContentProvider
     private readonly AppState _appState;
 
     public delegate Task SupportedLanguagesLoadedAsync();
-    public event SupportedLanguagesLoadedAsync? OnSupportedLangaugesLoadedAsync;
+    public event SupportedLanguagesLoadedAsync? OnSupportedLanguagesLoadedAsync;
 
     public ContentProvider(IConfiguration configuration, IMemoryCache memoryCache, NavigationManager navManager, AppState appState)
     {
@@ -41,30 +41,30 @@ public sealed class ContentProvider
 
     private async Task LoadSupportedLanguages()
     {
-        if (_supportedLangauges.Length > 0)
+        if (_supportedLanguages.Length > 0)
             return;
 
-        _supportedLangauges = (await _httpClient.GetFromJsonAsync<string[]>(
+        _supportedLanguages = (await _httpClient.GetFromJsonAsync<string[]>(
             Path.Combine(_navManager.BaseUri, "Text", "SupportedLanguages.json")
         ))!;
-        if (OnSupportedLangaugesLoadedAsync is not null)
-            await OnSupportedLangaugesLoadedAsync!.Invoke();
+        if (OnSupportedLanguagesLoadedAsync is not null)
+            await OnSupportedLanguagesLoadedAsync!.Invoke();
     }
 
-    public async Task AwaitSupportedLangauges(SupportedLanguagesLoadedAsync onReady)
+    public async Task AwaitSupportedLanguages(SupportedLanguagesLoadedAsync onReady)
     {
-        if (_supportedLangauges.Length > 0)
+        if (_supportedLanguages.Length > 0)
         {
             await onReady.Invoke();
             return;
         }
 
-        OnSupportedLangaugesLoadedAsync += onReady;
+        OnSupportedLanguagesLoadedAsync += onReady;
     }
 
     private string CultureToName(int cultureIdx)
     {
-        return _supportedLangauges[cultureIdx];
+        return _supportedLanguages[cultureIdx];
     }
 
     public async Task<NewProjectModel> GetProjectData(string informalName)
@@ -73,9 +73,8 @@ public sealed class ContentProvider
             async entry => {
                 var message = new HttpRequestMessage(
                     HttpMethod.Get,
-                    new Uri(_contentLocation + _projectsSubPath + informalName)
-                );
-                message.SetBrowserRequestCredentials(BrowserRequestCredentials.Omit);
+                    new Uri(_contentLocation + _projectsSubPath + informalName + "?valueOnly=true")
+                ).SetBrowserRequestCredentials(BrowserRequestCredentials.Omit);
                 var response = await _httpClient.SendAsync(message);
                 return await response.Content.ReadFromJsonAsync<NewProjectModel>();
             });
@@ -105,8 +104,7 @@ public sealed class ContentProvider
                 var message = new HttpRequestMessage(
                     HttpMethod.Get,
                     new Uri(_contentLocation + _projectsSubPath + informalName + $"/page-content/{CultureToName(_appState.CurrentLanguage)}")
-                );
-                message.SetBrowserRequestCredentials(BrowserRequestCredentials.Omit);
+                ).SetBrowserRequestCredentials(BrowserRequestCredentials.Omit);
                 var response = await _httpClient.SendAsync(message);
                 return await response.Content.ReadAsStringAsync();
             });

@@ -26,6 +26,7 @@ public static class Program
 
         builder.Services.AddScoped<IMapper<ProjectDataModel, CarouselModel>, ToCarouselModelMapper>();
         builder.Services.AddScoped<IMapper<LangHeaderModel, HeaderData>, ToHeaderDataMapper>();
+        builder.Services.AddScoped<IMapper<NewProjectMetaDataModel, HeaderData>, ToNewHeaderDataMapper>();
         builder.Services.AddScoped<IMapper<LangLinkModel, NavLinkData>, ToNavLinkDataMapper>();
 
         builder.Services.AddSingleton<AppState>();

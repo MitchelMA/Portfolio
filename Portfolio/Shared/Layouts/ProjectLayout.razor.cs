@@ -13,8 +13,8 @@ public partial class ProjectLayout : LayoutComponentBase, IDisposable
     [Inject]
     private IJSRuntime? JsRuntime { get; init; }
     
-    private ProjectDataModel? _model;
-    public ProjectDataModel? Model
+    private NewProjectModel? _model;
+    public NewProjectModel? Model
     {
         get => _model;
         set
