@@ -2,6 +2,9 @@ using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
 using Microsoft.Extensions.Caching.Memory;
+using Portfolio.Enums;
+using Portfolio.Extensions;
+using Portfolio.Model.Hero;
 using Portfolio.Model.Project;
 using Portfolio.Model.Text;
 
@@ -66,11 +69,15 @@ public sealed class ContentProvider
     {
         return _supportedLanguages[cultureIdx];
     }
+    
+    #region Project
 
     public async Task<NewProjectModel> GetProjectData(string informalName)
     {
         var cached = await _memoryCache.GetOrCreateAsync($"projects/{informalName}",
             async entry => {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+                
                 var message = new HttpRequestMessage(
                     HttpMethod.Get,
                     new Uri(_contentLocation + _projectsSubPath + informalName + "?valueOnly=true")
@@ -86,6 +93,8 @@ public sealed class ContentProvider
     {
         var cached = await _memoryCache.GetOrCreateAsync($"projects/meta/{informalName}/{_appState.CurrentLanguage}",
             async entry => {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+                
                 var message = new HttpRequestMessage(
                     HttpMethod.Get,
                     new Uri(_contentLocation + _projectsSubPath + informalName + $"/meta-data/{CultureToName(_appState.CurrentLanguage)}?valueOnly=true")
@@ -100,7 +109,10 @@ public sealed class ContentProvider
     public async Task<string> GetProjectPageContent(string informalName)
     {
         Task<string?> cached = _memoryCache.GetOrCreateAsync($"projects/text/{informalName}/{_appState.CurrentLanguage}",
-            async entry => {
+            async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+                
                 var message = new HttpRequestMessage(
                     HttpMethod.Get,
                     new Uri(_contentLocation + _projectsSubPath + informalName + $"/page-content/{CultureToName(_appState.CurrentLanguage)}")
@@ -111,4 +123,66 @@ public sealed class ContentProvider
 
         return (await cached)!;
     }
+    
+    #endregion
+
+    #region Hero
+
+    public async Task<NewHeroData> GetHeroData(string heroName)
+    {
+        heroName = heroName.ToUpper();
+        Console.WriteLine(heroName);
+        var cached = _memoryCache.GetOrCreateAsync($"heroes/text/{heroName}/{_appState.CurrentLanguage}",
+            async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+
+                var message = new HttpRequestMessage(
+                    HttpMethod.Get,
+                    new Uri(_contentLocation + _heroesSubPath + heroName + $"/{CultureToName(_appState.CurrentLanguage)}")
+                ).SetBrowserRequestCredentials(BrowserRequestCredentials.Omit);
+                
+                var response = await _httpClient.SendAsync(message);
+                return await response.Content.ReadFromJsonAsync<NewHeroData>();
+            });
+        
+        return await cached;
+    }
+
+    public async Task<NewProjectModel[]> GetHeroProjects(string heroName)
+    {
+        heroName = heroName.ToUpper();
+        var relevantProjects = (await GetHeroData(heroName)).RelatedProjects;
+
+        var projectRequests = new Task<NewProjectModel>[relevantProjects.Length];
+        for (int i = 0; i < relevantProjects.Length; i++)
+            projectRequests[i] = GetProjectData(relevantProjects[i]);
+
+        await Task.WhenAll(projectRequests);
+
+        return projectRequests.Select(x => x.Result).ToArray();
+    }
+
+    #endregion
+
+    #region Filter 
+
+    public async Task<NewProjectModel[]> GetProjectsWithTags(ProjectTags tags)
+    {
+        var message = new HttpRequestMessage(
+            HttpMethod.Get,
+            new Uri(_contentLocation + $"/filter/projects/has-all-tags/{tags.ToString()}?valueOnly=true")
+        ).SetBrowserRequestCredentials(BrowserRequestCredentials.Omit);
+        
+        var response = await _httpClient.SendAsync(message);
+        var informalNames = await response.Content.ReadFromJsonAsync<string[]>();
+        Task<NewProjectModel>[] projectRequests = new Task<NewProjectModel>[informalNames!.Length];
+        for (int i = 0; i < informalNames.Length; i++)
+            projectRequests[i] = GetProjectData(informalNames[i]);
+        
+        await Task.WhenAll(projectRequests);
+        return projectRequests.Select(x => x.Result).ToArray();
+    }
+    
+    #endregion
 }

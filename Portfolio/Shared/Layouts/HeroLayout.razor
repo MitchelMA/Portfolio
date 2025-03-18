@@ -1,7 +1,7 @@
 @inherits LayoutComponentBase
 
 <div class="page">
-    <header class="top-header" style="--_background-image: url(@(HeroInfo?.BannerImg ?? ""))">
+    <header class="top-header" style="--_background-image: url(@(HeroInfo?.BannerImage ?? ""))">
         <div class="top-header__overlay"></div>
         
         <a href="/">
@@ -12,7 +12,7 @@
         <div class="top-header__inner">
             <section class="top-header__texts">
                 <h1>@HeroInfo?.Title</h1>
-                <h2>@HeroInfo?.UnderTitle</h2>        
+                <h2>@HeroInfo?.Description</h2>        
             </section>
         </div>
     </header>

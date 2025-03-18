@@ -42,12 +42,7 @@ public partial class ProjectPage : ComponentBase, IDisposable
     [Inject]
     private AppState? AppState { get; init; }
     [Inject]
-    private ProjectInfoGetter? ProjectInfoGetter { get; init; }
-    [Inject]
     private LanguageTable? LanguageTable { get; init; }
-    [Inject]
-    private LangTablePreCacher? LangTablePreCacher { get; init; }
-    
     [Inject]
     private IMapper<NewProjectMetaDataModel, HeaderData>? HeaderDataMapper { get; init; }
     [Inject]

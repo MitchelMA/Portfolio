@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Routing;
 using Portfolio.Enums;
 using Portfolio.Extensions;
 using Portfolio.Model.Project;
+using Portfolio.Model.Text;
 using Portfolio.Services;
 
 namespace Portfolio.Shared.Components.Navigation;
@@ -30,7 +31,7 @@ public partial class ProjectsNav : ComponentBase, IDisposable
     [Inject]
     private HttpClient? HttpClient { get; init; }
     [Inject]
-    private ProjectInfoGetter? ProjectInfoGetter { get; init; }
+    private ContentProvider Provider { get; init; } = null!;
     [Inject]
     private LanguageTable? LangTable { get; init; }
     [Inject]
@@ -38,73 +39,53 @@ public partial class ProjectsNav : ComponentBase, IDisposable
     
     private string[]? _titles;
     private ProjectTags? _randomTag;
-    private IReadOnlyDictionary<string, ProjectDataModel>? _relevantProjects;
+    private IReadOnlyDictionary<string, NewProjectModel>? _relevantProjects;
 
     protected override async Task OnInitializedAsync()
     {
-        await LangTable!.AwaitLanguageContentAsync(OnManifestLoaded); 
-        LangTable.LanguageChangedAsync += OnLanguageChanged;
+        LangTable!.LanguageChangedAsync += OnLanguageChanged;
 
-        if (ActiveProject is null)
-            return;
-        
-        await ProjectInfoGetter!.RetrieveData();       
-        _relevantProjects = GetRelevantProjects();
-        StateHasChanged();
+        _relevantProjects = await GetRelevantProjects();
+        await Provider.AwaitSupportedLanguages(OnManifestLoaded);
     }
 
     private async Task ActiveProjectDelta(NewProjectModel? previous, NewProjectModel? current)
     {
-        _relevantProjects = GetRelevantProjects();
+        _relevantProjects = await GetRelevantProjects();
         _titles = await GetProjectTitles();
         StateHasChanged();
     }
     
-    private Dictionary<string, ProjectDataModel>? GetRelevantProjects()
+    private async Task<Dictionary<string, NewProjectModel>?> GetRelevantProjects()
     {
-        Dictionary<string, ProjectDataModel>? relevantProjects = new();
-        var tryCount = 0;
-        while (relevantProjects is null || relevantProjects.Count < 1)
-        {
-            if (tryCount > 4)
-                break;
-            
-            var extractedTags = _activeProject?.Tags.ExtractFlags().ToArray();
-            var random = extractedTags is not null ? Random.Shared.Next(extractedTags.Length) : 0;
-            _randomTag = extractedTags?[random];
+        var extractedTags = _activeProject?.Tags.ExtractFlags().ToArray();
+        var random = extractedTags is not null ? Random.Shared.Next(extractedTags.Length) : 0;
+        _randomTag = extractedTags?[random];
 
-            if (_randomTag is null)
-                break;
+        if (_randomTag is null)
+            return null;
 
-            relevantProjects = ProjectInfoGetter?.Data
-                .Where(p => p.Value.Tags.HasFlag(_randomTag.Value) &&
-                            p.Value.LocalHref != ActiveProject!.Value.InformalName)
-                .ToDictionary(key => key.Key, value => value.Value);
-            
-            tryCount++;
-        }
+        Dictionary<string, NewProjectModel> relevantProjects = (await Provider.GetProjectsWithTags(_randomTag!.Value))
+            .ToDictionary(x => x.InformalName);
 
         return relevantProjects;
     }
 
     private async Task<string[]?> GetProjectTitles()
     {
-        var uris = _relevantProjects?.Keys.ToArray() ?? Array.Empty<string>();
-        var length = uris.Length;
-        var titles = new string[uris.Length];
+        var informals = _relevantProjects?.Keys.ToArray() ?? Array.Empty<string>();
+        var length = informals.Length;
+        Task<NewProjectMetaDataModel>[] titleRequests = new Task<NewProjectMetaDataModel>[informals.Length];
 
-        for (var i = 0; i < length; i++)
-        {
-            var headerData = await LangTable!.LoadHeaderForPage(uris[i], AppState!.CurrentLanguage);
-            if (headerData is null)
-                return default;
-            titles[i] = headerData.Value.Title;
-        }
+        for (int i = 0; i < length; i++)
+            titleRequests[i] = Provider.GetProjectMeta(informals[i]);
 
-        return titles;
+        await Task.WhenAll(titleRequests);
+
+        return titleRequests.Select(x => x.Result.Title).ToArray();
     }
 
-    private async Task OnManifestLoaded(object? sender)
+    private async Task OnManifestLoaded()
     {
         _titles = await GetProjectTitles();
         StateHasChanged();
@@ -118,8 +99,8 @@ public partial class ProjectsNav : ComponentBase, IDisposable
     
     public void Dispose()
     {
-        LangTable!.ManifestLoadedAsync -= OnManifestLoaded;
-        LangTable.LanguageChangedAsync -= OnLanguageChanged;
+        Provider.OnSupportedLanguagesLoadedAsync -= OnManifestLoaded;
+        LangTable!.LanguageChangedAsync -= OnLanguageChanged;
         GC.SuppressFinalize(this);
     }
 }

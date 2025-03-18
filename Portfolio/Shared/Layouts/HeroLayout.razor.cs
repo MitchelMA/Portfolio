@@ -9,9 +9,9 @@ public partial class HeroLayout
     [Inject]
     private AppState? AppState { get; init; }
 
-    private HeroPageInfo? _heroInfo;
+    private NewHeroMeta? _heroInfo;
 
-    public HeroPageInfo? HeroInfo
+    public NewHeroMeta? HeroInfo
     {
         get => _heroInfo;
         set

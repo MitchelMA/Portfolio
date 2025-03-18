@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Portfolio.Client;
 using Portfolio.Model.Hero;
 using Portfolio.Model.Project;
 using Portfolio.Model.Tags;
@@ -15,7 +16,7 @@ public partial class HeroPage : ComponentBase, IDisposable
     [Inject]
     private LanguageTable LangTable { get; init; } = null!;
     [Inject]
-    private ProjectInfoGetter ProjectInfoGetter { get; init; } = null!;
+    private ContentProvider Provider { get; init; } = null!;
     [Inject]
     private HeroInfoGetter HeroInfoGetter { get; init; } = null!;
 
@@ -25,61 +26,62 @@ public partial class HeroPage : ComponentBase, IDisposable
     [CascadingParameter]
     public HeroLayout HeroLayout { get; init; } = null!;
 
-    private ProjectDataModel[]? _heroProjectsData;
-    private HeroPageInfo? _heroData;
-    private LangHeaderModel[]? _langHeaderData;
+    private NewProjectModel[]? _heroProjectsData;
+    private NewHeroMeta? _heroData;
+    private NewProjectMetaDataModel[]? _langHeaderData;
 
     protected override async Task OnInitializedAsync()
     {
-        await ProjectInfoGetter.RetrieveData();
-        SetHeroProjectsData();
+        await Provider.AwaitSupportedLanguages(OnLanguageManifestLoadedAsync);
         
-        await LangTable.AwaitLanguageContentAsync(OnLanguageManifestLoadedAsync);
         LangTable.LanguageChangedAsync += OnLanguageChangedAsync;
     }
 
-    private async Task OnLanguageManifestLoadedAsync(object sender)
+    private async Task OnLanguageManifestLoadedAsync()
     {
         await SetHeroData();
+        await SetHeroProjectsData();
         await SetLanguageData();
     }
 
     private async Task OnLanguageChangedAsync(object sender, int newLanguage)
     {
         await SetHeroData();
+        await SetHeroProjectsData();
         await SetLanguageData();
     }
 
     private async Task SetHeroData()
     {
-        _heroData = await LangTable.LoadCurrentHeroPageInfo(HeroName);
-        HeroLayout.HeroInfo = _heroData;
-        AppState.PageIcon = new PageIcon("image/icon", _heroData!.Value.PageIcon);
-        AppState.PageTitleExtension = " " + _heroData.Value.PageTitleExtension;
+        _heroData = (await Provider.GetHeroData(HeroName)).LocalInfo;
+        HeroLayout.HeroInfo = _heroData!.Value;
+        AppState.PageIcon = _heroData.Value.PageIcon is not null ? new PageIcon("image/icon", _heroData!.Value.PageIcon) : StaticData.DefaultPageIcon;
+        AppState.PageTitleExtension = " - " + _heroData.Value.Title;
         StateHasChanged();
     }
 
-    private void SetHeroProjectsData()
+    private async Task SetHeroProjectsData()
     {
-        _heroProjectsData = ProjectInfoGetter.Data.Values.Where(x => x.Heroes != null && x.Heroes.Contains(HeroName)).ToArray();
+        _heroProjectsData = await Provider.GetHeroProjects(HeroName);
         StateHasChanged();
     }
 
     private async Task SetLanguageData()
     {
-        var l = _heroProjectsData!.Length;
-        _langHeaderData = new LangHeaderModel[l];
-        for (var i = 0; i < l; i++)
-        {
-            var model = _heroProjectsData[i];
-            _langHeaderData[i] = (await LangTable.LoadHeaderForPage(model.InformalName, AppState.CurrentLanguage))!.Value;
-        }
+        var length = _heroProjectsData!.Length;
+        var projectMetaRequests = new Task<NewProjectMetaDataModel>[length];
+        for (int i = 0; i < length; i++)
+            projectMetaRequests[i] = Provider.GetProjectMeta(_heroProjectsData[i].InformalName);
+        await Task.WhenAll(projectMetaRequests);
+
+        _langHeaderData = projectMetaRequests.Select(x => x.Result).ToArray();
+        
         StateHasChanged();
     }
 
     public void Dispose()
     {
-        LangTable.ManifestLoadedAsync -= OnLanguageManifestLoadedAsync;
+        Provider.OnSupportedLanguagesLoadedAsync -= OnLanguageManifestLoadedAsync;
         LangTable.LanguageChangedAsync -= OnLanguageChangedAsync;
     }
 }
