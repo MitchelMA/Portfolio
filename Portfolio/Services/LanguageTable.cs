@@ -340,32 +340,6 @@ public sealed class LanguageTable
 
     #region Language Content Getters
 
-    public async Task<string?> LoadMarkdownForPage(string informalName, int langCode)
-    {
-        if (!_isLoaded)
-            return default;
-
-        var markdownCache = PageMarkdownCacheExists(informalName, langCode);
-        if (markdownCache is not null)
-            return markdownCache;
-
-        var filePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName, informalName,
-            $"text_{SupportedCultures[langCode]}.md");
-
-        try
-        {
-            var markdownText = await _httpClient.GetStringAsync(filePath);
-            CacheMarkdownForPage(informalName, langCode, markdownText);
-            return markdownText;
-        }
-        catch
-        {
-            // await Console.Error.WriteLineAsync($"Failed to retrieve page-content from file ${filePath}");
-        }
-
-        return null;
-    }
-    
     public async Task<InfoTableHeaderModel?> LoadInfoTableHeaderData(int langCode)
     {
         if (!_isLoaded)
@@ -442,14 +416,6 @@ public sealed class LanguageTable
 
     }
 
-    private Task<string?> LoadCurrentMarkdownData()
-    {
-        var langCode = _appState.CurrentLanguage;
-        var informalName = CurrentRelUri.Split('/').Last();
-
-        return LoadMarkdownForPage(informalName, langCode);
-    }
-
     public Task<InfoTableHeaderModel?> LoadCurrentInfoTableData()
     {
         var langCode = _appState.CurrentLanguage;
@@ -480,7 +446,7 @@ public sealed class LanguageTable
         
         if (asMarkdown)
         {
-            markdownData = LoadCurrentMarkdownData();
+            markdownData = GetPageMarkdownCached(informalName, _appState.CurrentLanguage);
         }
         else
         {
@@ -588,6 +554,22 @@ public sealed class LanguageTable
                     contentDeserialized[i].HtmlContentString = tasks[i].Result;
 
                 return contentDeserialized;
+            });
+    }
+
+    public async Task<string?> GetPageMarkdownCached(string informalName, int langCode)
+    {
+        if (!_isLoaded)
+            return default;
+        
+        var filePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName,
+            informalName, SupportedCultures[langCode], "text.md");
+
+        return await _contentCache.GetOrCreateAsync<string>($"page-markdown/{informalName}/{langCode}",
+            async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+                return await _httpClient.GetStringAsync(filePath);
             });
     }
     
