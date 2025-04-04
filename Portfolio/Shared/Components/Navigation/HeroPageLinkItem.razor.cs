@@ -67,7 +67,7 @@ public partial class HeroPageLinkItem : ComponentBase, IDisposable
     private async Task SetHeroColour()
     {
         if (HeroName is not null)
-            HeroColour = (await LangTable!.LoadHeroPageInfo(HeroName!, AppState!.CurrentLanguage))?.ThemeColour;
+            HeroColour = (await LangTable!.GetHeroPageInfoCached(HeroName!, AppState!.CurrentLanguage))?.ThemeColour;
         StateHasChanged();
     }
 

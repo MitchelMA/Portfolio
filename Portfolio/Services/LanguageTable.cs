@@ -340,37 +340,6 @@ public sealed class LanguageTable
 
     #region Language Content Getters
 
-    public async Task<HeroPageInfo?> LoadHeroPageInfo(string heroName, int langCode)
-    {
-        if (!_isLoaded)
-            return default;
-        
-        var (exists, langData) = HeroPageInfoCacheExists(heroName, langCode);
-        if (exists)
-            return langData;
-
-        var heroPageFilePath = Path.Combine(LocationBase, _manifestContent.HeroContentDirName, 
-            _manifestContent.HeroContentsPrefix + heroName + ".csv");
-        var fileContent = await _httpClient.GetStringAsync(heroPageFilePath);
-        
-        using var heroPageLexer = new CsvLexer(fileContent, CsvSettings);
-        CsvDeserializationOptions deserializationOptions = new(
-            new List<ICsvConverter>
-            {
-                new CsvColorConverter()
-            }
-        );
-        var heroContentDeserialized = await heroPageLexer.DeserializeAsync<HeroPageInfo>(deserializationOptions);
-
-        CacheHeroData(heroName, heroContentDeserialized);
-
-        if (langCode >= heroContentDeserialized.Length)
-            return default;
-        
-        return heroContentDeserialized[langCode];
-
-    }
-
     public async Task<InfoTableHeaderModel?> LoadCurrentInfoTableData()
     {
         var langCode = _appState.CurrentLanguage;
@@ -386,7 +355,7 @@ public sealed class LanguageTable
     public async Task<HeroPageInfo?> LoadCurrentHeroPageInfo(string heroName)
     {
         var langCode = _appState.CurrentLanguage;
-        return await LoadHeroPageInfo(heroName, langCode);
+        return await GetHeroPageInfoCached(heroName, langCode);
     }
 
     public async Task<LangPageData?> GetAllPageData(string informalName, bool asMarkdown = true)
@@ -559,6 +528,23 @@ public sealed class LanguageTable
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
                 return await _httpClient.GetFromJsonAsync<DurationTextsModel[]>(filePath);
+            });
+
+        return outcome![langCode];
+    }
+
+    public async Task<HeroPageInfo?> GetHeroPageInfoCached(string heroName, int langCode)
+    {
+        if (!_isLoaded)
+            return null;
+
+        var outcome = await _contentCache.GetOrCreateAsync($"hero-content/{heroName}",
+            async entry =>
+            {
+                var heroPageFilePath = Path.Combine(LocationBase, _manifestContent.HeroContentDirName, 
+                    _manifestContent.HeroContentsPrefix + heroName + ".json");
+
+                return await _httpClient.GetFromJsonAsync<HeroPageInfo[]>(heroPageFilePath);
             });
 
         return outcome![langCode];
