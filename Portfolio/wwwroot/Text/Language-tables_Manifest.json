@@ -8,13 +8,13 @@
   "other-content-directory": "./Other",
   "hero-content-directory": "./Heroes",
   
-  "page-islands-text-location": "./island-texts",
+  "page-islands-text-location": "./islands",
   
   "header-filename": "header-content.json",
   "link-data-filename": "link-data.json",
   "info-table-filename": "info-table-texts.csv",
   "duration-type-filename": "duration-types.json",
   
-  "page-contents-prefix": "page-islands_",
+  "page-contents-prefix": "page-islands",
   "hero-contents-prefix": "hero_"
 }

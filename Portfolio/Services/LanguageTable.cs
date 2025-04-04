@@ -340,45 +340,6 @@ public sealed class LanguageTable
 
     #region Language Content Getters
 
-    public async Task<PageIslandModel[]?> LoadIslandsForPage(string informalName, int langCode)
-    {
-        if (!_isLoaded)
-            return default;
-
-        var (exists, langIslandData) = PageIslandsCacheExists(informalName, langCode);
-        if (exists)
-            return langIslandData;
-
-        var filePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName,
-            informalName, _manifestContent.PageContentsPrefix + SupportedCultures[langCode] + ".json");
-
-        PageIslandModel[]? contentDeserialized;
-        try
-        {
-            contentDeserialized = await _httpClient.GetFromJsonAsync<PageIslandModel[]>(filePath);
-        }
-        catch (Exception e)
-        {
-            await Console.Error.WriteLineAsync($"Failed to deserialize content from island-json file: {e}");
-            return default;
-        }
-
-        if (contentDeserialized is null)
-            return default;
-
-        var modelCount = contentDeserialized.Length;
-        for (var i = 0; i < modelCount; i++)
-        {
-            var itemPath = Path.Combine(LocationBase, _manifestContent.PageContentDirName,
-                informalName, _manifestContent.PageIslandsTextLocation, SupportedCultures[langCode], $"_{i}.html");
-            contentDeserialized[i].HtmlContentString = await _httpClient.GetStringAsync(itemPath);
-        }
-
-        CachePageIslandsDataForPage(informalName, langCode, contentDeserialized);
-
-        return contentDeserialized;
-    }
-
     public async Task<string?> LoadMarkdownForPage(string informalName, int langCode)
     {
         if (!_isLoaded)
@@ -481,14 +442,6 @@ public sealed class LanguageTable
 
     }
 
-    private Task<PageIslandModel[]?> LoadCurrentIslandsData()
-    {
-        var langCode = _appState.CurrentLanguage;
-        var informalName = CurrentRelUri.Split('/').Last();
-
-        return LoadIslandsForPage(informalName, langCode);
-    }
-
     private Task<string?> LoadCurrentMarkdownData()
     {
         var langCode = _appState.CurrentLanguage;
@@ -531,7 +484,7 @@ public sealed class LanguageTable
         }
         else
         {
-            islandsData = LoadCurrentIslandsData();
+            islandsData = GetIslandDataCached(informalName, _appState.CurrentLanguage);
         }
 
         await Task.WhenAll(headerData, linksData, markdownData, islandsData);
@@ -602,6 +555,39 @@ public sealed class LanguageTable
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
                 return await _httpClient.GetFromJsonAsync<LangLinksModel>(filePath);
+            });
+    }
+
+    public async Task<PageIslandModel[]?> GetIslandDataCached(string informalName, int langCode)
+    {
+        if (!_isLoaded)
+            return default;
+        
+        var filePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName,
+            informalName, SupportedCultures[langCode], _manifestContent.PageContentsPrefix + ".json");
+
+        return await _contentCache.GetOrCreateAsync($"page-islands/{informalName}/{langCode}",
+            async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+                
+                var contentDeserialized = await _httpClient.GetFromJsonAsync<PageIslandModel[]>(filePath);
+                var islandCount = contentDeserialized!.Length;
+
+                var tasks = new Task<string>[islandCount];
+                for (int i = 0; i < islandCount; i++)
+                {
+                    var itemPath = Path.Combine(LocationBase, _manifestContent.PageContentDirName,
+                        informalName, SupportedCultures[langCode], _manifestContent.PageIslandsTextLocation, $"_{i}.html");
+                    tasks[i] = _httpClient.GetStringAsync(itemPath);
+                }
+
+                await Task.WhenAll(tasks);
+
+                for (int i = 0; i < islandCount; i++)
+                    contentDeserialized[i].HtmlContentString = tasks[i].Result;
+
+                return contentDeserialized;
             });
     }
     
