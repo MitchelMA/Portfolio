@@ -1,0 +1,25 @@
+{
+  "min-width": 850,
+  "links": [
+    {
+      "href": "#iductie",
+      "display-text": "Introductie"
+    },
+    {
+      "href": "#game",
+      "display-text": "Gameplay"
+    },
+    {
+      "href": "#obj-pool",
+      "display-text": "Object Pooling"
+    },
+    {
+      "href": "#spawning",
+      "display-text": "Pipe Spawning"
+    },
+    {
+      "href": "#storing",
+      "display-text": "Pipe opslaan"
+    }
+  ]
+}
