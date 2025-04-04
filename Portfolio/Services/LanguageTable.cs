@@ -340,30 +340,6 @@ public sealed class LanguageTable
 
     #region Language Content Getters
 
-    public async Task<InfoTableHeaderModel?> LoadInfoTableHeaderData(int langCode)
-    {
-        if (!_isLoaded)
-            return default;
-
-        var (exists, langData) = InfoTableCacheExists(langCode);
-        if (exists)
-            return langData;
-
-        var filePath = Path.Combine(LocationBase, _manifestContent.OtherContentDirName,
-            _manifestContent.InfoTableFileName);
-        var fileContent = await _httpClient.GetStringAsync(filePath);
-
-        using var fileLexer = new CsvLexer(fileContent, CsvSettings);
-        var contentDeserialized = await fileLexer.DeserializeAsync<InfoTableHeaderModel>();
-
-        CacheInfoTable(contentDeserialized);
-
-        if (langCode >= contentDeserialized.Length)
-            return default;
-
-        return contentDeserialized[langCode];
-    }
-
     public async Task<DurationTextsModel?> LoadDurationTexts(int langCode)
     {
         if (!_isLoaded)
@@ -416,22 +392,22 @@ public sealed class LanguageTable
 
     }
 
-    public Task<InfoTableHeaderModel?> LoadCurrentInfoTableData()
+    public async Task<InfoTableHeaderModel?> LoadCurrentInfoTableData()
     {
         var langCode = _appState.CurrentLanguage;
-        return LoadInfoTableHeaderData(langCode);
+        return await GetInfoTableHeaderDataCached(langCode);
     }
 
-    public Task<DurationTextsModel?> LoadCurrentDurationTexts()
+    public async Task<DurationTextsModel?> LoadCurrentDurationTexts()
     {
         var langCode = _appState.CurrentLanguage;
-        return LoadDurationTexts(langCode);
+        return await LoadDurationTexts(langCode);
     }
 
-    public Task<HeroPageInfo?> LoadCurrentHeroPageInfo(string heroName)
+    public async Task<HeroPageInfo?> LoadCurrentHeroPageInfo(string heroName)
     {
         var langCode = _appState.CurrentLanguage;
-        return LoadHeroPageInfo(heroName, langCode);
+        return await LoadHeroPageInfo(heroName, langCode);
     }
 
     public async Task<LangPageData?> GetAllPageData(string informalName, bool asMarkdown = true)
@@ -571,6 +547,24 @@ public sealed class LanguageTable
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
                 return await _httpClient.GetStringAsync(filePath);
             });
+    }
+
+    public async Task<InfoTableHeaderModel?> GetInfoTableHeaderDataCached(int langCode)
+    {
+        if (!_isLoaded)
+            return default;
+        
+        var filePath = Path.Combine(LocationBase, _manifestContent.OtherContentDirName,
+            _manifestContent.InfoTableFileName);
+
+        var outcome = await _contentCache.GetOrCreateAsync("info-table",
+            async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+                return await _httpClient.GetFromJsonAsync<InfoTableHeaderModel[]>(filePath);
+            });
+
+        return outcome![langCode];
     }
     
     #endregion
