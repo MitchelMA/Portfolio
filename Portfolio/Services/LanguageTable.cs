@@ -340,27 +340,6 @@ public sealed class LanguageTable
 
     #region Language Content Getters
 
-    public async Task<DurationTextsModel?> LoadDurationTexts(int langCode)
-    {
-        if (!_isLoaded)
-            return default;
-
-        var (exists, langData) = DurationTextsCacheExists(langCode);
-        if (exists)
-            return langData;
-
-        var filePath = Path.Combine(LocationBase, _manifestContent.OtherContentDirName,
-            _manifestContent.DurationTypeFilename);
-        var content = await _httpClient.GetFromJsonAsync<DurationTextsModel[]>(filePath);
-
-        CacheDurationTexts(content!);
-
-        if (langCode >= content!.Length)
-            return default;
-
-        return content[langCode];
-    }
-
     public async Task<HeroPageInfo?> LoadHeroPageInfo(string heroName, int langCode)
     {
         if (!_isLoaded)
@@ -401,7 +380,7 @@ public sealed class LanguageTable
     public async Task<DurationTextsModel?> LoadCurrentDurationTexts()
     {
         var langCode = _appState.CurrentLanguage;
-        return await LoadDurationTexts(langCode);
+        return await GetDurationTextsCached(langCode);
     }
 
     public async Task<HeroPageInfo?> LoadCurrentHeroPageInfo(string heroName)
@@ -471,7 +450,7 @@ public sealed class LanguageTable
     public async Task<LangHeaderModel?> GetPageMetaDataCached(string informalName, int langCode)
     {
         if (!_isLoaded)
-            return default;
+            return null;
     
         var filePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName,
             informalName, SupportedCultures[langCode], _manifestContent.HeaderFileName);
@@ -487,7 +466,7 @@ public sealed class LanguageTable
     public async Task<LangLinksModel?> GetPageLinks(string informalName, int langCode)
     {
         if (!_isLoaded)
-            return default;
+            return null;
 
         var filePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName,
             informalName, SupportedCultures[langCode], _manifestContent.LinkDataFileName);
@@ -503,7 +482,7 @@ public sealed class LanguageTable
     public async Task<PageIslandModel[]?> GetIslandDataCached(string informalName, int langCode)
     {
         if (!_isLoaded)
-            return default;
+            return null;
         
         var filePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName,
             informalName, SupportedCultures[langCode], _manifestContent.PageContentsPrefix + ".json");
@@ -536,7 +515,7 @@ public sealed class LanguageTable
     public async Task<string?> GetPageMarkdownCached(string informalName, int langCode)
     {
         if (!_isLoaded)
-            return default;
+            return null;
         
         var filePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName,
             informalName, SupportedCultures[langCode], "text.md");
@@ -552,7 +531,7 @@ public sealed class LanguageTable
     public async Task<InfoTableHeaderModel?> GetInfoTableHeaderDataCached(int langCode)
     {
         if (!_isLoaded)
-            return default;
+            return null;
         
         var filePath = Path.Combine(LocationBase, _manifestContent.OtherContentDirName,
             _manifestContent.InfoTableFileName);
@@ -562,6 +541,24 @@ public sealed class LanguageTable
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
                 return await _httpClient.GetFromJsonAsync<InfoTableHeaderModel[]>(filePath);
+            });
+
+        return outcome![langCode];
+    }
+
+    public async Task<DurationTextsModel?> GetDurationTextsCached(int langCode)
+    {
+        if (!_isLoaded)
+            return null;
+        
+        var filePath = Path.Combine(LocationBase, _manifestContent.OtherContentDirName,
+            _manifestContent.DurationTypeFilename);
+
+        var outcome = await _contentCache.GetOrCreateAsync("info-table/durations",
+            async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+                return await _httpClient.GetFromJsonAsync<DurationTextsModel[]>(filePath);
             });
 
         return outcome![langCode];
