@@ -86,7 +86,7 @@ public partial class ProjectPage : ComponentBase, IDisposable
     
     private async Task SetLangData(object sender)
     {
-        var currentData = await LanguageTable!.LoadAllCurrentPageData();
+        var currentData = await LanguageTable!.GetAllPageData(ProjectName);
         if (currentData == null)
         {
             await Console.Error.WriteLineAsync("Couldn't get Page Data in specified language!");

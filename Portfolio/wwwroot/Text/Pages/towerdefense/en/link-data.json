@@ -1,0 +1,13 @@
+{
+  "min-width": 535,
+  "links": [
+    {
+      "href": "#iductie",
+      "display-text": "Introduction"
+    },
+    {
+      "href": "#path",
+      "display-text": "Path Finding"
+    }
+  ]
+}

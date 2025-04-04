@@ -1,0 +1,21 @@
+{
+  "min-width": 650,
+  "links": [
+    {
+      "href": "#iductie",
+      "display-text": "Introductie"
+    },
+    {
+      "href": "#i",
+      "display-text": "Input"
+    },
+    {
+      "href": "#o",
+      "display-text": "Output"
+    },
+    {
+      "href": "#op",
+      "display-text": "Opslaan"
+    }
+  ]
+}

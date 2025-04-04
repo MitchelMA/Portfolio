@@ -1,0 +1,17 @@
+{
+  "min-width": 650,
+  "links": [
+    {
+      "href": "#iductie",
+      "display-text": "Introduction"
+    },
+    {
+      "href": "#uit",
+      "display-text": "Uitwerking"
+    },
+    {
+      "href": "#systeem",
+      "display-text": "Achterliggend"
+    }
+  ]
+}

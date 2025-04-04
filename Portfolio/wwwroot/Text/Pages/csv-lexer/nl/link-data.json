@@ -1,0 +1,17 @@
+{
+  "min-width": 600,
+  "links": [
+    {
+      "href": "#iductie",
+      "display-text": "Introductie"
+    },
+    {
+      "href": "#stand",
+      "display-text": "Standaard"
+    },
+    {
+      "href": "#ex",
+      "display-text": "Voorbeeld"
+    }
+  ]
+}

@@ -30,10 +30,6 @@
 
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\Text\Pages\flappy-bird\en\" />
-  </ItemGroup>
-
 
 
 

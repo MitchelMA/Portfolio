@@ -141,7 +141,7 @@
 
     private async Task SetLangData(object? sender)
     {
-        var currentData = await LanguageTable.LoadAllCurrentPageData(false);
+        var currentData = await LanguageTable.GetAllPageData("index", false);
         if (currentData is null)
         {
             AppState.HeaderData = _headerData;

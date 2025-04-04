@@ -48,7 +48,7 @@ public partial class VerticalSlice : ComponentBase, IDisposable
 
     private async Task SetLangData(object? sender)
     {
-        var currentData = await LanguageTable!.LoadAllCurrentPageData();
+        var currentData = await LanguageTable!.GetAllPageData("vertical-slice");
         if (currentData is null)
         {
             await Console.Error.WriteLineAsync("Couldn't get Page Data in specified language!");

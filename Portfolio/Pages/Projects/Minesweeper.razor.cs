@@ -50,7 +50,7 @@ public partial class Minesweeper : ComponentBase, IDisposable
 
     private async Task SetLangData(object? sender)
     {
-        var currentData = await LanguageTable!.LoadAllCurrentPageData();
+        var currentData = await LanguageTable!.GetAllPageData("minesweeper");
         if (currentData is null)
         {
             await Console.Error.WriteLineAsync("Couldn't get Page Data in specified language!");

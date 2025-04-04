@@ -340,27 +340,6 @@ public sealed class LanguageTable
 
     #region Language Content Getters
 
-    public async Task<LangLinksModel?> LoadLinksForPage(string informalName, int langCode)
-    {
-        if (!_isLoaded)
-            return default;
-
-        var (exists, langLinksData) = LinksCacheExists(informalName, langCode);
-        if (exists)
-            return langLinksData;
-
-        var linksFilePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName, informalName,
-            _manifestContent.LinkDataFileName);
-        var linksContentDeserialized = await _httpClient.GetFromJsonAsync<LangLinksModel[]>(linksFilePath);
-
-        CacheLinksDataForPage(informalName, linksContentDeserialized!);
-
-        if (langCode >= linksContentDeserialized!.Length)
-            return default;
-
-        return linksContentDeserialized[langCode];
-    }
-
     public async Task<PageIslandModel[]?> LoadIslandsForPage(string informalName, int langCode)
     {
         if (!_isLoaded)
@@ -501,24 +480,6 @@ public sealed class LanguageTable
         return heroContentDeserialized[langCode];
 
     }
-    
-    
-    private Task<LangHeaderModel?> LoadCurrentHeaderData()
-    {
-        var langCode = _appState.CurrentLanguage;
-        var informalName = CurrentRelUri.Split('/').Last();
-
-        // return LoadHeaderForPage(informalName, langCode);
-        return GetPageMetaDataCached(informalName, langCode) ;
-    }
-
-    private Task<LangLinksModel?> LoadCurrentLinksData()
-    {
-        var langCode = _appState.CurrentLanguage;
-        var informalName = CurrentRelUri.Split('/').Last();
-
-        return LoadLinksForPage(informalName, langCode);
-    }
 
     private Task<PageIslandModel[]?> LoadCurrentIslandsData()
     {
@@ -554,16 +515,16 @@ public sealed class LanguageTable
         return LoadHeroPageInfo(heroName, langCode);
     }
 
-    public async Task<LangPageData?> LoadAllCurrentPageData(bool asMarkdown = true)
+    public async Task<LangPageData?> GetAllPageData(string informalName, bool asMarkdown = true)
     {
         if (!_isLoaded)
             return default;
         
-        var headerData = LoadCurrentHeaderData();
-        var linksData = LoadCurrentLinksData();
-
+        var headerData = GetPageMetaDataCached(informalName, _appState.CurrentLanguage);
+        var linksData = GetPageLinks(informalName, _appState.CurrentLanguage);
         var markdownData = Task.FromResult<string?>(null);
         var islandsData = Task.FromResult<PageIslandModel[]?>(null);
+        
         if (asMarkdown)
         {
             markdownData = LoadCurrentMarkdownData();
@@ -573,12 +534,14 @@ public sealed class LanguageTable
             islandsData = LoadCurrentIslandsData();
         }
 
+        await Task.WhenAll(headerData, linksData, markdownData, islandsData);
+
         LangPageData data = new()
         {
-            HeaderData = await headerData,
-            LinksData = await linksData,
-            PageIslandsData = await islandsData,
-            PageMarkdownText = await markdownData
+            HeaderData = headerData.Result,
+            LinksData = linksData.Result,
+            PageIslandsData = islandsData.Result,
+            PageMarkdownText = markdownData.Result
         };
 
         return data;
@@ -623,6 +586,22 @@ public sealed class LanguageTable
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
                 return await _httpClient.GetFromJsonAsync<LangHeaderModel>(filePath);
+            });
+    }
+
+    public async Task<LangLinksModel?> GetPageLinks(string informalName, int langCode)
+    {
+        if (!_isLoaded)
+            return default;
+
+        var filePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName,
+            informalName, SupportedCultures[langCode], _manifestContent.LinkDataFileName);
+
+        return await _contentCache.GetOrCreateAsync<LangLinksModel>($"links/{informalName}/{langCode}",
+            async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+                return await _httpClient.GetFromJsonAsync<LangLinksModel>(filePath);
             });
     }
     
