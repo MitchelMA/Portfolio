@@ -62,7 +62,7 @@ public partial class ProjectPage : ComponentBase, IDisposable
     {
         AppState!.ShowFooter = true;
         
-        _model = await ProjectInfoGetter!.GetCorrespondingToUri();
+        _model = await ProjectInfoGetter!.GetWithHref(ProjectName);
         ParentLayout.Model = _model;
         AppState.PageIcon = _model!.Value.Header.PageIcon ?? StaticData.DefaultPageIcon;
 
@@ -73,7 +73,7 @@ public partial class ProjectPage : ComponentBase, IDisposable
 
     private async Task SetPageData()
     {
-        _model = await ProjectInfoGetter!.GetCorrespondingToUri();
+        _model = await ProjectInfoGetter!.GetWithHref(ProjectName);
         ParentLayout.Model = _model;
 
         if (AppState != null)
