@@ -2,6 +2,7 @@
 @using Portfolio.Mappers
 @using Portfolio.Model.Project
 @using System.Collections
+@using Portfolio.Model.Text
 @inject HttpClient HttpClient
 @inject LanguageTable LanguageTable
 @inject AppState AppState
@@ -249,19 +250,26 @@
     
     private async Task SetLangData(object? sender)
     {
-        List<CarouselModel> data = new();
         var tmp = await HttpClient.GetFromJsonAsync<ProjectDataModel[]>(_fromJsonFile);
         var langCode = AppState.CurrentLanguage;
-
         var l = tmp?.Length ?? 0;
-        for (var i = 0; i < l; i++)
+        
+        var tasks = new Task<LangHeaderModel?>[l];
+
+        for (int i = 0; i < l; i++)
+            tasks[i] = LanguageTable.GetPageMetaDataCached(tmp![i].InformalName, langCode);
+
+        await Task.WhenAll(tasks);
+
+        var data = new CarouselModel[l];
+        for (int i = 0; i < l; i++)
         {
-            var cur = tmp![i];
-            var model = Mapper.MapFrom(cur);
-            model.HeaderData = (await LanguageTable.LoadHeaderForPage(model.InformalName!, langCode))!.Value;
-            data.Add(model);
+            var model = Mapper.MapFrom(tmp![i]);
+            model.HeaderData = tasks[i].Result!.Value;
+            data[i] = model;
         }
-        _allModels = data.ToArray();
+
+        _allModels = data;
         ApplyRangeFilter(_highLightRanges);
         
         ScrollThrough(CurrentIdx);

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Routing;
 using Portfolio.Enums;
 using Portfolio.Extensions;
 using Portfolio.Model.Project;
+using Portfolio.Model.Text;
 using Portfolio.Services;
 
 namespace Portfolio.Shared.Components.Navigation;
@@ -91,15 +92,24 @@ public partial class ProjectsNav : ComponentBase, IDisposable
     {
         var uris = _relevantProjects?.Keys.ToArray() ?? Array.Empty<string>();
         var length = uris.Length;
+        var tasks = new Task<LangHeaderModel?>[length];
         var titles = new string[uris.Length];
 
-        for (var i = 0; i < length; i++)
-        {
-            var headerData = await LangTable!.LoadHeaderForPage(uris[i], AppState!.CurrentLanguage);
-            if (headerData is null)
-                return default;
-            titles[i] = headerData.Value.Title;
-        }
+        for (int i = 0; i < length; i++)
+            tasks[i] = LangTable!.GetPageMetaDataCached(uris[i], AppState!.CurrentLanguage);
+
+        await Task.WhenAll(tasks);
+
+        for (int i = 0; i < length; i++)
+            titles[i] = tasks[i].Result!.Value.Title;
+
+        // for (var i = 0; i < length; i++)
+        // {
+        //     var headerData = await LangTable!.LoadHeaderForPage(uris[i], AppState!.CurrentLanguage);
+        //     if (headerData is null)
+        //         return default;
+        //     titles[i] = headerData.Value.Title;
+        // }
 
         return titles;
     }

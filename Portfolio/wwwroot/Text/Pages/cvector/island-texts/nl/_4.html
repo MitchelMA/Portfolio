@@ -1,8 +1,0 @@
-<p>
-    Eén van de dingen waar je mee moet opletten bij het gebruik van deze struct, is dat het groeiende geheugen op de
-    <a href="https://www.guru99.com/stack-vs-heap.html" target="_blank">heap</a>
-    leeft.
-    In C is het in deze situatie misschien dus wel onhandig dat een `struct` niet zoiets kent als een `destructor` member.
-    Wat betekend dat je dit dus handmatig moet doen. Je moet dus als gebruiker altijd de 
-    <code>void vector_clean()</code> function aanroepen om de vector op te ruimen wanneer je klaar bent met het gebruiken.
-</p>

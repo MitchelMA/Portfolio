@@ -1,15 +1,15 @@
-﻿using Portfolio.Attributes;
+﻿using System.Text.Json.Serialization;
 
 namespace Portfolio.Model.Text;
 
 public struct LangHeaderModel
 {
-    [CsvPropertyName("title")]
+    [JsonPropertyName("title")]
     public string Title { get; init; }
-    [CsvPropertyName("under-title")]
+    [JsonPropertyName("under-title")]
     public string UnderTitle { get; init; }
-    [CsvPropertyName("description")]
+    [JsonPropertyName("description")]
     public string Description { get; init; }
-    [CsvPropertyName("page-title-extension")]
+    [JsonPropertyName("page-title-extension")]
     public string PageTitleExtension { get; init; }
 }
