@@ -42,8 +42,6 @@ public partial class ProjectPage : ComponentBase, IDisposable
     private ProjectInfoGetter? ProjectInfoGetter { get; init; }
     [Inject]
     private LanguageTable? LanguageTable { get; init; }
-    [Inject]
-    private LangTablePreCacher? LangTablePreCacher { get; init; }
     
     [Inject]
     private IMapper<LangHeaderModel, HeaderData>? HeaderDataMapper { get; init; }
@@ -62,7 +60,6 @@ public partial class ProjectPage : ComponentBase, IDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        LangTablePreCacher!.Extra = new[] { "./index" };
         AppState!.ShowFooter = true;
         
         _model = await ProjectInfoGetter!.GetCorrespondingToUri();
@@ -97,7 +94,6 @@ public partial class ProjectPage : ComponentBase, IDisposable
         }
 
         SetPageContent(currentData);
-        await LangTablePreCacher!.PreCache(AppState!.CurrentLanguage);
     }
 
     private void SetPageContent(LangPageData model)

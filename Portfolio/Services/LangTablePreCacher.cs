@@ -1,5 +1,6 @@
 ﻿namespace Portfolio.Services;
 
+[Obsolete("This class is obsolute and should not be used")]
 public class LangTablePreCacher
 {
     private string[]? _extra;

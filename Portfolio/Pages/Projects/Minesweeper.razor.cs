@@ -26,8 +26,6 @@ public partial class Minesweeper : ComponentBase, IDisposable
     [Inject]
     private LanguageTable? LanguageTable { get; init; }
     [Inject]
-    private LangTablePreCacher? PreCacher { get; init; }
-    [Inject]
     private IMapper<LangHeaderModel, HeaderData>? HeaderMapper { get; init; }
     [Inject]
     private IMapper<LangLinkModel, NavLinkData>? LinkMapper { get; init; }
@@ -38,8 +36,6 @@ public partial class Minesweeper : ComponentBase, IDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        PreCacher!.Extra = new[] { "./index" };
-        
         _model = await ProjectInfoGetter!.GetCorrespondingToUri();
         ParentLayout.Model = _model;
 
@@ -62,7 +58,6 @@ public partial class Minesweeper : ComponentBase, IDisposable
         }
 
         SetPageContent(currentData);
-        await PreCacher!.PreCache(AppState!.CurrentLanguage);
     }
 
     private void SetPageContent(LangPageData langPageData)

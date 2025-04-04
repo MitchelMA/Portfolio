@@ -20,8 +20,6 @@ public partial class CsvLexing : ComponentBase, IDisposable
     private ProjectInfoGetter? ProjectInfoGetter { get; init; }
     [Inject]
     private LanguageTable? LanguageTable { get; init; }
-    [Inject]
-    private LangTablePreCacher? PreCacher { get; init; }
     
     [Inject]
     private IMapper<LangHeaderModel, HeaderData>? HeaderMapper { get; init; }
@@ -35,8 +33,6 @@ public partial class CsvLexing : ComponentBase, IDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        PreCacher!.Extra = new[] { "./index" };
-        
         _model = await ProjectInfoGetter!.GetCorrespondingToUri();
         ParentLayout.Model = _model;
         
@@ -59,7 +55,6 @@ public partial class CsvLexing : ComponentBase, IDisposable
         }
         
         SetPageContent(currentData);
-        await PreCacher!.PreCache(AppState!.CurrentLanguage);
     }
 
     private void SetPageContent(LangPageData langPageData)

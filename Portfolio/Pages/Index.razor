@@ -9,7 +9,6 @@
 @inject AppState AppState
 @inject LightboxRegistry LightboxRegistry
 @inject LanguageTable LanguageTable
-@inject LangTablePreCacher PreCacher;
 
 @inject IMapper<LangLinkModel, NavLinkData> LinkMapper
 
@@ -151,7 +150,6 @@
         }
         
         SetPageContent(currentData);
-        await PreCacher.PreCache(AppState.CurrentLanguage);
     }
 
     private void SetPageContent(LangPageData langPageData)
