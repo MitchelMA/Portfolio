@@ -19,7 +19,19 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\CarouselData\Projects.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\Text\Pages\csv-lexer\island-texts\nl\_0.html" />
+    <_ContentIncludedByDefault Remove="wwwroot\Text\Pages\csv-lexer\island-texts\nl\_1.html" />
+    <_ContentIncludedByDefault Remove="wwwroot\Text\Pages\csv-lexer\island-texts\nl\_2.html" />
+    <_ContentIncludedByDefault Remove="wwwroot\Text\Pages\line-collisions\island-texts\nl\_0.html" />
+    <_ContentIncludedByDefault Remove="wwwroot\Text\Pages\line-collisions\island-texts\nl\_1.html" />
+    <_ContentIncludedByDefault Remove="wwwroot\Text\Pages\line-collisions\island-texts\nl\_2.html" />
+    <_ContentIncludedByDefault Remove="wwwroot\Text\Pages\towerdefense\island-texts\nl\_0.html" />
+    <_ContentIncludedByDefault Remove="wwwroot\Text\Pages\towerdefense\island-texts\nl\_1.html" />
 
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Text\Pages\flappy-bird\en\" />
   </ItemGroup>
 
 

@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Caching.Memory;
 using Portfolio.Client;
 using Portfolio.Configuration;
 using Portfolio.Converters.CSV;
@@ -21,6 +22,8 @@ public sealed class LanguageTable
     private readonly NavigationManager _navManager;
     private readonly AppState _appState;
     private readonly HttpClient _httpClient;
+
+    private IMemoryCache _contentCache;
 
     #region CacheData contents
 
@@ -86,10 +89,12 @@ public sealed class LanguageTable
     public event LanguageChangedDelegate? LanguageChanged;
     public event LanguageChangedDelegateAsync? LanguageChangedAsync;
 
-    public LanguageTable(NavigationManager navMan, AppState appState)
+    public LanguageTable(NavigationManager navMan, AppState appState, IMemoryCache contentCache)
     {
         _navManager = navMan;
         _appState = appState;
+        _contentCache = contentCache;
+        
         _httpClient = new HttpClient
         {
             BaseAddress = new Uri(_navManager.BaseUri)
@@ -335,30 +340,6 @@ public sealed class LanguageTable
 
     #region Language Content Getters
 
-    public async Task<LangHeaderModel?> LoadHeaderForPage(string informalName, int langCode)
-    {
-        if (!_isLoaded)
-            return default;
-
-        var (exists, langHeaderData) = HeaderCacheExists(informalName, langCode);
-        if (exists)
-            return langHeaderData;
-
-        var headerFilePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName, informalName,
-            _manifestContent.HeaderFileName);
-        var headerFileContent = await _httpClient.GetStringAsync(headerFilePath);
-
-        using var headerFileLexer = new CsvLexer(headerFileContent, CsvSettings);
-        var headerContentDeserialized = await headerFileLexer.DeserializeAsync<LangHeaderModel>();
-
-        CacheHeaderDataForPage(informalName, headerContentDeserialized);
-
-        if (langCode >= headerContentDeserialized.Length)
-            return default;
-
-        return headerContentDeserialized[langCode];
-    }
-
     public async Task<LangLinksModel?> LoadLinksForPage(string informalName, int langCode)
     {
         if (!_isLoaded)
@@ -527,7 +508,8 @@ public sealed class LanguageTable
         var langCode = _appState.CurrentLanguage;
         var informalName = CurrentRelUri.Split('/').Last();
 
-        return LoadHeaderForPage(informalName, langCode);
+        // return LoadHeaderForPage(informalName, langCode);
+        return GetPageMetaDataCached(informalName, langCode) ;
     }
 
     private Task<LangLinksModel?> LoadCurrentLinksData()
@@ -602,27 +584,6 @@ public sealed class LanguageTable
         return data;
     }
 
-    public bool PreCacheAll(IEnumerable<string> informalNames, int langCode)
-    {
-        if (!_isLoaded)
-            return false;
-
-        var enumerated = informalNames as string[] ?? informalNames.ToArray();
-
-        var uriCount = enumerated.Length;
-        for (var i = 0; i < uriCount; i++)
-        {
-            var currentInformalName = enumerated[i];
-            _ = LoadHeaderForPage(currentInformalName, langCode);
-            _ = LoadLinksForPage(currentInformalName, langCode);
-            _ = LoadMarkdownForPage(currentInformalName, langCode);
-            // We're not pre-caching page island data, as that is an outdated system I used.
-            // Only the landing-page uses this and thus it needs not to be pre-fetched
-        }
-
-        return true;
-    }
-
     public void AwaitLanguageContent(ManifestLoadedDelegate onReady)
     {
         if (_isLoaded)
@@ -647,6 +608,26 @@ public sealed class LanguageTable
 
     #endregion
 
+    #region New Cached Content Getters
+
+    public async Task<LangHeaderModel?> GetPageMetaDataCached(string informalName, int langCode)
+    {
+        if (!_isLoaded)
+            return default;
+    
+        var filePath = Path.Combine(LocationBase, _manifestContent.PageContentDirName,
+            informalName, SupportedCultures[langCode], _manifestContent.HeaderFileName);
+        
+        return await _contentCache.GetOrCreateAsync<LangHeaderModel>($"meta-data/{informalName}/{langCode}",
+            async entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+                return await _httpClient.GetFromJsonAsync<LangHeaderModel>(filePath);
+            });
+    }
+    
+    #endregion
+    
     #region Language Setters
 
     public int GetLanguageIdx(string cultureName)

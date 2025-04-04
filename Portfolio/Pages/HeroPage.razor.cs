@@ -68,12 +68,16 @@ public partial class HeroPage : ComponentBase, IDisposable
     private async Task SetLanguageData()
     {
         var l = _heroProjectsData!.Length;
+        var tasks = new Task<LangHeaderModel?>[l];
+        
+        for (int i = 0; i < l; i++)
+            tasks[i] = LangTable.GetPageMetaDataCached(_heroProjectsData[i].InformalName, AppState.CurrentLanguage);
+        await Task.WhenAll(tasks);
+
         _langHeaderData = new LangHeaderModel[l];
-        for (var i = 0; i < l; i++)
-        {
-            var model = _heroProjectsData[i];
-            _langHeaderData[i] = (await LangTable.LoadHeaderForPage(model.InformalName, AppState.CurrentLanguage))!.Value;
-        }
+        for (int i = 0; i < l; i++)
+            _langHeaderData[i] = tasks[i].Result!.Value;
+        
         StateHasChanged();
     }
 
