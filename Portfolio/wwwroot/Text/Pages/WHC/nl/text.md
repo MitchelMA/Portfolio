@@ -2,7 +2,7 @@
 <p style="text-align: justify">
 Weapon Handling Course - WHC - is het project waar ik aan gewerkt heb ten tijden van mijn stage bij het
 Simulatie Centrum Maritiem te Den Helder. Ik heb hier tijdens mijn stage met twee andere mensen aan gewerkt.
-Een hiervan was een Game Artist en de andere was een Developer en gezamelijk zijn zij de project leads.
+Een hiervan was een Artist en de andere was een Developer en gezamelijk zijn zij de project leads.
 </p>
 
 ## Screenshots Wapenkamer {#wapenkamer}
