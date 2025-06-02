@@ -1,0 +1,9 @@
+{
+  "min-width": 700,
+  "links": [
+    {
+      "href": "#exam",
+      "display-text": "Examen"
+    }
+  ]
+}
