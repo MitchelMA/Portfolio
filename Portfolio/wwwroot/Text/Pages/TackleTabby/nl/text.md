@@ -68,4 +68,5 @@ De Visual-Sheet van het hele process:
 ## Art-Referencies {#references}
 \<Art-stations\> van de verschillende artists.  
 
- - [Charlotte op ArtStation](https://www.artstation.com/magicmoogers)
+ - <a href="https://www.artstation.com/magicmoogers" target="_blank">Charlotte</a>
+ - <a href="https://www.artstation.com/simon-do" target="_blank">Simon</a>
