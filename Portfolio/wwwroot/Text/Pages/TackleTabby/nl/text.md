@@ -66,4 +66,6 @@ De Visual-Sheet van het hele process:
 <a href="https://github.com/WizelfMike/TackleTabby/wiki/Technical-Design#removing--spawning--falling" target="_blank">Technical-Design</a>
 
 ## Art-Referencies {#references}
-\<Art-stations\> van de verschillende artists.
+\<Art-stations\> van de verschillende artists.  
+
+ - [Charlotte op ArtStation](https://www.artstation.com/magicmoogers)
