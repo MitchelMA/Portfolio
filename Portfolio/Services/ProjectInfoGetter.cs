@@ -66,7 +66,7 @@ public class ProjectInfoGetter
     {
         var added = _data.TryAdd(model.InformalName, model);
         if (!added)
-            _data[model.LocalHref] = model;
+            _data[model.InformalName] = model;
 
         return added;
     }

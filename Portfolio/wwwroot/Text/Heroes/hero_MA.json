@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Ma Projecten",
+    "description": "De Projecten waar ik aan heb gewerkt tijdens mijn studie aan het Media College in Amsterdam",
+    "page-title-extension": "- Ma Projecten",
+    "page-icon": "./images/AboutMeCroppedHead.webp",
+    "banner-img": "./images/Starfall.jpg",
+    "theme-colour": "#ff00ff"
+  },
+  {
+    "title": "Ma Projects",
+    "description": "The projects I worked on during my studies at the Media College in Amsterdam",
+    "page-title-extension": "- Ma Projects",
+    "page-icon": "./images/AboutMeCroppedHead.webp",
+    "banner-img": "./images/Starfall.jpg",
+    "theme-colour": "#ff00ff"
+  }
+]

@@ -1,5 +1,6 @@
 ﻿@using Portfolio.Model.Project
 @using Portfolio.Mappers
+@using Portfolio.Model.Text
 
 @page "/projects"
 @page "/projects/{Filter:int}"
@@ -161,20 +162,23 @@
     {
         var langCode = AppState.CurrentLanguage;
         var dataModelCount = _allModels!.Length;
+        var tasks = new Task<LangHeaderModel?>[dataModelCount];
+        var data = new CarouselModel[dataModelCount];
 
-        var data = new List<CarouselModel>();
-        
-        for (var i = 0; i < dataModelCount; i++)
+        for (int i = 0; i < dataModelCount; i++)
+            tasks[i] = LangTable.GetPageMetaDataCached(_allModels[i].InformalName, langCode);
+
+        await Task.WhenAll(tasks);
+
+        for (int i = 0; i < dataModelCount; i++)
         {
-            var cur = _allModels[i];
-            var model = Mapper.MapFrom(cur);
-            model.HeaderData = (await LangTable.LoadHeaderForPage(model.InformalName!, langCode))!.Value;
-            data.Add(model);
+            var model = Mapper.MapFrom(_allModels[i]);
+            model.HeaderData = tasks[i].Result!.Value;
+            data[i] = model;
         }
 
-        _allDisplayModels = data.ToArray();
+        _allDisplayModels = data;
         _filteredDisplayModels = _allDisplayModels.Where(m => m.Tags.HasFlag(_filter)).ToArray();
-        
         StateHasChanged();
     }
 

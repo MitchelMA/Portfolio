@@ -42,8 +42,6 @@ public partial class ProjectPage : ComponentBase, IDisposable
     private ProjectInfoGetter? ProjectInfoGetter { get; init; }
     [Inject]
     private LanguageTable? LanguageTable { get; init; }
-    [Inject]
-    private LangTablePreCacher? LangTablePreCacher { get; init; }
     
     [Inject]
     private IMapper<LangHeaderModel, HeaderData>? HeaderDataMapper { get; init; }
@@ -62,10 +60,9 @@ public partial class ProjectPage : ComponentBase, IDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        LangTablePreCacher!.Extra = new[] { "./index" };
         AppState!.ShowFooter = true;
         
-        _model = await ProjectInfoGetter!.GetCorrespondingToUri();
+        _model = await ProjectInfoGetter!.GetWithHref(ProjectName);
         ParentLayout.Model = _model;
         AppState.PageIcon = _model!.Value.Header.PageIcon ?? StaticData.DefaultPageIcon;
 
@@ -76,7 +73,7 @@ public partial class ProjectPage : ComponentBase, IDisposable
 
     private async Task SetPageData()
     {
-        _model = await ProjectInfoGetter!.GetCorrespondingToUri();
+        _model = await ProjectInfoGetter!.GetWithHref(ProjectName);
         ParentLayout.Model = _model;
 
         if (AppState != null)
@@ -89,7 +86,7 @@ public partial class ProjectPage : ComponentBase, IDisposable
     
     private async Task SetLangData(object sender)
     {
-        var currentData = await LanguageTable!.LoadAllCurrentPageData();
+        var currentData = await LanguageTable!.GetAllPageData(ProjectName);
         if (currentData == null)
         {
             await Console.Error.WriteLineAsync("Couldn't get Page Data in specified language!");
@@ -97,7 +94,6 @@ public partial class ProjectPage : ComponentBase, IDisposable
         }
 
         SetPageContent(currentData);
-        await LangTablePreCacher!.PreCache(AppState!.CurrentLanguage);
     }
 
     private void SetPageContent(LangPageData model)
