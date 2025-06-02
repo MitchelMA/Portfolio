@@ -132,5 +132,23 @@
       "SetHeight": "21rem"
     },
     "Heroes": ["SCM"]
+  },
+  {
+    "Planning": {
+      "Duration": 1,
+      "DurationType": "year",
+      "PeopleCount": 3,
+      "Software": "Unreal Engine, C++"
+    },
+    "Header": {
+      "HeaderImage": "./images/WHC/WHC7.png"
+    },
+    "Tags": "InDevelopment, UnrealCxxProject",
+    "LocalHref": "./project/WHC",
+    "InformalName": "WHC",
+    "CardInfo": {
+      "SetHeight": "21rem"
+    },
+    "Heroes": ["SCM"]
   }
 ]
