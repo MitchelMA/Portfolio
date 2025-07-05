@@ -4,7 +4,7 @@
     margin: 0 auto;
     position: relative;
     
-    --columnTemplate: min(925px, 100%) 1fr;
+    --columnTemplate: min(890px, 100%) 1fr;
     display: grid;
     grid-template-columns: var(--columnTemplate);
     grid-template-areas: "main right" ;
