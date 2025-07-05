@@ -1,0 +1,25 @@
+{
+  "min-width": 700,
+  "links": [
+    {
+      "href": "#exam",
+      "display-text": "Examen"
+    },
+    {
+      "href": "#idea",
+      "Display-text": "Idee"
+    },
+    {
+      "href": "#gameplay",
+      "display-text": "Gameplay"
+    },
+    {
+      "href": "#mechanics",
+      "display-text": "Mechanics"
+    },
+    {
+      "href": "#references",
+      "display-text": "Referencies"
+    }
+  ]
+}
