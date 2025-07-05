@@ -10,5 +10,5 @@ public static class StaticData
    public const string MainHeaderImgPath = "./images/cmd_CaIolk4veY.png";
    public const string ScrollDownImage = "./images/scrolldown_image.png";
    public const string LockedClassName = "scroll-locked";
-   public const string GitHubStartLink = "https://github.com/MitchelMA/";
+   public const string GitHubStartLink = "";
 }
