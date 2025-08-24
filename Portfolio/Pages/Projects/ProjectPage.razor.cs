@@ -6,7 +6,6 @@ using Portfolio.Model.Project;
 using Portfolio.Model.Text;
 using Portfolio.Services;
 using Portfolio.Services.Markdown;
-using Portfolio.Shared.Components.Lightbox;
 using Portfolio.Shared.Layouts;
 
 namespace Portfolio.Pages.Projects;
@@ -32,7 +31,6 @@ public partial class ProjectPage : ComponentBase, IDisposable
         }
     }
 
-
     [CascadingParameter]
     private ProjectLayout ParentLayout { get; init; } = null!;
     
@@ -48,29 +46,32 @@ public partial class ProjectPage : ComponentBase, IDisposable
     [Inject]
     private IMapper<LangLinkModel, NavLinkData>? NavLinkDataMapper { get; init; }
 
-    private ImageEnlargeContainer? EnlargeContainer { get; set; }
-    
     private NavLinkData[]? _links;
     private ProjectDataModel? _model;
     private string? _markdownText;
     private bool _hadFirstProjectRender;
-    private readonly CancellationTokenSource _enlargerWaitToken = new();
     
     private readonly ProjectMarkdown _projectMarkdown = new () {ExtraMode = true};
 
+    #region Inherited Overrides
     protected override async Task OnInitializedAsync()
     {
+        LanguageTable!.LanguageChangedAsync += OnLanguageChanged;
+        
         AppState!.ShowFooter = true;
         
         _model = await ProjectInfoGetter!.GetWithHref(ProjectName);
         ParentLayout.Model = _model;
         AppState.PageIcon = _model!.Value.Header.PageIcon ?? StaticData.DefaultPageIcon;
-
-        LanguageTable!.LanguageChangedAsync += OnLanguageChanged;
-
-        await LanguageTable.AwaitLanguageContentAsync(SetLangData);
+        
+        await LanguageTable!.AwaitLanguageContentAsync(SetLangData);
     }
 
+    #endregion
+    
+    private Task OnLanguageChanged(object sender, int newCultureIdx) => SetLangData(sender);
+
+    #region Data Setters
     private async Task SetPageData()
     {
         _model = await ProjectInfoGetter!.GetWithHref(ProjectName);
@@ -81,8 +82,6 @@ public partial class ProjectPage : ComponentBase, IDisposable
 
         await SetLangData(this);
     }
-
-    private Task OnLanguageChanged(object sender, int newCultureIdx) => SetLangData(sender);
     
     private async Task SetLangData(object sender)
     {
@@ -93,10 +92,10 @@ public partial class ProjectPage : ComponentBase, IDisposable
             return;
         }
 
-        SetPageContent(currentData);
+        await SetPageContent(currentData);
     }
 
-    private void SetPageContent(LangPageData model)
+    private async Task SetPageContent(LangPageData model)
     {
         _hadFirstProjectRender = true;
         SetHeaderData(model.HeaderData);
@@ -104,13 +103,15 @@ public partial class ProjectPage : ComponentBase, IDisposable
         SetMarkdownData(model.PageMarkdownText);
         StateHasChanged();
         
-        _ = WaitForValidate(50, _enlargerWaitToken.Token);
+        // Notify the parent that the language-content of the child has been set
+        await ParentLayout.OnChildContentSet();
     }
 
     private void SetHeaderData(LangHeaderModel? headerData)
     {
         if (headerData == null)
             return;
+        
         var header = HeaderDataMapper!.MapFrom(headerData.Value);
         header.ImagePath = _model!.Value.Header.HeaderImage;
         AppState!.HeaderData = header;
@@ -135,35 +136,14 @@ public partial class ProjectPage : ComponentBase, IDisposable
     {
         _markdownText = markdownText;
     }
-
-    private async ValueTask SetEnlargerPageContent()
-    {
-        if (EnlargeContainer is null)
-            return;
-        
-        await EnlargeContainer.OnPageContentSet(".page-island.md img[title=open");
-    }
-
-    private async Task WaitForValidate(int waitDelay, CancellationToken cancellationToken)
-    {
-        while (!(EnlargeContainer?.IsModuleLoaded ?? false))
-        {
-            await Task.Delay(waitDelay, cancellationToken);
-            if (cancellationToken.IsCancellationRequested)
-                return;
-        }
-        
-        if (cancellationToken.IsCancellationRequested)
-            return;
-
-        await SetEnlargerPageContent();
-    }
-
+    #endregion 
+    
+    #region Disposable
     public void Dispose()
     {
-        _enlargerWaitToken.Cancel();
         LanguageTable!.ManifestLoadedAsync -= SetLangData;
         LanguageTable.LanguageChangedAsync -= OnLanguageChanged;
         GC.SuppressFinalize(this);
     }
+    #endregion
 }
