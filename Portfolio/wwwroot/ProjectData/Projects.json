@@ -93,7 +93,8 @@
     "GitHub": "https://github.com/MitchelMA/Minesweeper-cpp",
     "CardInfo": {
       "SetHeight": "21rem"
-    }
+    },
+    "Heroes": ["Hobby"]
   },
   {
     "Planning": {
@@ -111,7 +112,8 @@
     "GitHub": "https://github.com/MitchelMA/CVector",
     "CardInfo": {
       "SetHeight": "21rem"
-    }
+    },
+    "Heroes": ["Hobby"]
   },
   {
     "Planning": {
