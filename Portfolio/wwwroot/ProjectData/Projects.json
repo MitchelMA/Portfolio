@@ -12,7 +12,11 @@
     "Tags": "UnityFinished",
     "LocalHref": "./project/towerdefense",
     "InformalName": "towerdefense",
-    "GitHub": "https://github.com/MitchelMA/towerdefense",
+    "Repository": {
+      "OriginType": "GitHub",
+      "UserName": "MitchelMA",
+      "RepositoryName": "towerdefense"
+    },
     "CardInfo": {
       "SetHeight": "21rem"
     },
@@ -32,7 +36,11 @@
     "Tags": "UnityPrototype, Finished",
     "LocalHref": "./project/line-collisions",
     "InformalName": "line-collisions",
-    "GitHub": "https://github.com/MitchelMA/Line-collision",
+    "Repository": {
+      "OriginType": "GitHub",
+      "UserName": "MitchelMA",
+      "RepositoryName": "line-collision"
+    },
     "CardInfo": {
       "SetHeight": "21rem"
     },
@@ -51,7 +59,11 @@
     "Tags": "UnityFinished",
     "LocalHref": "./project/vertical-slice",
     "InformalName": "vertical-slice",
-    "GitHub": "https://github.com/MitchelMA/Vertical-Slice-P2",
+    "Repository": {
+      "OriginType": "GitHub",
+      "UserName": "MitchelMA",
+      "RepositoryName": "Vertical-Slice-P2"
+    },
     "CardInfo": {
       "SetHeight": "21rem"
     },
@@ -71,7 +83,11 @@
     "Tags": "Finished, DotNet, CSharp, Lib",
     "LocalHref": "./project/csv-lexer",
     "InformalName": "csv-lexer",
-    "GitHub": "https://github.com/MitchelMA/Csv-lexer",
+    "Repository": {
+      "OriginType": "GitHub",
+      "UserName": "MitchelMA",
+      "RepositoryName": "Csv-lexer"
+    },
     "CardInfo": {
       "SetHeight": "21rem"
     }
@@ -90,7 +106,11 @@
     "Tags": "CxxFinished",
     "LocalHref": "./project/minesweeper",
     "InformalName": "minesweeper",
-    "GitHub": "https://github.com/MitchelMA/Minesweeper-cpp",
+    "Repository": {
+      "OriginType": "GitHub",
+      "UserName": "MitchelMA",
+      "RepositoryName": "Minesweeper-cpp"
+    },
     "CardInfo": {
       "SetHeight": "21rem"
     }
@@ -108,7 +128,11 @@
     "Tags": "CFinished, Lib",
     "LocalHref": "./project/cvector",
     "InformalName": "cvector",
-    "GitHub": "https://github.com/MitchelMA/CVector",
+    "Repository": {
+      "OriginType": "GitHub",
+      "UserName": "MitchelMA",
+      "RepositoryName": "CVector"
+    },
     "CardInfo": {
       "SetHeight": "21rem"
     }
@@ -127,7 +151,11 @@
     "Tags": "Finished, UnrealCxxProject",
     "LocalHref": "./project/flappy-bird",
     "InformalName": "flappy-bird",
-    "GitHub": "https://github.com/MitchelMA/FlappyBird",
+    "Repository": {
+      "OriginType": "GitHub",
+      "UserName": "MitchelMA",
+      "RepositoryName": "FlappyBird"
+    },
     "CardInfo": {
       "SetHeight": "21rem"
     },
@@ -165,7 +193,11 @@
     "Tags": "Finished, UnityProject",
     "LocalHref": "./project/TackleTabby",
     "InformalName": "TackleTabby",
-    "GitHub": "https://github.com/WizelfMike/TackleTabby",
+    "Repository": {
+      "OriginType": "GitHub",
+      "UserName": "WizelfMike",
+      "RepositoryName": "TackleTabby"
+    },
     "CardInfo": {
       "SetHeight": "21rem"
     },
