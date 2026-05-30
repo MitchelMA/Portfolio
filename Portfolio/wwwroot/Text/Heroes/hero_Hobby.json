@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Hobby Projecten",
+    "description": "Hobby-projecten waar ik in mijn vrije tijd aan werk/heb gewerkt",
+    "page-title-extension": " - Hobby Projecten",
+    "page-icon": "./images/minesweeper/minesweepericon.png",
+    "banner-img": "./images/minesweeper/WindowsTerminal_Go2DqqA6XS.png",
+    "theme-colour": "#f44336"
+  },
+  {
+    "title": "Hobby Projects",
+    "description": "Hobby-projects which I worked on during my own leisure time",
+    "page-title-extension": " - Hobby Projects",
+    "page-icon": "./images/minesweeper/minesweepericon.png",
+    "banner-img": "./images/minesweeper/WindowsTerminal_Go2DqqA6XS.png",
+    "theme-colour": "#f44336"
+  }
+]
