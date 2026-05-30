@@ -113,7 +113,8 @@
     },
     "CardInfo": {
       "SetHeight": "21rem"
-    }
+    },
+    "Heroes": ["Hobby"]
   },
   {
     "Planning": {
@@ -135,7 +136,8 @@
     },
     "CardInfo": {
       "SetHeight": "21rem"
-    }
+    },
+    "Heroes": ["Hobby"]
   },
   {
     "Planning": {

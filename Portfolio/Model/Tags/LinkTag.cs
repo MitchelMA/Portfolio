@@ -1,5 +1,4 @@
 using System.Text;
-using Microsoft.Extensions.Primitives;
 
 namespace Portfolio.Model.Tags;
 
@@ -16,7 +15,7 @@ public class LinkTag
         {
             foreach (var item in Attributes)
             {
-                sb.Append($"{item.Key}=\"{item.Value.ToString()}\" ");
+                sb.Append($"{item.Key}=\"{item.Value?.ToString()}\" ");
             }
         }
 
