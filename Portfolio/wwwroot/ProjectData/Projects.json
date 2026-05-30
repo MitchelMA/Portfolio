@@ -204,5 +204,28 @@
       "SetHeight": "21rem"
     },
     "Heroes": ["MA"]
+  },
+  {
+    "Planning": {
+      "Duration": 3,
+      "DurationType": "Year",
+      "PeopleCount": 1,
+      "Software": "Vim, CMake, GDB"
+    },
+    "Header": {
+      "HeaderImage": "./images/cstring/Banner.png"
+    },
+    "Tags": "CInDev, Lib",
+    "LocalHref": "./project/cstring",
+    "informalName": "cstring",
+    "Repository": {
+      "OriginType": "GitHub",
+      "UserName": "MitchelMA",
+      "RepositoryName": "cstring"
+    },
+    "CardInfo": {
+      "SetHeight": "21rem"
+    },
+    "Heroes": ["Hobby"]
   }
 ]
