@@ -8,14 +8,14 @@ public class JavascriptModuleHandle : IAsyncDisposable
     private readonly SemaphoreSlim _moduleSema = new(1);
     private readonly IJSRuntime? _jsRuntime;
     private IJSObjectReference? _module;
+    
+    public bool IsModuleLoaded => _module is not null;
 
     public JavascriptModuleHandle(IJSRuntime jsRuntime, string moduleName)
     {
         _jsRuntime = jsRuntime;
         _moduleName = moduleName;
     }
-
-    public bool IsModuleLoaded => _module is not null;
 
     public async ValueTask<bool> ImportJsModuleAsync()
     {
