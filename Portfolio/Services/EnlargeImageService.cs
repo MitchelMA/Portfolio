@@ -1,14 +1,13 @@
 using System.Numerics;
-using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
 namespace Portfolio.Services;
 
-public class EnlargeImageService : IDisposable, IAsyncDisposable
+public class EnlargeImageService : IAsyncDisposable
 {
     public EnlargeImageService(IJSRuntime jsRuntime)
     {
-        _jsRuntime = jsRuntime;
+        _moduleHandle = new JavascriptModuleHandle(jsRuntime, "/js/modules/EnlargeImageModule.js");
     }
 
     public delegate
@@ -19,39 +18,23 @@ public class EnlargeImageService : IDisposable, IAsyncDisposable
     public static OnImageClickedDelegate? OnImageClicked;
     public static OnImageClickedDelegateAsync? OnImageClickedAsync;
 
-    private readonly IJSRuntime? _jsRuntime;
-    private IJSObjectReference? _module;
-    private string? _lastUsedQuery;
+    private readonly JavascriptModuleHandle _moduleHandle;
 
-    public bool IsModuleLoaded => _module is not null;
+    public bool IsModuleLoaded => _moduleHandle.IsModuleLoaded;
 
-    public async ValueTask ImportJsModule(string moduleName)
+    public ValueTask<bool> ImportJsModule()
     {
-        if (_jsRuntime is null)
-        {
-            await Console.Error.WriteLineAsync("JsRuntime was null!");
-            return;
-        }
-
-        _module = await _jsRuntime.InvokeAsync<IJSObjectReference>("import",
-            moduleName);
+        return _moduleHandle.ImportJsModuleAsync();
     }
 
-    public async ValueTask<int> AddImageHandlers(string javaScriptQuery)
+    public ValueTask<int> AddImageHandlers(string javaScriptQuery)
     {
-        if (_module is null)
-        {
-            await Console.Error.WriteLineAsync("Module was null!");
-            return 0;
-        }
-
-        _lastUsedQuery = javaScriptQuery;
-        return await _module.InvokeAsync<int>("addImageHandlers", javaScriptQuery);
+        return _moduleHandle.InvokeAsync<int>("addImageHandlers", javaScriptQuery);
     }
 
-    public ValueTask<float[]> GetScreenSize()
+    public async ValueTask<float[]> GetScreenSize()
     {
-        return _module!.InvokeAsync<float[]>("getScreenSize");
+        return (await _moduleHandle.InvokeAsync<float[]>("getScreenSize")) ?? Array.Empty<float>();
     }
 
     [JSInvokable]
@@ -67,19 +50,9 @@ public class EnlargeImageService : IDisposable, IAsyncDisposable
 
     #region Disposables
 
-    public void Dispose()
-    {
-        GC.SuppressFinalize(this);
-    }
-
     public async ValueTask DisposeAsync()
     {
-        if (_module != null)
-        {
-            await _module.DisposeAsync();
-            _module = null;
-        }
-
+        await _moduleHandle.DisposeAsync();
         GC.SuppressFinalize(this);
     }
 

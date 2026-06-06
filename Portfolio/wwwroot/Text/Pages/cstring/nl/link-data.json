@@ -1,0 +1,21 @@
+{
+  "min-width": 730,
+  "links": [
+    {
+      "href": "#iductie",
+      "display-text": "Introductie"
+    },
+    {
+      "href": "#structs",
+      "display-text": "Structures"
+    },
+    {
+      "href": "#initdes",
+      "display-text": "Initialization & Destruction"
+    },
+    {
+      "href": "#naw",
+      "display-text": "Nawoord"
+    }
+  ]
+}
