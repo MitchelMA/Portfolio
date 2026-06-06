@@ -7,7 +7,7 @@ using Portfolio.Shared.Components.Lightbox;
 
 namespace Portfolio.Shared.Layouts;
 
-public partial class ProjectLayout : LayoutComponentBase, IDisposable
+public partial class ProjectLayout : LayoutComponentBase, IDisposable, IAsyncDisposable
 {
     [Inject]
     private AppState? AppState { get; init; }
@@ -45,12 +45,8 @@ public partial class ProjectLayout : LayoutComponentBase, IDisposable
 
     public async Task OnChildContentSet()
     {
-        // Force synchronous running of async code
-        await Task.Run(async () =>
-        {
-            await EnlargeContainer!.LoadModule();
-            await SetEnlargerPageContent();
-        });
+        await EnlargeContainer!.LoadModule();
+        await SetEnlargerPageContent();
     }
     
     private async ValueTask SetEnlargerPageContent()
@@ -64,6 +60,14 @@ public partial class ProjectLayout : LayoutComponentBase, IDisposable
     public void Dispose()
     {
         AppState!.StateChangedAsync -= AppStateChanged;
+        GC.SuppressFinalize(this);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (EnlargeContainer != null)
+            await EnlargeContainer.DisposeAsync();
+        
         GC.SuppressFinalize(this);
     }
 }

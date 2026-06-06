@@ -5,7 +5,7 @@ using Portfolio.Services;
 
 namespace Portfolio.Shared.Components.Lightbox;
 
-public partial class ImageEnlargeContainer : ComponentBase, IDisposable, IAsyncDisposable
+public partial class ImageEnlargeContainer : ComponentBase, IAsyncDisposable
 {
     [Inject] private EnlargeImageService EnlargeImageService { get; init; } = null!;
     [Inject] private AppState AppState { get; init; } = null!;
@@ -18,7 +18,7 @@ public partial class ImageEnlargeContainer : ComponentBase, IDisposable, IAsyncD
     private string? _clickedAlt;
     private bool _isTransitioning;
     private bool _isOpen = false;
-    private Mutex _loadMutex = new();
+    private readonly Mutex _loadMutex = new();
     private bool _isBound = false;
 
     public delegate void OnModuleLoadedDelegate(object? sender);
@@ -54,7 +54,7 @@ public partial class ImageEnlargeContainer : ComponentBase, IDisposable, IAsyncD
         if (EnlargeImageService.IsModuleLoaded || _isBound) return;
         _isBound = true;
         
-        await EnlargeImageService.ImportJsModule("./js/modules/EnlargeImageModule.js");
+        await EnlargeImageService.ImportJsModule();
         EnlargeImageService.OnImageClickedAsync += OnImageClickedAsync;
         OnModuleLoaded?.Invoke(this);
         if (OnModuleLoadedAsync is not null)
@@ -64,7 +64,15 @@ public partial class ImageEnlargeContainer : ComponentBase, IDisposable, IAsyncD
 
     public async ValueTask<int> OnPageContentSet(string query)
     {
-        return await EnlargeImageService.AddImageHandlers(query);
+        _loadMutex.WaitOne();
+        try
+        {
+            return await EnlargeImageService.AddImageHandlers(query);
+        }
+        finally
+        {
+            _loadMutex.ReleaseMutex();
+        }
     }
 
     private async Task<bool> OnImageClickedAsync(object? sender, string imageSrc, string imageAlt, Vector2 origin,
@@ -106,12 +114,6 @@ public partial class ImageEnlargeContainer : ComponentBase, IDisposable, IAsyncD
         _isOpen = false;
         AppState.RemoveFromScrollLock(this);
         StateHasChanged();
-    }
-
-    public void Dispose()
-    {
-        EnlargeImageService.Dispose();
-        GC.SuppressFinalize(this);
     }
 
     public async ValueTask DisposeAsync()
