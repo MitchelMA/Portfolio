@@ -85,16 +85,16 @@ public class JavascriptModuleHandle : IAsyncDisposable
 
     public async ValueTask InvokeVoidAsync(string identifiers, params object?[] args)
     {
-        if (!IsModuleLoaded)
-        {
-            await Console.Error.WriteLineAsync("Module was null!");
-            return;
-        }
-
         await _moduleSema.WaitAsync();
 
         try
         {
+            if (!IsModuleLoaded)
+            {
+                await Console.Error.WriteLineAsync("Module was null!");
+                return;
+            }
+            
             await _module!.InvokeVoidAsync(identifiers, args);
         }
         finally
