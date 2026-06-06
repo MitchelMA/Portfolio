@@ -46,6 +46,12 @@
     top: 2.5rem;
     right: 2.5rem;
     z-index: 1;
+    line-height: 0;
+    font-size: 1.3rem;
+    
+    &:hover {
+        color: red;
+    }
 }
 
 .btn {

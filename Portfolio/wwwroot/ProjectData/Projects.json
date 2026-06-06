@@ -210,7 +210,7 @@
       "Duration": 3,
       "DurationType": "Year",
       "PeopleCount": 1,
-      "Software": "Vim, CMake, GDB"
+      "Software": "C, Vim, CMake, GDB"
     },
     "Header": {
       "HeaderImage": "./images/cstring/Banner.png"
